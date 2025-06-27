@@ -1,0 +1,597 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		213E41E92E0EBB4200ACB15D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 213E41C32E0EBB4200ACB15D /* Assets.xcassets */; };
+		213E41EA2E0EBB4200ACB15D /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 213E41C12E0EBB4200ACB15D /* Preview Assets.xcassets */; };
+		213E41EB2E0EBB4200ACB15D /* TextCleaner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213E41CE2E0EBB4200ACB15D /* TextCleaner.swift */; };
+		213E41EC2E0EBB4200ACB15D /* WarningGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213E41CF2E0EBB4200ACB15D /* WarningGenerator.swift */; };
+		213E41ED2E0EBB4200ACB15D /* GradeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213E41E12E0EBB4200ACB15D /* GradeButton.swift */; };
+		213E41EE2E0EBB4200ACB15D /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213E41C62E0EBB4200ACB15D /* APIService.swift */; };
+		213E41EF2E0EBB4200ACB15D /* PromptInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213E41E22E0EBB4200ACB15D /* PromptInputView.swift */; };
+		213E41F02E0EBB4200ACB15D /* ResponseProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213E41D62E0EBB4200ACB15D /* ResponseProcessor.swift */; };
+		213E41F12E0EBB4200ACB15D /* EssayType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213E41BB2E0EBB4200ACB15D /* EssayType.swift */; };
+		213E41F22E0EBB4200ACB15D /* MockAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213E41C82E0EBB4200ACB15D /* MockAPIService.swift */; };
+		213E41F32E0EBB4200ACB15D /* APIModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213E41BA2E0EBB4200ACB15D /* APIModels.swift */; };
+		213E41F42E0EBB4200ACB15D /* InsightsGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213E41D42E0EBB4200ACB15D /* InsightsGenerator.swift */; };
+		213E41F52E0EBB4200ACB15D /* APIServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213E41C72E0EBB4200ACB15D /* APIServiceProtocol.swift */; };
+		213E41F62E0EBB4200ACB15D /* ErrorPresentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213E41D32E0EBB4200ACB15D /* ErrorPresentation.swift */; };
+		213E41F72E0EBB4200ACB15D /* EssayTypeSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213E41E02E0EBB4200ACB15D /* EssayTypeSelector.swift */; };
+		213E41F82E0EBB4200ACB15D /* TextAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213E41CD2E0EBB4200ACB15D /* TextAnalyzer.swift */; };
+		213E41F92E0EBB4200ACB15D /* AnthropicService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213E41C52E0EBB4200ACB15D /* AnthropicService.swift */; };
+		213E41FA2E0EBB4200ACB15D /* GradeModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213E41BC2E0EBB4200ACB15D /* GradeModels.swift */; };
+		213E41FB2E0EBB4200ACB15D /* OpenAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213E41C92E0EBB4200ACB15D /* OpenAIService.swift */; };
+		213E41FC2E0EBB4200ACB15D /* EssayInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213E41DF2E0EBB4200ACB15D /* EssayInputView.swift */; };
+		213E41FD2E0EBB4200ACB15D /* ResponseValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213E41D72E0EBB4200ACB15D /* ResponseValidator.swift */; };
+		213E41FE2E0EBB4200ACB15D /* PromptGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213E41D12E0EBB4200ACB15D /* PromptGenerator.swift */; };
+		213E41FF2E0EBB4200ACB15D /* ResponseFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213E41D52E0EBB4200ACB15D /* ResponseFormatter.swift */; };
+		213E42002E0EBB4200ACB15D /* EssayProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213E41CB2E0EBB4200ACB15D /* EssayProcessor.swift */; };
+		213E42012E0EBB4200ACB15D /* GradeResultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213E41E52E0EBB4200ACB15D /* GradeResultsView.swift */; };
+		213E42022E0EBB4200ACB15D /* EssayValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213E41CC2E0EBB4200ACB15D /* EssayValidator.swift */; };
+		213E42032E0EBB4200ACB15D /* PreprocessingModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213E41BE2E0EBB4200ACB15D /* PreprocessingModels.swift */; };
+		213E42042E0EBB4200ACB15D /* APUSHGraderApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213E41B72E0EBB4200ACB15D /* APUSHGraderApp.swift */; };
+		213E42052E0EBB4200ACB15D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213E41E42E0EBB4200ACB15D /* ContentView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		1234567890123452 /* APUSHGrader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = APUSHGrader.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		213E41B72E0EBB4200ACB15D /* APUSHGraderApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APUSHGraderApp.swift; sourceTree = "<group>"; };
+		213E41B82E0EBB4200ACB15D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		213E41BA2E0EBB4200ACB15D /* APIModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIModels.swift; sourceTree = "<group>"; };
+		213E41BB2E0EBB4200ACB15D /* EssayType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayType.swift; sourceTree = "<group>"; };
+		213E41BC2E0EBB4200ACB15D /* GradeModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradeModels.swift; sourceTree = "<group>"; };
+		213E41BE2E0EBB4200ACB15D /* PreprocessingModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreprocessingModels.swift; sourceTree = "<group>"; };
+		213E41C12E0EBB4200ACB15D /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		213E41C32E0EBB4200ACB15D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		213E41C52E0EBB4200ACB15D /* AnthropicService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnthropicService.swift; sourceTree = "<group>"; };
+		213E41C62E0EBB4200ACB15D /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
+		213E41C72E0EBB4200ACB15D /* APIServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIServiceProtocol.swift; sourceTree = "<group>"; };
+		213E41C82E0EBB4200ACB15D /* MockAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAPIService.swift; sourceTree = "<group>"; };
+		213E41C92E0EBB4200ACB15D /* OpenAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIService.swift; sourceTree = "<group>"; };
+		213E41CB2E0EBB4200ACB15D /* EssayProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayProcessor.swift; sourceTree = "<group>"; };
+		213E41CC2E0EBB4200ACB15D /* EssayValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayValidator.swift; sourceTree = "<group>"; };
+		213E41CD2E0EBB4200ACB15D /* TextAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextAnalyzer.swift; sourceTree = "<group>"; };
+		213E41CE2E0EBB4200ACB15D /* TextCleaner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextCleaner.swift; sourceTree = "<group>"; };
+		213E41CF2E0EBB4200ACB15D /* WarningGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WarningGenerator.swift; sourceTree = "<group>"; };
+		213E41D12E0EBB4200ACB15D /* PromptGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptGenerator.swift; sourceTree = "<group>"; };
+		213E41D32E0EBB4200ACB15D /* ErrorPresentation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorPresentation.swift; sourceTree = "<group>"; };
+		213E41D42E0EBB4200ACB15D /* InsightsGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightsGenerator.swift; sourceTree = "<group>"; };
+		213E41D52E0EBB4200ACB15D /* ResponseFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseFormatter.swift; sourceTree = "<group>"; };
+		213E41D62E0EBB4200ACB15D /* ResponseProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseProcessor.swift; sourceTree = "<group>"; };
+		213E41D72E0EBB4200ACB15D /* ResponseValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseValidator.swift; sourceTree = "<group>"; };
+		213E41DF2E0EBB4200ACB15D /* EssayInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayInputView.swift; sourceTree = "<group>"; };
+		213E41E02E0EBB4200ACB15D /* EssayTypeSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssayTypeSelector.swift; sourceTree = "<group>"; };
+		213E41E12E0EBB4200ACB15D /* GradeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradeButton.swift; sourceTree = "<group>"; };
+		213E41E22E0EBB4200ACB15D /* PromptInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptInputView.swift; sourceTree = "<group>"; };
+		213E41E42E0EBB4200ACB15D /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		213E41E52E0EBB4200ACB15D /* GradeResultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradeResultsView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		123456789012344F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1234567890123449 = {
+			isa = PBXGroup;
+			children = (
+				1234567890123454 /* APUSHGrader */,
+				1234567890123453 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		1234567890123453 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1234567890123452 /* APUSHGrader.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		1234567890123454 /* APUSHGrader */ = {
+			isa = PBXGroup;
+			children = (
+				213E41B92E0EBB4200ACB15D /* App */,
+				213E41C02E0EBB4200ACB15D /* Models */,
+				213E41C42E0EBB4200ACB15D /* Resources */,
+				213E41DA2E0EBB4200ACB15D /* Services */,
+				213E41DE2E0EBB4200ACB15D /* Utilities */,
+				213E41E72E0EBB4200ACB15D /* Views */,
+			);
+			path = APUSHGrader;
+			sourceTree = "<group>";
+		};
+		213E41B92E0EBB4200ACB15D /* App */ = {
+			isa = PBXGroup;
+			children = (
+				213E41B72E0EBB4200ACB15D /* APUSHGraderApp.swift */,
+				213E41B82E0EBB4200ACB15D /* Info.plist */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		213E41BD2E0EBB4200ACB15D /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				213E41BA2E0EBB4200ACB15D /* APIModels.swift */,
+				213E41BB2E0EBB4200ACB15D /* EssayType.swift */,
+				213E41BC2E0EBB4200ACB15D /* GradeModels.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		213E41BF2E0EBB4200ACB15D /* Processing */ = {
+			isa = PBXGroup;
+			children = (
+				213E41BE2E0EBB4200ACB15D /* PreprocessingModels.swift */,
+			);
+			path = Processing;
+			sourceTree = "<group>";
+		};
+		213E41C02E0EBB4200ACB15D /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				213E41BD2E0EBB4200ACB15D /* Core */,
+				213E41BF2E0EBB4200ACB15D /* Processing */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		213E41C22E0EBB4200ACB15D /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				213E41C12E0EBB4200ACB15D /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		213E41C42E0EBB4200ACB15D /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				213E41C22E0EBB4200ACB15D /* Preview Content */,
+				213E41C32E0EBB4200ACB15D /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		213E41CA2E0EBB4200ACB15D /* API */ = {
+			isa = PBXGroup;
+			children = (
+				213E41C52E0EBB4200ACB15D /* AnthropicService.swift */,
+				213E41C62E0EBB4200ACB15D /* APIService.swift */,
+				213E41C72E0EBB4200ACB15D /* APIServiceProtocol.swift */,
+				213E41C82E0EBB4200ACB15D /* MockAPIService.swift */,
+				213E41C92E0EBB4200ACB15D /* OpenAIService.swift */,
+			);
+			path = API;
+			sourceTree = "<group>";
+		};
+		213E41D02E0EBB4200ACB15D /* EssayProcessing */ = {
+			isa = PBXGroup;
+			children = (
+				213E41CB2E0EBB4200ACB15D /* EssayProcessor.swift */,
+				213E41CC2E0EBB4200ACB15D /* EssayValidator.swift */,
+				213E41CD2E0EBB4200ACB15D /* TextAnalyzer.swift */,
+				213E41CE2E0EBB4200ACB15D /* TextCleaner.swift */,
+				213E41CF2E0EBB4200ACB15D /* WarningGenerator.swift */,
+			);
+			path = EssayProcessing;
+			sourceTree = "<group>";
+		};
+		213E41D22E0EBB4200ACB15D /* PromptGeneration */ = {
+			isa = PBXGroup;
+			children = (
+				213E41D12E0EBB4200ACB15D /* PromptGenerator.swift */,
+			);
+			path = PromptGeneration;
+			sourceTree = "<group>";
+		};
+		213E41D82E0EBB4200ACB15D /* ResponseProcessing */ = {
+			isa = PBXGroup;
+			children = (
+				213E41D32E0EBB4200ACB15D /* ErrorPresentation.swift */,
+				213E41D42E0EBB4200ACB15D /* InsightsGenerator.swift */,
+				213E41D52E0EBB4200ACB15D /* ResponseFormatter.swift */,
+				213E41D62E0EBB4200ACB15D /* ResponseProcessor.swift */,
+				213E41D72E0EBB4200ACB15D /* ResponseValidator.swift */,
+			);
+			path = ResponseProcessing;
+			sourceTree = "<group>";
+		};
+		213E41D92E0EBB4200ACB15D /* Processing */ = {
+			isa = PBXGroup;
+			children = (
+				213E41D02E0EBB4200ACB15D /* EssayProcessing */,
+				213E41D22E0EBB4200ACB15D /* PromptGeneration */,
+				213E41D82E0EBB4200ACB15D /* ResponseProcessing */,
+			);
+			path = Processing;
+			sourceTree = "<group>";
+		};
+		213E41DA2E0EBB4200ACB15D /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				213E41CA2E0EBB4200ACB15D /* API */,
+				213E41D92E0EBB4200ACB15D /* Processing */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		213E41DB2E0EBB4200ACB15D /* Constants */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Constants;
+			sourceTree = "<group>";
+		};
+		213E41DC2E0EBB4200ACB15D /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		213E41DD2E0EBB4200ACB15D /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		213E41DE2E0EBB4200ACB15D /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				213E41DB2E0EBB4200ACB15D /* Constants */,
+				213E41DC2E0EBB4200ACB15D /* Extensions */,
+				213E41DD2E0EBB4200ACB15D /* Helpers */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		213E41E32E0EBB4200ACB15D /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				213E41DF2E0EBB4200ACB15D /* EssayInputView.swift */,
+				213E41E02E0EBB4200ACB15D /* EssayTypeSelector.swift */,
+				213E41E12E0EBB4200ACB15D /* GradeButton.swift */,
+				213E41E22E0EBB4200ACB15D /* PromptInputView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		213E41E62E0EBB4200ACB15D /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				213E41E42E0EBB4200ACB15D /* ContentView.swift */,
+				213E41E52E0EBB4200ACB15D /* GradeResultsView.swift */,
+			);
+			path = Main;
+			sourceTree = "<group>";
+		};
+		213E41E72E0EBB4200ACB15D /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				213E41E32E0EBB4200ACB15D /* Components */,
+				213E41E62E0EBB4200ACB15D /* Main */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1234567890123451 /* APUSHGrader */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1234567890123460 /* Build configuration list for PBXNativeTarget "APUSHGrader" */;
+			buildPhases = (
+				123456789012344E /* Sources */,
+				123456789012344F /* Frameworks */,
+				1234567890123450 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = APUSHGrader;
+			productName = APUSHGrader;
+			productReference = 1234567890123452 /* APUSHGrader.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		123456789012344A /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					1234567890123451 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
+			};
+			buildConfigurationList = 123456789012344D /* Build configuration list for PBXProject "APUSHGrader" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 1234567890123449;
+			productRefGroup = 1234567890123453 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				1234567890123451 /* APUSHGrader */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		1234567890123450 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				213E41E92E0EBB4200ACB15D /* Assets.xcassets in Resources */,
+				213E41EA2E0EBB4200ACB15D /* Preview Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		123456789012344E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				213E41EB2E0EBB4200ACB15D /* TextCleaner.swift in Sources */,
+				213E41EC2E0EBB4200ACB15D /* WarningGenerator.swift in Sources */,
+				213E41ED2E0EBB4200ACB15D /* GradeButton.swift in Sources */,
+				213E41EE2E0EBB4200ACB15D /* APIService.swift in Sources */,
+				213E41EF2E0EBB4200ACB15D /* PromptInputView.swift in Sources */,
+				213E41F02E0EBB4200ACB15D /* ResponseProcessor.swift in Sources */,
+				213E41F12E0EBB4200ACB15D /* EssayType.swift in Sources */,
+				213E41F22E0EBB4200ACB15D /* MockAPIService.swift in Sources */,
+				213E41F32E0EBB4200ACB15D /* APIModels.swift in Sources */,
+				213E41F42E0EBB4200ACB15D /* InsightsGenerator.swift in Sources */,
+				213E41F52E0EBB4200ACB15D /* APIServiceProtocol.swift in Sources */,
+				213E41F62E0EBB4200ACB15D /* ErrorPresentation.swift in Sources */,
+				213E41F72E0EBB4200ACB15D /* EssayTypeSelector.swift in Sources */,
+				213E41F82E0EBB4200ACB15D /* TextAnalyzer.swift in Sources */,
+				213E41F92E0EBB4200ACB15D /* AnthropicService.swift in Sources */,
+				213E41FA2E0EBB4200ACB15D /* GradeModels.swift in Sources */,
+				213E41FB2E0EBB4200ACB15D /* OpenAIService.swift in Sources */,
+				213E41FC2E0EBB4200ACB15D /* EssayInputView.swift in Sources */,
+				213E41FD2E0EBB4200ACB15D /* ResponseValidator.swift in Sources */,
+				213E41FE2E0EBB4200ACB15D /* PromptGenerator.swift in Sources */,
+				213E41FF2E0EBB4200ACB15D /* ResponseFormatter.swift in Sources */,
+				213E42002E0EBB4200ACB15D /* EssayProcessor.swift in Sources */,
+				213E42012E0EBB4200ACB15D /* GradeResultsView.swift in Sources */,
+				213E42022E0EBB4200ACB15D /* EssayValidator.swift in Sources */,
+				213E42032E0EBB4200ACB15D /* PreprocessingModels.swift in Sources */,
+				213E42042E0EBB4200ACB15D /* APUSHGraderApp.swift in Sources */,
+				213E42052E0EBB4200ACB15D /* ContentView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		123456789012345E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		123456789012345F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		1234567890123461 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"APUSHGrader/Resources/Preview Content\"";
+				DEVELOPMENT_TEAM = FW7825XU7W;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = APUSHGrader/App/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kpfister.APUSHGrader;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		1234567890123462 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"APUSHGrader/Resources/Preview Content\"";
+				DEVELOPMENT_TEAM = FW7825XU7W;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = APUSHGrader/App/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kpfister.APUSHGrader;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		123456789012344D /* Build configuration list for PBXProject "APUSHGrader" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				123456789012345E /* Debug */,
+				123456789012345F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1234567890123460 /* Build configuration list for PBXNativeTarget "APUSHGrader" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1234567890123461 /* Debug */,
+				1234567890123462 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 123456789012344A /* Project object */;
+}
