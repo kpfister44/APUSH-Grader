@@ -61,8 +61,11 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>OPENAI_API_KEY</key>
-	<string>YOUR_OPENAI_API_KEY_HERE</string>
+	<string>sk-proj-YAfLA0BI9D8YvBNxo0LHuO9R-q8fbseheA
+  I7n_eK6KMisBtOQZfqTtnEqCEr82AYCb0wA749DAT3BlbkFJdEvcS1nhfXcZKObOWOz9HIc2k
+  l557S7eEnN8dDj88jw50WuXFsCozyEgfbQoYEPlUJUC6RYioA</string>
 	<key>ANTHROPIC_API_KEY</key>
-	<string>YOUR_ANTHROPIC_API_KEY_HERE</string>
+	<string>sk-ant-api03-YqhEMdoMmmQK7n8IJljSs9_U72Q16jHVUhTxzgxNZ8W0ZRIODN8xRXBMU0OG
+  GflFmi-TlF-xkYY1BzjpKg0eBA-NA79-AAA</string>
 </dict>
 </plist>

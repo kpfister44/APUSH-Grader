@@ -79,12 +79,6 @@ class TextAnalyzer {
         return hasCommonEvidence && hasHistoricalEvidence
     }
     
-    static func containsPersonalPronouns(_ text: String) -> Bool {
-        let pronouns = ["i ", "me ", "my ", "mine ", "myself ", "we ", "us ", "our ", "ours "]
-        let lowercaseText = " " + text.lowercased() + " "
-        return pronouns.contains { lowercaseText.contains($0) }
-    }
-    
     static func containsInformalLanguage(_ text: String) -> Bool {
         let informalWords = [
             "gonna", "wanna", "can't", "won't", "don't", "isn't", "aren't",

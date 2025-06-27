@@ -1,4 +1,5 @@
 import SwiftUI
+import APUSHGraderCore
 
 struct EssayTypeSelector: View {
     @Binding var selectedType: EssayType

@@ -2,7 +2,7 @@ import Foundation
 
 // MARK: - OpenAI API Service
 
-class OpenAIService: OpenAIServiceProtocol {
+public class OpenAIService: OpenAIServiceProtocol {
     private let session: URLSession
     private let model: APIConfig.Model
     
@@ -10,12 +10,12 @@ class OpenAIService: OpenAIServiceProtocol {
         return Bundle.main.object(forInfoDictionaryKey: "OPENAI_API_KEY") as? String ?? ""
     }
     
-    init(model: APIConfig.Model, session: URLSession = URLSession.shared) {
+    public init(model: APIConfig.Model, session: URLSession = URLSession.shared) {
         self.model = model
         self.session = session
     }
     
-    func gradeEssay(_ essay: String, type: EssayType, prompt: String, preprocessingResult: PreprocessingResult) async throws -> GradeResponse {
+    public func gradeEssay(_ essay: String, type: EssayType, prompt: String, preprocessingResult: PreprocessingResult) async throws -> GradeResponse {
         guard !apiKey.isEmpty else {
             throw GradingError.apiKeyMissing
         }

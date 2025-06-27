@@ -2,12 +2,12 @@ import Foundation
 
 // MARK: - Main API Service Coordinator
 
-class APIService: APIServiceProtocol {
+public class APIService: APIServiceProtocol {
     private let openAIService: OpenAIServiceProtocol
     private let anthropicService: AnthropicServiceProtocol
     private let model: APIConfig.Model
     
-    init(model: APIConfig.Model = APIConfig.preferredModel) {
+    public init(model: APIConfig.Model = APIConfig.preferredModel) {
         self.model = model
         
         // Configure URLSession
@@ -23,7 +23,7 @@ class APIService: APIServiceProtocol {
     
     // MARK: - Main Grading Function
     
-    func gradeEssay(_ essay: String, type: EssayType, prompt: String) async throws -> GradeResponse {
+    public func gradeEssay(_ essay: String, type: EssayType, prompt: String) async throws -> GradeResponse {
         // Validate essay first
         try EssayProcessor.validateEssay(essay, for: type)
         

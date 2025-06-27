@@ -1,12 +1,12 @@
 import Foundation
 import SwiftUI
 
-enum EssayType: String, CaseIterable {
+public enum EssayType: String, CaseIterable {
     case dbq = "DBQ"
     case leq = "LEQ"
     case saq = "SAQ"
     
-    var description: String {
+    public var description: String {
         switch self {
         case .dbq:
             return "Document Based Question"
@@ -17,7 +17,7 @@ enum EssayType: String, CaseIterable {
         }
     }
     
-    var placeholderText: String {
+    public var placeholderText: String {
         switch self {
         case .dbq:
             return "Enter your DBQ essay here. Remember to use the provided documents and include outside evidence..."
@@ -28,7 +28,7 @@ enum EssayType: String, CaseIterable {
         }
     }
     
-    var promptPlaceholderText: String {
+    public var promptPlaceholderText: String {
         switch self {
         case .dbq:
             return "Enter the DBQ prompt/question here. Include the historical context and documents provided..."
@@ -39,7 +39,7 @@ enum EssayType: String, CaseIterable {
         }
     }
     
-    var minHeight: CGFloat {
+    public var minHeight: CGFloat {
         switch self {
         case .saq:
             return 100
@@ -48,14 +48,14 @@ enum EssayType: String, CaseIterable {
         }
     }
     
-    var maxScore: Int {
+    public var maxScore: Int {
         switch self {
         case .dbq, .leq: return 6
         case .saq: return 3
         }
     }
     
-    var minWordCount: Int {
+    public var minWordCount: Int {
         switch self {
         case .dbq: return 400
         case .leq: return 300
@@ -63,7 +63,7 @@ enum EssayType: String, CaseIterable {
         }
     }
     
-    var rubricStructure: [String: Int] {
+    public var rubricStructure: [String: Int] {
         switch self {
         case .dbq, .leq:
             return [

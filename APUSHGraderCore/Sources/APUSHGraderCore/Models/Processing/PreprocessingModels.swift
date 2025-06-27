@@ -2,14 +2,14 @@ import Foundation
 
 // MARK: - Preprocessing Models
 
-struct PreprocessingResult {
-    let cleanedText: String
-    let wordCount: Int
-    let paragraphCount: Int
-    let warnings: [String]
-    let isValid: Bool
+public struct PreprocessingResult {
+    public let cleanedText: String
+    public let wordCount: Int
+    public let paragraphCount: Int
+    public let warnings: [String]
+    public let isValid: Bool
     
-    init(cleanedText: String, wordCount: Int, paragraphCount: Int, warnings: [String]) {
+    public init(cleanedText: String, wordCount: Int, paragraphCount: Int, warnings: [String]) {
         self.cleanedText = cleanedText
         self.wordCount = wordCount
         self.paragraphCount = paragraphCount

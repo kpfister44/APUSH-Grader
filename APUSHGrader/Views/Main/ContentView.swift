@@ -1,4 +1,5 @@
 import SwiftUI
+import APUSHGraderCore
 
 struct ContentView: View {
     @State private var essayText: String = ""

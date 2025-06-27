@@ -1,4 +1,5 @@
 import SwiftUI
+import APUSHGraderCore
 
 struct GradeResultsView: View {
     let result: ProcessedGradingResult

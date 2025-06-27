@@ -2,24 +2,24 @@ import Foundation
 
 // MARK: - API Configuration
 
-struct APIConfig {
-    static let temperature: Double = 0.3
-    static let maxTokens: Int = 1500
-    static let timeoutInterval: TimeInterval = 30.0
+public struct APIConfig {
+    public static let temperature: Double = 0.3
+    public static let maxTokens: Int = 1500
+    public static let timeoutInterval: TimeInterval = 30.0
     
     // Model selection
-    enum Provider {
+    public enum Provider {
         case openai
         case anthropic
     }
     
-    enum Model {
+    public enum Model {
         case gpt4o
         case gpt4oMini
         case claude35Sonnet
         case claude3Haiku
         
-        var name: String {
+        public var name: String {
             switch self {
             case .gpt4o: return "gpt-4o"
             case .gpt4oMini: return "gpt-4o-mini"
@@ -28,7 +28,7 @@ struct APIConfig {
             }
         }
         
-        var provider: Provider {
+        public var provider: Provider {
             switch self {
             case .gpt4o, .gpt4oMini: return .openai
             case .claude35Sonnet, .claude3Haiku: return .anthropic
@@ -36,5 +36,5 @@ struct APIConfig {
         }
     }
     
-    static let preferredModel: Model = .claude35Sonnet
+    public static let preferredModel: Model = .claude35Sonnet
 }

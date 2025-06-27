@@ -46,11 +46,6 @@ class WarningGenerator {
             }
         }
         
-        // Content analysis warnings
-        if TextAnalyzer.containsPersonalPronouns(text) {
-            warnings.append("Avoid first-person pronouns in academic essays")
-        }
-        
         if TextAnalyzer.containsInformalLanguage(text) {
             warnings.append("Consider using more formal academic language")
         }

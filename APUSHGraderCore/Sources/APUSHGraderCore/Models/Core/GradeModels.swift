@@ -2,19 +2,28 @@ import Foundation
 
 // MARK: - Core Grading Models
 
-struct GradeResponse: Codable {
-    let score: Int
-    let maxScore: Int
-    let breakdown: GradeBreakdown
-    let overallFeedback: String
-    let suggestions: [String]
-    let warnings: [String]?
+public struct GradeResponse: Codable {
+    public let score: Int
+    public let maxScore: Int
+    public let breakdown: GradeBreakdown
+    public let overallFeedback: String
+    public let suggestions: [String]
+    public let warnings: [String]?
     
-    var percentageScore: Double {
+    public init(score: Int, maxScore: Int, breakdown: GradeBreakdown, overallFeedback: String, suggestions: [String], warnings: [String]? = nil) {
+        self.score = score
+        self.maxScore = maxScore
+        self.breakdown = breakdown
+        self.overallFeedback = overallFeedback
+        self.suggestions = suggestions
+        self.warnings = warnings
+    }
+    
+    public var percentageScore: Double {
         return Double(score) / Double(maxScore) * 100
     }
     
-    var letterGrade: String {
+    public var letterGrade: String {
         let percentage = percentageScore
         switch percentage {
         case 90...100: return "A"
@@ -26,14 +35,14 @@ struct GradeResponse: Codable {
     }
 }
 
-struct GradeBreakdown: Codable {
-    let thesis: RubricItem
-    let contextualization: RubricItem
-    let evidence: RubricItem
-    let analysis: RubricItem
-    let complexity: RubricItem?  // Optional for SAQ
+public struct GradeBreakdown: Codable {
+    public let thesis: RubricItem
+    public let contextualization: RubricItem
+    public let evidence: RubricItem
+    public let analysis: RubricItem
+    public let complexity: RubricItem?  // Optional for SAQ
     
-    init(thesis: RubricItem, contextualization: RubricItem, evidence: RubricItem, analysis: RubricItem, complexity: RubricItem? = nil) {
+    public init(thesis: RubricItem, contextualization: RubricItem, evidence: RubricItem, analysis: RubricItem, complexity: RubricItem? = nil) {
         self.thesis = thesis
         self.contextualization = contextualization
         self.evidence = evidence
@@ -42,16 +51,22 @@ struct GradeBreakdown: Codable {
     }
 }
 
-struct RubricItem: Codable {
-    let score: Int
-    let maxScore: Int
-    let feedback: String
+public struct RubricItem: Codable {
+    public let score: Int
+    public let maxScore: Int
+    public let feedback: String
     
-    var isFullCredit: Bool {
+    public init(score: Int, maxScore: Int, feedback: String) {
+        self.score = score
+        self.maxScore = maxScore
+        self.feedback = feedback
+    }
+    
+    public var isFullCredit: Bool {
         return score == maxScore
     }
     
-    var performanceLevel: String {
+    public var performanceLevel: String {
         let percentage = Double(score) / Double(maxScore)
         switch percentage {
         case 1.0: return "Excellent"
@@ -64,7 +79,7 @@ struct RubricItem: Codable {
 
 // MARK: - Error Types
 
-enum GradingError: LocalizedError {
+public enum GradingError: LocalizedError {
     case invalidResponse
     case invalidScore
     case networkError(String)
@@ -74,7 +89,7 @@ enum GradingError: LocalizedError {
     case essayTooLong
     case parseError(String)
     
-    var errorDescription: String? {
+    public var errorDescription: String? {
         switch self {
         case .invalidResponse:
             return "Received invalid response from grading service"

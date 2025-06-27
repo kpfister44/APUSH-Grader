@@ -124,24 +124,33 @@ class ResponseFormatter {
 
 // MARK: - Supporting Models
 
-struct GradeDisplayData {
-    let scoreText: String
-    let percentageText: String
-    let letterGrade: String
-    let performanceColor: Color
-    let breakdownItems: [BreakdownDisplayItem]
-    let insights: [GradingInsight]
+public struct GradeDisplayData {
+    public let scoreText: String
+    public let percentageText: String
+    public let letterGrade: String
+    public let performanceColor: Color
+    public let breakdownItems: [BreakdownDisplayItem]
+    public let insights: [GradingInsight]
+    
+    public init(scoreText: String, percentageText: String, letterGrade: String, performanceColor: Color, breakdownItems: [BreakdownDisplayItem], insights: [GradingInsight]) {
+        self.scoreText = scoreText
+        self.percentageText = percentageText
+        self.letterGrade = letterGrade
+        self.performanceColor = performanceColor
+        self.breakdownItems = breakdownItems
+        self.insights = insights
+    }
 }
 
-struct BreakdownDisplayItem {
-    let name: String
-    let score: Int
-    let maxScore: Int
-    let feedback: String
-    let performanceLevel: String
-    let isFullCredit: Bool
+public struct BreakdownDisplayItem {
+    public let name: String
+    public let score: Int
+    public let maxScore: Int
+    public let feedback: String
+    public let performanceLevel: String
+    public let isFullCredit: Bool
     
-    init(_ rubricItem: RubricItem, name: String) {
+    public init(_ rubricItem: RubricItem, name: String) {
         self.name = name
         self.score = rubricItem.score
         self.maxScore = rubricItem.maxScore

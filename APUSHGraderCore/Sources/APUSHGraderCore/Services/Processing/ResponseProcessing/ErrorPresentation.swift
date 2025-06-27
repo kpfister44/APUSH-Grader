@@ -2,9 +2,9 @@ import Foundation
 
 // MARK: - Error Presentation Helper
 
-class ErrorPresentation {
+public class ErrorPresentation {
     
-    static func getUserFriendlyMessage(for error: Error) -> String {
+    public static func getUserFriendlyMessage(for error: Error) -> String {
         if let gradingError = error as? GradingError {
             switch gradingError {
             case .networkError(let message):

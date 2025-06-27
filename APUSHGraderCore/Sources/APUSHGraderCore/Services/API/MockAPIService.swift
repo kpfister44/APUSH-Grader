@@ -2,14 +2,14 @@ import Foundation
 
 // MARK: - Mock API Service for Testing
 
-class MockAPIService: APIServiceProtocol {
+public class MockAPIService: APIServiceProtocol {
     private let delay: TimeInterval
     
-    init(delay: TimeInterval = 2.0) {
+    public init(delay: TimeInterval = 2.0) {
         self.delay = delay
     }
     
-    func gradeEssay(_ essay: String, type: EssayType, prompt: String) async throws -> GradeResponse {
+    public func gradeEssay(_ essay: String, type: EssayType, prompt: String) async throws -> GradeResponse {
         // Simulate API delay
         try await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
         

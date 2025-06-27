@@ -3,11 +3,11 @@ import SwiftUI
 
 // MARK: - Response Processing Coordinator
 
-class ResponseProcessor {
+public class ResponseProcessor {
     
     // MARK: - Main Processing Function
     
-    static func processGradingResponse(_ response: GradeResponse, for essayType: EssayType) -> ProcessedGradingResult {
+    public static func processGradingResponse(_ response: GradeResponse, for essayType: EssayType) -> ProcessedGradingResult {
         // Validate the response
         let validationResults = ResponseValidator.validateResponse(response, for: essayType)
         
@@ -29,10 +29,18 @@ class ResponseProcessor {
 
 // MARK: - Supporting Data Structures
 
-struct ProcessedGradingResult {
-    let originalResponse: GradeResponse
-    let formattedText: String
-    let insights: [GradingInsight]
-    let validationIssues: [String]
-    let displayData: GradeDisplayData
+public struct ProcessedGradingResult {
+    public let originalResponse: GradeResponse
+    public let formattedText: String
+    public let insights: [GradingInsight]
+    public let validationIssues: [String]
+    public let displayData: GradeDisplayData
+    
+    public init(originalResponse: GradeResponse, formattedText: String, insights: [GradingInsight], validationIssues: [String], displayData: GradeDisplayData) {
+        self.originalResponse = originalResponse
+        self.formattedText = formattedText
+        self.insights = insights
+        self.validationIssues = validationIssues
+        self.displayData = displayData
+    }
 }

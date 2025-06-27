@@ -143,17 +143,24 @@ class InsightsGenerator {
 
 // MARK: - Supporting Models
 
-struct GradingInsight {
-    let type: InsightType
-    let title: String
-    let message: String
-    let severity: InsightSeverity
+public struct GradingInsight {
+    public let type: InsightType
+    public let title: String
+    public let message: String
+    public let severity: InsightSeverity
+    
+    public init(type: InsightType, title: String, message: String, severity: InsightSeverity) {
+        self.type = type
+        self.title = title
+        self.message = message
+        self.severity = severity
+    }
 }
 
-enum InsightType {
+public enum InsightType {
     case performance, strength, improvement, tip, warning
 }
 
-enum InsightSeverity {
+public enum InsightSeverity {
     case info, warning, error, success
 }
