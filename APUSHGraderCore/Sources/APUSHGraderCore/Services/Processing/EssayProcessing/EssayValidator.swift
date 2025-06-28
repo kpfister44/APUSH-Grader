@@ -2,9 +2,9 @@ import Foundation
 
 // MARK: - Essay Validation
 
-class EssayValidator {
+public class EssayValidator {
     
-    static func validateEssay(_ text: String, for essayType: EssayType) throws {
+    public static func validateEssay(_ text: String, for essayType: EssayType) throws {
         let result = TextAnalyzer.analyzeText(text, for: essayType)
         
         if result.cleanedText.isEmpty {
@@ -21,7 +21,7 @@ class EssayValidator {
         }
     }
     
-    private static func getMaxWordCount(for essayType: EssayType) -> Int {
+    public static func getMaxWordCount(for essayType: EssayType) -> Int {
         switch essayType {
         case .dbq: return 1200
         case .leq: return 1000

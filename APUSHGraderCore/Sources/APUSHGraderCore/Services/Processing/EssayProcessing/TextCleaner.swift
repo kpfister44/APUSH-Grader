@@ -2,9 +2,9 @@ import Foundation
 
 // MARK: - Text Cleaning
 
-class TextCleaner {
+public class TextCleaner {
     
-    static func cleanText(_ text: String) -> String {
+    public static func cleanText(_ text: String) -> String {
         var cleaned = text
         
         // Remove excessive whitespace while preserving paragraph breaks

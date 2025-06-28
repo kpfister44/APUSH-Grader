@@ -13,13 +13,16 @@ let package = Package(
         .library(
             name: "APUSHGraderCore",
             targets: ["APUSHGraderCore"]),
+        .executable(
+            name: "TestRunner",
+            targets: ["TestRunner"]),
     ],
     targets: [
         .target(
             name: "APUSHGraderCore",
             dependencies: []),
-        .testTarget(
-            name: "APUSHGraderCoreTests",
+        .executableTarget(
+            name: "TestRunner",
             dependencies: ["APUSHGraderCore"]),
     ]
 )

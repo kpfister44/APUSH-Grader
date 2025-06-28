@@ -2,9 +2,9 @@ import Foundation
 
 // MARK: - Warning Generation
 
-class WarningGenerator {
+public class WarningGenerator {
     
-    static func generateWarnings(
+    public static func generateWarnings(
         text: String,
         wordCount: Int,
         paragraphCount: Int,
@@ -55,7 +55,7 @@ class WarningGenerator {
     
     // MARK: - Helper Functions
     
-    private static func getMaxWordCount(for essayType: EssayType) -> Int {
+    public static func getMaxWordCount(for essayType: EssayType) -> Int {
         switch essayType {
         case .dbq: return 1200
         case .leq: return 1000
