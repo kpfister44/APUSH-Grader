@@ -9,7 +9,7 @@ APUSH Grader - iOS SwiftUI app that uses AI (OpenAI/Anthropic) to grade AP US Hi
 The project uses a **hybrid architecture** with business logic in a Swift Package and UI in the iOS app:
 
 ### **APUSHGraderCore/** - Swift Package (Business Logic)
-- **Package.swift** - SPM configuration for iOS 16+, includes test targets
+- **Package.swift** - SPM configuration for iOS 16+, includes TestRunner executable
 - **Sources/APUSHGraderCore/**
   - **Models/Core/** - Core data models (all public)
     - **EssayType.swift** - Essay type enum with UI properties and scoring rules
@@ -24,10 +24,13 @@ The project uses a **hybrid architecture** with business logic in a Swift Packag
     - **AnthropicService.swift** - Anthropic-specific implementation  
     - **MockAPIService.swift** - Testing implementation
   - **Services/Processing/** - Business logic processing (all public)
-    - **EssayProcessing/** - Text preprocessing and validation
+    - **EssayProcessing/** - Text preprocessing and validation (EssayValidator, TextAnalyzer, TextCleaner, WarningGenerator)
     - **ResponseProcessing/** - AI response processing  
     - **PromptGeneration/** - AI prompt generation
-- **Tests/APUSHGraderCoreTests/** - Unit tests for business logic
+- **Sources/TestRunner/** - Modular test suite executable
+  - **TestFramework.swift** - Custom testing framework for SPM
+  - **Tests/** - Individual test suite files
+  - **main.swift** - Test coordinator
 
 ### **APUSHGrader/** - iOS App (UI Layer)
 - **Views/** - SwiftUI views (import APUSHGraderCore)
@@ -42,43 +45,46 @@ The project uses a **hybrid architecture** with business logic in a Swift Packag
 
 ## Development Commands
 - **iOS App**: ⌘+B in Xcode, ⌘+R to run, Product → Clean Build Folder
-- **Swift Package Testing**: `cd APUSHGraderCore && swift test` (command line)
+- **Swift Package Testing**: `swift run TestRunner` (custom modular test suite)
 - **Swift Package Build**: `cd APUSHGraderCore && swift build` (command line)
 
 ## Testing
 
-### **Current Testing Status** 
-✅ **Hybrid SPM/iOS architecture implemented** - Business logic extracted to Swift Package
-✅ **Core business logic validated** with simple tests (ready for comprehensive SPM testing)
-✅ **Swift Package builds successfully** with command line testing capability
-✅ **iOS app builds and previews work** - UI layer properly imports APUSHGraderCore
-📋 **Ready for Step 3**: Comprehensive SPM test suite development
+### **Modular TestRunner Architecture** 
+✅ **Custom SPM Testing Framework** - No XCTest dependencies, pure Swift Package Manager approach
+✅ **223 Comprehensive Tests** - Covering all core business logic with zero failures
+✅ **Modular Test Organization** - Separate test files per source file for maintainability
+✅ **Terminal-Based Testing** - Run with `swift run TestRunner` for rapid iteration
 
-### **Completed Steps**
-**Step 1**: ✅ Created Swift Package structure for APUSHGraderCore
-**Step 2**: ✅ Moved Models/ and Services/ to Swift Package, updated iOS app integration
-**Step 3**: 📋 **NEXT SESSION** - Create comprehensive test suite using `swift test`
+### **Completed Test Suites**
+✅ **EssayTypeTests** (48 tests) - Essay scoring rules, rubric structures, UI properties
+✅ **GradeModelsTests** (35 tests) - Grade calculations, letter grades, performance levels  
+✅ **APIModelsTests** (38 tests) - API configurations, model mappings, validation ranges
+✅ **PreprocessingModelsTests** (32 tests) - Text processing validation, critical warning detection
+✅ **EssayProcessingTests** (70 tests) - Text analysis, content detection, essay validation
 
-### **Testing Plan - Step 3: Comprehensive SPM Test Suite (NEXT PRIORITY)**
-1. **Core Model Testing** - Test `EssayType`, `GradeModels`, scoring calculations
-2. **API Service Testing** - Test `APIService`, `MockAPIService`, retry logic, error handling  
-3. **Essay Processing Testing** - Test `EssayProcessor`, validation, text analysis
-4. **Response Processing Testing** - Test `ResponseProcessor`, `ResponseValidator`, `InsightsGenerator`
-5. **Prompt Generation Testing** - Test `PromptGenerator` for DBQ/LEQ/SAQ specific prompts
-6. **Integration Testing** - End-to-end testing of business logic workflows
+### **Remaining Test Priorities**
+📋 **ResponseProcessingTests** (medium priority) - AI response processing services
+  - ResponseProcessor, ResponseValidator, InsightsGenerator, ResponseFormatter, ErrorPresentation
+📋 **PromptGenerationTests** (low priority) - Essay-specific prompt generation
+  - PromptGenerator for DBQ/LEQ/SAQ specific prompts
 
-### **Already Validated Business Logic**
-- ✅ **Core scoring calculations** - Percentage/letter grade math, performance levels
-- ✅ **Essay validation** - Word count limits, length checking for DBQ/LEQ/SAQ
-- ✅ **Text analysis** - Word/paragraph counting, thesis/evidence detection
-- ✅ **Essay type-specific rules** - Different requirements for each essay type
+### **Validated Business Logic** 
+✅ **Essay Type Rules** - DBQ/LEQ (6 pts, 400+/300+ words), SAQ (3 pts, 50+ words)
+✅ **Validation Thresholds** - Minimum: DBQ 200+, LEQ 150+, SAQ 25+ words
+✅ **Maximum Limits** - DBQ 2400, LEQ 2000, SAQ 600 words
+✅ **Content Analysis** - Thesis detection, evidence keywords, informal language detection
+✅ **Text Processing** - Word/paragraph counting, Unicode normalization, whitespace handling
+✅ **Warning System** - Critical warnings ("too short"/"too long") vs advisory warnings
+✅ **Grade Calculations** - Percentage/letter grade mappings, performance level classification
 
 ### **Test Configuration**
-- **Swift Package Tests**: Run `cd APUSHGraderCore && swift test`
+- **Run Tests**: `swift run TestRunner` (from APUSHGraderCore/ directory)
+- **Test Framework**: Custom modular approach with TestSuite classes and TestRunnable protocol
+- **Public APIs**: All business logic classes made public for comprehensive testing
 - **Mock API**: Use `MockAPIService()` in Views/Main/ContentView.swift line 13-14
 - **Real AI**: Use `APIService()` in Views/Main/ContentView.swift line 13-14  
 - **API Keys**: Stored in App/Info.plist (OPENAI_API_KEY, ANTHROPIC_API_KEY)
-- **UI Testing**: SwiftUI previews work for all components
 
 ## Essay Types Supported
 - **DBQ** (Document-Based Question) - 6 points
@@ -90,34 +96,128 @@ The project uses a **hybrid architecture** with business logic in a Swift Packag
 ✅ **Business logic extracted to Swift Package** - APUSHGraderCore with public APIs
 ✅ **iOS app builds and runs** - Proper import of APUSHGraderCore 
 ✅ **SwiftUI previews working** - UI development capabilities preserved
-✅ **Command line testing ready** - Can run `swift test` in APUSHGraderCore/
+✅ **Comprehensive test suite complete** - 223 tests covering all core business logic
+✅ **Modular TestRunner architecture** - Custom SPM testing framework, no XCTest dependencies
 ✅ Fully functional with mock API
 ✅ Real API keys configured in Info.plist
 ✅ Prompt input feature - users can enter the specific question/prompt
 ✅ UI flow: Essay Type → Prompt Input → Essay Text → Grade Button
-✅ **Core business logic validated** through simple testing
+✅ **Core business logic fully validated** - Essay processing, text analysis, grading calculations
 ⚠️ **NOT YET TESTED** with actual AI APIs (OpenAI/Anthropic)
 ✅ Scrollable UI with detailed breakdown
-📋 **Next session priority**: Create comprehensive SPM test suite (Step 3)
-📋 Ready for real API testing - just switch to `APIService()` in ContentView.swift
+
+## Migration Plan: iOS Frontend + Python Backend
+
+**Status**: Architecture review completed, migration plan ready for implementation
+
+### **Migration Rationale**
+Current Swift implementation is excellently architected but over-engineered for hobby project scope. Migration to Python backend provides:
+- **Better Maintainability**: Python ecosystem easier than complex Swift/iOS
+- **Universal Access**: Future web frontend expansion
+- **Simplified Deployment**: Standard web hosting vs App Store complexity  
+- **Preserved UI**: Keep polished SwiftUI interface
+
+### **Target Architecture**
+```
+iOS Frontend (Swift/SwiftUI) → HTTP API → Python Backend (FastAPI) → AI APIs
+```
+
+**Frontend (Keep in iOS)**:
+- SwiftUI views and UI components
+- User input handling and navigation  
+- HTTP client with simple models
+- Display formatting and animations
+
+**Backend (Move to Python)**:
+- All APUSHGraderCore business logic
+- AI service integrations (OpenAI/Anthropic)
+- Essay processing, validation, scoring
+- Prompt generation and response processing
+
+### **Migration Timeline**
+
+**Phase 1: Backend Foundation**
+- Python FastAPI project setup with models
+- Migrate core business logic from Swift
+- Comprehensive test suite (preserve 223 tests)
+- Health check and validation endpoints
+
+**Phase 2: API Development**  
+- REST API endpoints (`POST /grade`, `GET /health`)
+- AI service integration (OpenAI/Anthropic)
+- Error handling and retry logic
+- API documentation with OpenAPI/Swagger
+
+**Phase 3: iOS Migration**
+- Create HTTP client layer in iOS
+- Simplify models to DTOs only
+- Update ContentView and GradeResultsView
+- Remove APUSHGraderCore dependencies
+
+**Phase 4: Testing & Deployment**
+- End-to-end integration testing
+- Deploy to Railway hosting ($5-6/month)
+- User acceptance testing
+- Legacy code cleanup
+
+### **Technology Stack**
+- **Backend**: FastAPI + Pydantic + httpx
+- **Testing**: pytest + comprehensive test suite
+- **Deployment**: Railway hosting with automatic deployments
+- **Monitoring**: Sentry (free tier) + built-in platform monitoring
+- **Database**: Stateless initially, PostgreSQL if needed later
+
+### **API Contract**
+```json
+POST /api/v1/grade
+{
+  "essay_text": "string",
+  "essay_type": "DBQ|LEQ|SAQ", 
+  "prompt": "string"
+}
+
+Response: {
+  "score": 5, "max_score": 6,
+  "breakdown": {...}, "feedback": "...",
+  "suggestions": [...], "warnings": [...]
+}
+```
+
+
+### **Migration Commands**
+- **Python Backend**: `uvicorn main:app --reload` (development)
+- **Testing**: `pytest` (comprehensive test suite)
+- **Deployment**: Git push triggers auto-deploy to Railway
+- **iOS Changes**: Update imports, add NetworkService, simplify models
+
+### **Next Steps**
+1. **Phase 1A**: Set up Python FastAPI project structure
+2. **Phase 1B**: Migrate Swift models to Pydantic models  
+3. **Phase 1C**: Port essay processing business logic
+4. **Continue**: Follow timeline incrementally
+
+**Decision**: Migration recommended for better maintainability and future scalability while preserving excellent UI and business logic.
 
 ## Architecture Benefits
 - **Hybrid Structure**: Best of both worlds - SPM testing + iOS capabilities
 - **Clean Module Boundaries**: Business logic separate from UI layer
-- **Command Line Testing**: Can run `swift test` for rapid iteration
+- **Custom Test Framework**: Terminal-based testing with `swift run TestRunner` for rapid iteration
 - **iOS Development Preserved**: Xcode previews, App Store deployment, Info.plist
-- **Public API Design**: Forced clean interfaces between modules
+- **Public API Design**: Forced clean interfaces between modules, all business logic publicly testable
+- **Modular Testing**: Each test suite focuses on one source file for maintainability
 - **Single Responsibility**: Each file has one clear purpose  
-- **Testability**: Business logic can be unit tested independently
+- **Comprehensive Coverage**: 223 tests validating all core business logic
 - **Maintainability**: Easy to find and modify specific functionality
 - **Reusability**: UI components can be used across different views
-- **Scalability**: Easy to add new features without affecting existing code
+- **Scalability**: Easy to add new test suites and features without affecting existing code
 
 ## Common Issues
 - **SPM Access Control**: All types used by iOS app must be `public` in APUSHGraderCore
 - **Missing Initializers**: Add `public init(...)` for structs used in iOS app
+- **Testing Public APIs**: All classes intended for testing must be `public` (EssayValidator, TextAnalyzer, etc.)
 - Multi-line strings must start content on new line after `"""`
 - Info.plist conflicts: Use `GENERATE_INFOPLIST_FILE = NO`
 - Unicode characters in strings: Use escape sequences like `\u{201C}`
 - When adding new UI components, place them in APUSHGrader/Views/Components/
 - When adding new business logic, place them in APUSHGraderCore/Sources/APUSHGraderCore/
+- When adding new tests, create new test files in Sources/TestRunner/Tests/ and add to main.swift coordinator
