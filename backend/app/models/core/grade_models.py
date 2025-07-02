@@ -2,6 +2,7 @@
 
 from pydantic import BaseModel, computed_field
 from typing import List, Optional
+from enum import Enum
 
 
 class RubricItem(BaseModel):
@@ -97,3 +98,36 @@ class GradeResponse(BaseModel):
             return "Developing"
         else:
             return "Needs Improvement"
+
+
+class GradingError(Exception):
+    """Custom exception for grading errors"""
+    pass
+
+
+class GradingErrorType(str, Enum):
+    """Enumeration of grading error types"""
+    
+    INVALID_RESPONSE = "invalid_response"
+    INVALID_SCORE = "invalid_score" 
+    NETWORK_ERROR = "network_error"
+    API_KEY_MISSING = "api_key_missing"
+    RATE_LIMIT_EXCEEDED = "rate_limit_exceeded"
+    ESSAY_TOO_SHORT = "essay_too_short"
+    ESSAY_TOO_LONG = "essay_too_long"
+    PARSE_ERROR = "parse_error"
+    
+    @property
+    def description(self) -> str:
+        """Get error description"""
+        descriptions = {
+            "invalid_response": "Received invalid response from grading service",
+            "invalid_score": "Received invalid score from grading service",
+            "network_error": "Network error occurred",
+            "api_key_missing": "API key is missing. Please check your configuration",
+            "rate_limit_exceeded": "Rate limit exceeded. Please try again later",
+            "essay_too_short": "Essay is too short for accurate grading",
+            "essay_too_long": "Essay exceeds maximum length",
+            "parse_error": "Failed to parse response"
+        }
+        return descriptions[self.value]
