@@ -50,18 +50,33 @@ class APIError(ServiceError):
         self.provider = provider
 
 
-class RateLimitExceededError(APIError):
+class RateLimitExceededError(GradingError):
     """Rate limit exceeded error"""
     pass
 
 
-class NetworkError(APIError):
+class NetworkError(GradingError):
     """Network related error"""
     pass
 
 
-class ParseError(APIError):
+class ParseError(GradingError):
     """Response parsing error"""
+    pass
+
+
+class APIKeyMissingError(GradingError):
+    """API key missing error"""
+    pass
+
+
+class InvalidResponseError(GradingError):
+    """Invalid API response error"""
+    pass
+
+
+class InvalidScoreError(GradingError):
+    """Invalid score data error"""
     pass
 
 
