@@ -254,13 +254,13 @@ class TestGradingWorkflowIntegration:
     async def test_mock_ai_response_generation(self):
         """Test mock AI response generation for all essay types"""
         service_locator = get_service_locator()
-        api_coordinator = service_locator.get_api_coordinator()
+        ai_service = service_locator.get_ai_service()
         
         # Test each essay type's mock response
         essay_types = [EssayType.DBQ, EssayType.LEQ, EssayType.SAQ]
         
         for essay_type in essay_types:
-            mock_response = await api_coordinator._call_mock_ai_service(
+            mock_response = await ai_service.generate_response(
                 "System prompt", "User message", essay_type
             )
             
