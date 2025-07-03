@@ -7,7 +7,7 @@ Provides the main /api/v1/grade endpoint for iOS frontend integration.
 import time
 import logging
 from typing import Dict, Any
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Request
 from fastapi.responses import JSONResponse
 
 from app.models.requests.grading import (
@@ -23,9 +23,12 @@ from app.services.base.exceptions import (
 )
 from app.services.dependencies.service_locator import get_service_locator
 from app.api.deps import get_api_coordinator
+from app.middleware.rate_limiting import limiter
+from app.services.logging.structured_logger import get_logger, PerformanceTimer
 
 
 logger = logging.getLogger(__name__)
+structured_logger = get_logger(__name__)
 router = APIRouter(prefix="/api/v1", tags=["grading"])
 
 
@@ -35,6 +38,7 @@ router = APIRouter(prefix="/api/v1", tags=["grading"])
     responses={
         400: {"model": GradingErrorResponse, "description": "Validation Error"},
         422: {"model": GradingErrorResponse, "description": "Processing Error"},
+        429: {"description": "Rate limit exceeded"},
         500: {"model": GradingErrorResponse, "description": "Internal Server Error"}
     },
     summary="Grade an essay",
@@ -57,17 +61,25 @@ router = APIRouter(prefix="/api/v1", tags=["grading"])
     - Detailed breakdown by rubric sections
     - Specific feedback and suggestions
     - Essay metadata (word count, warnings, etc.)
+    
+    **Rate Limits:**
+    - 20 requests per minute
+    - 50 essays per hour
     """
 )
+@limiter.limit("20/minute")
+@limiter.limit("50/hour")
 async def grade_essay(
-    request: GradingRequest,
+    request: Request,
+    grading_request: GradingRequest,
     api_coordinator: APICoordinatorProtocol = Depends(get_api_coordinator)
 ) -> GradingResponse:
     """
     Grade an essay using the complete grading workflow.
     
     Args:
-        request: Grading request containing essay text, type, and prompt
+        request: FastAPI request object for rate limiting
+        grading_request: Grading request containing essay text, type, and prompt
         api_coordinator: Injected API coordinator service
         
     Returns:
@@ -79,15 +91,24 @@ async def grade_essay(
     start_time = time.time()
     
     try:
-        logger.info(f"Received grading request for {request.essay_type.value} essay")
-        logger.debug(f"Essay length: {len(request.essay_text)} characters")
-        
-        # Call the API coordinator to handle the complete workflow  
-        grade_response = await api_coordinator.grade_essay(
-            essay_text=request.essay_text,
-            essay_type=request.essay_type,
-            prompt=request.prompt
+        # Enhanced structured logging
+        structured_logger.info(
+            "Grading request received",
+            essay_type=grading_request.essay_type.value,
+            essay_length=len(grading_request.essay_text),
+            prompt_length=len(grading_request.prompt)
         )
+        
+        # Use performance timer for the grading workflow
+        with PerformanceTimer(structured_logger, "essay_grading_workflow", 
+                            essay_type=grading_request.essay_type.value):
+            
+            # Call the API coordinator to handle the complete workflow  
+            grade_response = await api_coordinator.grade_essay(
+                essay_text=grading_request.essay_text,
+                essay_type=grading_request.essay_type,
+                prompt=grading_request.prompt
+            )
         
         # Calculate processing time
         processing_time_ms = int((time.time() - start_time) * 1000)
@@ -97,48 +118,77 @@ async def grade_essay(
         # For now, using placeholder values - this will be refined in integration
         api_response = GradingResponse.from_grade_response(
             grade_response=grade_response,
-            word_count=len(request.essay_text.split()),  # Simple word count
-            paragraph_count=len([p for p in request.essay_text.split('\n\n') if p.strip()]),
+            word_count=len(grading_request.essay_text.split()),  # Simple word count
+            paragraph_count=len([p for p in grading_request.essay_text.split('\n\n') if p.strip()]),
             warnings=[],  # Will be populated from preprocessing result
             processing_time_ms=processing_time_ms
         )
         
-        logger.info(f"Essay graded successfully: {api_response.score}/{api_response.max_score} ({api_response.letter_grade})")
+        # Log successful grading with structured data
+        structured_logger.log_essay_grading(
+            essay_type=grading_request.essay_type.value,
+            word_count=api_response.word_count,
+            processing_time_ms=processing_time_ms,
+            score=api_response.score,
+            max_score=api_response.max_score
+        )
+        
         return api_response
         
     except ValidationError as e:
-        logger.warning(f"Validation error: {str(e)}")
+        structured_logger.log_error(
+            error_type="VALIDATION_ERROR",
+            error_message=str(e),
+            essay_type=grading_request.essay_type.value,
+            essay_length=len(grading_request.essay_text)
+        )
         error_response = GradingErrorResponse(
             error="VALIDATION_ERROR",
             message=str(e),
-            details={"essay_type": request.essay_type.value}
+            details={"essay_type": grading_request.essay_type.value}
         )
         raise HTTPException(status_code=400, detail=error_response.dict())
         
     except ProcessingError as e:
-        logger.error(f"Processing error: {str(e)}")
+        structured_logger.log_error(
+            error_type="PROCESSING_ERROR",
+            error_message=str(e),
+            essay_type=grading_request.essay_type.value,
+            essay_length=len(grading_request.essay_text)
+        )
         error_response = GradingErrorResponse(
             error="PROCESSING_ERROR", 
             message=str(e),
-            details={"essay_type": request.essay_type.value}
+            details={"essay_type": grading_request.essay_type.value}
         )
         raise HTTPException(status_code=422, detail=error_response.dict())
         
     except APIError as e:
-        logger.error(f"API error: {str(e)}")
+        structured_logger.log_error(
+            error_type="API_ERROR",
+            error_message=str(e),
+            essay_type=grading_request.essay_type.value,
+            essay_length=len(grading_request.essay_text)
+        )
         error_response = GradingErrorResponse(
             error="API_ERROR",
             message=str(e),
-            details={"essay_type": request.essay_type.value}
+            details={"essay_type": grading_request.essay_type.value}
         )
         raise HTTPException(status_code=500, detail=error_response.dict())
         
     except Exception as e:
-        logger.error(f"Unexpected error: {str(e)}", exc_info=True)
+        structured_logger.log_error(
+            error_type="INTERNAL_ERROR",
+            error_message=str(e),
+            essay_type=grading_request.essay_type.value,
+            essay_length=len(grading_request.essay_text),
+            unexpected=True
+        )
         error_response = GradingErrorResponse(
             error="INTERNAL_ERROR",
             message="An internal server error occurred",
-            details={"essay_type": request.essay_type.value}
+            details={"essay_type": grading_request.essay_type.value}
         )
         raise HTTPException(status_code=500, detail=error_response.dict())
 

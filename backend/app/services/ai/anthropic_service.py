@@ -5,6 +5,7 @@ Provides real AI grading responses using Anthropic's Claude API.
 """
 
 import logging
+import time
 from typing import Dict, Any
 
 from anthropic import Anthropic
@@ -12,9 +13,11 @@ from anthropic import Anthropic
 from app.models.core.essay_types import EssayType
 from app.services.ai.base import AIService
 from app.services.base.exceptions import ProcessingError, ValidationError
+from app.services.logging.structured_logger import get_logger
 
 
 logger = logging.getLogger(__name__)
+structured_logger = get_logger(__name__)
 
 
 class AnthropicService(AIService):
@@ -67,7 +70,15 @@ class AnthropicService(AIService):
             raise ValidationError("Anthropic client not initialized - check API key configuration")
         
         try:
-            logger.debug(f"Calling Anthropic API for {essay_type.value} essay")
+            structured_logger.info(
+                "Starting Anthropic API call",
+                essay_type=essay_type.value,
+                model="claude-3-5-sonnet-20241022",
+                max_tokens=1500,
+                temperature=0.3
+            )
+            
+            start_time = time.time()
             
             # Call Claude 3.5 Sonnet with system prompt and user message
             message = self.client.messages.create(
@@ -83,14 +94,38 @@ class AnthropicService(AIService):
                 ]
             )
             
+            # Calculate API call duration
+            api_duration_ms = (time.time() - start_time) * 1000
+            
             # Extract response content
             response_content = message.content[0].text
-            logger.debug(f"Received response from Anthropic API ({len(response_content)} characters)")
+            
+            # Log successful API call with structured data
+            structured_logger.log_ai_service_call(
+                service_type="anthropic",
+                duration_ms=api_duration_ms,
+                success=True,
+                essay_type=essay_type.value,
+                response_length=len(response_content),
+                model="claude-3-5-sonnet-20241022"
+            )
             
             return response_content
             
         except Exception as e:
-            logger.error(f"Anthropic API call failed: {e}")
+            # Calculate duration for failed call
+            api_duration_ms = (time.time() - start_time) * 1000 if 'start_time' in locals() else 0
+            
+            # Log failed API call
+            structured_logger.log_ai_service_call(
+                service_type="anthropic",
+                duration_ms=api_duration_ms,
+                success=False,
+                essay_type=essay_type.value,
+                error_message=str(e),
+                model="claude-3-5-sonnet-20241022"
+            )
+            
             raise ProcessingError(f"Anthropic AI service failed: {str(e)}")
     
     def _validate_configuration(self) -> None:
