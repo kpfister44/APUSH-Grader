@@ -103,12 +103,16 @@ The project uses a **hybrid architecture** with business logic in a Swift Packag
 ✅ Prompt input feature - users can enter the specific question/prompt
 ✅ UI flow: Essay Type → Prompt Input → Essay Text → Grade Button
 ✅ **Core business logic fully validated** - Essay processing, text analysis, grading calculations
+✅ **Python Backend Foundation Complete** - FastAPI server with models, services, and testing
+✅ **Phase 1C-1 Complete** - Service architecture and core processing services implemented
+✅ **Phase 1C-2 Complete** - AI response processing services with platform-agnostic design
+📋 **Phase 1C-3 Pending** - Prompt generation & complete API integration (GitHub Issue #5)
 ⚠️ **NOT YET TESTED** with actual AI APIs (OpenAI/Anthropic)
 ✅ Scrollable UI with detailed breakdown
 
 ## Migration Plan: iOS Frontend + Python Backend
 
-**Status**: Architecture review completed, migration plan ready for implementation
+**Status**: Phase 1C-2 complete, Phase 1C-3 (Prompt Generation & API Integration) needed before Phase 2
 
 ### **Migration Rationale**
 Current Swift implementation is excellently architected but over-engineered for hobby project scope. Migration to Python backend provides:
@@ -192,70 +196,10 @@ Response: {
 
 ## Migration Progress Status
 
-### **✅ Phase 1A: COMPLETED** - Python FastAPI Project Structure Setup
-**Status**: Successfully implemented and merged (PR #2, Commit: ab143ba)
-
-**Completed Deliverables**:
-- ✅ Complete FastAPI project structure (`/backend/` directory)
-- ✅ Core dependencies (FastAPI, Pydantic, uvicorn) + dev tools (pytest, black, mypy)
-- ✅ Configuration management with Pydantic Settings
-- ✅ Health check endpoint (`GET /health`, `GET /`) 
-- ✅ Basic data models (essay types, grade models)
-- ✅ Test suite with 3 passing tests
-- ✅ Development environment verified in PyCharm
-- ✅ API documentation with OpenAPI/Swagger
-
-**Verification Results**:
-- ✅ Server runs successfully: `uvicorn app.main:app --reload`
-- ✅ Health endpoint detects OpenAI API key configuration
-- ✅ Interactive docs available: http://localhost:8000/docs
-- ✅ All tests pass: `pytest tests/`
-
-**Phase 1A Commands**:
-```bash
-cd backend
-source venv/bin/activate
-uvicorn app.main:app --reload    # Start server
-pytest tests/                   # Run tests
-```
-
-### **✅ Phase 1B: COMPLETED** - Swift Models Migration to Python  
-**Status**: Successfully implemented and merged (Commit: ec33184)
-
-**Completed Deliverables**:
-- ✅ Enhanced **backend/app/models/core/grade_models.py** with GradingError and GradingErrorType enums
-- ✅ Created **backend/app/models/core/api_models.py** with complete API configuration system
-- ✅ Created **backend/app/models/processing/** directory with preprocessing models
-- ✅ Comprehensive test suite: **88 passing tests** covering all migrated Swift functionality
-- ✅ All @computed_field properties working correctly and matching Swift behavior exactly
-- ✅ Business rule validation identical to Swift implementation
-
-**Verification Results**:
-- ✅ Server runs successfully: `uvicorn app.main:app --reload`
-- ✅ Health endpoint working with API key detection
-- ✅ All tests pass: `pytest tests/` (88/88 tests passing)
-- ✅ Business logic validated: grade calculations, letter grades, performance levels match Swift
-
-**Swift Business Logic Successfully Preserved**:
-- ✅ **Grade calculations**: Percentage/letter grade mappings, performance levels (83.33% → "B" → "Proficient")
-- ✅ **API configurations**: Model selection (Claude 3.5 Sonnet), temperature (0.3), max tokens (1500)
-- ✅ **Preprocessing results**: Word counts, critical warnings ("too short"/"too long"), validation states
-- ✅ **All computed properties**: Swift `@computed` → Python `@computed_field` working perfectly
-
-**Phase 1B Success Criteria**: ✅ **ALL MET**
-- ✅ All Swift model functionality ported to Python
-- ✅ Computed properties working with `@computed_field` 
-- ✅ Model validation tests passing (88 comprehensive tests)
-- ✅ Type safety maintained with proper Pydantic validation
-- ✅ Business rule validation identical to Swift implementation
-
-### **📋 Phase 1C: NEXT PHASE** - Essay Processing Business Logic Migration
-**Status**: Ready for implementation
-
-**Objective**: Migrate Swift essay processing services (EssayValidator, TextAnalyzer, etc.) to Python while preserving all validation rules and text analysis capabilities.
+**See PLAN.md for detailed migration timeline, progress tracking, and implementation details.**
 
 ### **Development Environment Setup**
-For Phase 1C development:
+For Phase 1C-2 development:
 ```bash
 cd backend
 source venv/bin/activate              # Activate Python environment
@@ -290,3 +234,26 @@ pytest tests/ -v                      # Run tests with verbose output
 - When adding new UI components, place them in APUSHGrader/Views/Components/
 - When adding new business logic, place them in APUSHGraderCore/Sources/APUSHGraderCore/
 - When adding new tests, create new test files in Sources/TestRunner/Tests/ and add to main.swift coordinator
+
+## Python Backend Structure (Migration Target)
+
+### **backend/** - Python FastAPI Backend
+- **app/models/core/** - Core data models (Pydantic)
+  - **essay_types.py** - Essay type enum with scoring rules
+  - **grade_models.py** - Grade response and rubric structures  
+  - **api_models.py** - API configuration models
+- **app/models/processing/** - Processing data models
+  - **response.py** - Response processing models (ProcessedGradingResult, GradingInsight, ValidationResult)
+  - **display.py** - Platform-agnostic display models (DisplayColors, DisplayConstants)
+- **app/services/processing/essay/** - Essay processing services
+  - **processor.py, validator.py, analyzer.py, cleaner.py, warnings.py** - Core essay processing
+- **app/services/processing/response/** - Response processing services (Phase 1C-2)
+  - **processor.py** - Main response coordinator 
+  - **validator.py** - Score validation and consistency checks
+  - **insights.py** - Performance analysis and essay-specific tips
+  - **formatter.py** - Platform-agnostic markdown formatting
+  - **errors.py** - User-friendly error message mapping
+- **app/services/dependencies/** - Dependency injection
+  - **service_locator.py** - Service locator with protocol-based DI
+- **tests/** - Comprehensive Python test suite
+  - **tests/services/processing/response/** - 69 response processing tests (Phase 1C-2)

@@ -88,3 +88,8 @@ class ConfigurationError(ServiceError):
 class DependencyError(ServiceError):
     """Dependency injection errors"""
     pass
+
+
+# Generic aliases for common use cases
+ValidationError = EssayValidationError
+ProcessingError = GradingError

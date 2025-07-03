@@ -8,7 +8,8 @@ from app.services.dependencies.service_locator import get_service_locator, Servi
 from app.services.base.protocols import (
     EssayProcessorProtocol,
     EssayValidatorProtocol,
-    TextAnalyzerProtocol
+    TextAnalyzerProtocol,
+    APICoordinatorProtocol
 )
 
 
@@ -34,6 +35,10 @@ def get_essay_validator(locator: ServiceLocatorDep) -> EssayValidatorProtocol:
 def get_text_analyzer(locator: ServiceLocatorDep) -> TextAnalyzerProtocol:
     return locator.get(TextAnalyzerProtocol)
 
+def get_api_coordinator(locator: ServiceLocatorDep) -> APICoordinatorProtocol:
+    return locator.get(APICoordinatorProtocol)
+
 EssayProcessorDep = Annotated[EssayProcessorProtocol, Depends(get_essay_processor)]
 EssayValidatorDep = Annotated[EssayValidatorProtocol, Depends(get_essay_validator)]
 TextAnalyzerDep = Annotated[TextAnalyzerProtocol, Depends(get_text_analyzer)]
+APICoordinatorDep = Annotated[APICoordinatorProtocol, Depends(get_api_coordinator)]

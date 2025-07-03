@@ -3,7 +3,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config.settings import get_settings
-from app.api.routes import health
+from app.api.routes import health_router, grading_router
 
 # Get application settings
 settings = get_settings()
@@ -27,7 +27,8 @@ app.add_middleware(
 )
 
 # Include routers
-app.include_router(health.router, tags=["health"])
+app.include_router(health_router, tags=["health"])
+app.include_router(grading_router)
 
 
 @app.get("/")
