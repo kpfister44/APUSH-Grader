@@ -5,9 +5,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Project Overview
 APUSH Grader - Migrating from iOS SwiftUI app to **Python FastAPI backend + iOS frontend** architecture. Uses AI (OpenAI/Anthropic) to grade AP US History essays based on College Board rubrics.
 
+## Target Audience and Scope
+APUSH Grader is designed for a small handful of teacher to use it. Anywhere from 2-12 teachers. Prioritize simplicity over complexity whenever possible. Functionality is more important than comprehensiveness and minimize complexity wherever possible. This is NOT meant to be a full scale enterprise project that can support 1000's of users!
+
 ## Current Architecture Status
 **Phase 1 COMPLETE**: Python backend with comprehensive API and testing
-**Phase 2 READY**: Real AI service integration needed
+**Phase 2A COMPLETE**: Real Anthropic AI service integration implemented
+**Phase 2B READY**: Production configuration and error handling needed
 **Legacy**: Swift Package (APUSHGraderCore) will be replaced by Python backend
 
 ## Repository Structure
@@ -31,7 +35,7 @@ APUSH Grader - Migrating from iOS SwiftUI app to **Python FastAPI backend + iOS 
   - **integration/** - End-to-end workflow tests
   - **services/processing/prompt/** - Prompt generation tests
   - All other test suites for models and services
-- **requirements.txt** - Core dependencies (FastAPI, Pydantic, uvicorn)
+- **requirements.txt** - Core dependencies (FastAPI, Pydantic, uvicorn, anthropic)
 - **requirements-dev.txt** - Development tools (pytest, black, mypy)
 
 ### **APUSHGraderCore/** - Swift Package (LEGACY - Being Replaced)
@@ -120,22 +124,23 @@ pytest tests/ --tb=short              # Run with short traceback format
 - **Legacy iOS** - Still uses APUSHGraderCore locally, will migrate to HTTP API in Phase 3
 
 ### **🔧 Development Environment**
-- **API Keys**: Configured in backend environment for future real AI integration
-- **Mock Mode**: Currently using realistic mock AI responses for testing
+- **AI Service Configuration**: Switch between mock and real AI (see AI Configuration section below)
+- **API Keys**: Anthropic API key required for real AI integration
 - **Server**: `uvicorn app.main:app --reload` for development
 - **Testing**: `pytest tests/ -v` for comprehensive test suite
 
 ## Migration Progress
 
-**Current Status**: Phase 1 COMPLETE ✅ - Python backend ready for Phase 2 real AI integration
+**Current Status**: Phase 2A COMPLETE ✅ - Real Anthropic AI integration implemented
 
 ### **Target Architecture (ACHIEVED)**
 ```
-iOS Frontend (SwiftUI) → HTTP API → Python Backend (FastAPI) → Mock AI (Phase 1) / Real AI (Phase 2)
+iOS Frontend (SwiftUI) → HTTP API → Python Backend (FastAPI) → Mock AI / Real Anthropic AI (configurable)
 ```
 
 ### **Next Steps**
-- **Phase 2**: Replace mock AI responses with real OpenAI/Anthropic API integration
+- **Phase 2B**: Production configuration and error handling
+- **Phase 2C**: Testing and documentation updates
 - **Phase 3**: Migrate iOS frontend to use Python backend API  
 - **Phase 4**: Production deployment and monitoring
 
@@ -149,9 +154,46 @@ iOS Frontend (SwiftUI) → HTTP API → Python Backend (FastAPI) → Mock AI (Ph
 - **Maintainable Codebase**: Python ecosystem easier than complex Swift/iOS
 - **Scalable Design**: Easy to add new features without affecting existing components
 
+## AI Configuration
+
+### **Switching Between Mock and Real AI**
+
+The system supports two AI service modes that can be configured via environment variables:
+
+#### **Mock AI (Default - No API Key Required)**
+```bash
+# Default mode - uses realistic mock responses for testing
+AI_SERVICE_TYPE=mock
+```
+
+#### **Real Anthropic AI (Requires API Key)**
+```bash
+# Real AI mode - uses Claude 3.5 Sonnet for actual grading
+AI_SERVICE_TYPE=anthropic
+ANTHROPIC_API_KEY=your-actual-api-key-here
+```
+
+### **Environment Configuration**
+Create a `.env` file in the `/backend/` directory:
+```bash
+# For development with mock AI (default)
+AI_SERVICE_TYPE=mock
+
+# For production with real AI
+AI_SERVICE_TYPE=anthropic
+ANTHROPIC_API_KEY=sk-ant-api03-your-key-here
+```
+
+### **AI Service Features**
+- **Mock AI**: Provides consistent, realistic responses for all essay types (DBQ/LEQ/SAQ)
+- **Anthropic AI**: Uses Claude 3.5 Sonnet model with temperature=0.3, max_tokens=1500
+- **Seamless Switching**: Same API interface works with both mock and real AI
+- **Error Handling**: Graceful fallback and user-friendly error messages
+- **Testing**: All existing tests work with both AI service types
+
 ## Important Notes
 - **Primary Development**: Focus on Python backend in `/backend/` directory
-- **Mock AI Mode**: Currently using realistic mock responses (no external API calls)
+- **AI Configuration**: Use mock mode for development, real AI for production (see AI Configuration above)
 - **Testing**: Run `pytest tests/ -v` for comprehensive test suite
 - **API Documentation**: Available at http://localhost:8000/docs when server is running
 - **Legacy Swift**: APUSHGraderCore still functional but will be replaced by backend API
