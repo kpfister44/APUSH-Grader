@@ -1,7 +1,7 @@
 """Service interfaces and protocols for APUSH Grader"""
 
 from abc import ABC, abstractmethod
-from typing import Protocol, runtime_checkable, List
+from typing import Protocol, runtime_checkable, List, Any
 from app.models.core.essay_types import EssayType
 from app.models.core.grade_models import GradeResponse
 from app.models.processing.preprocessing import PreprocessingResult
@@ -124,6 +124,61 @@ class WarningGeneratorProtocol(Protocol):
     
     def get_max_word_count(self, essay_type: EssayType) -> int:
         """Get maximum word count for essay type"""
+        ...
+
+
+@runtime_checkable
+class PromptGeneratorProtocol(Protocol):
+    """Prompt generation service interface"""
+    
+    def generate_system_prompt(self, essay_type: EssayType) -> str:
+        """Generate system prompt with essay-specific grading instructions"""
+        ...
+    
+    def generate_user_message(
+        self,
+        essay_text: str,
+        essay_type: EssayType, 
+        prompt: str,
+        preprocessing_result: PreprocessingResult
+    ) -> str:
+        """Generate user message containing essay content and metadata"""
+        ...
+
+
+@runtime_checkable  
+class ResponseProcessorProtocol(Protocol):
+    """Response processing service interface"""
+    
+    def process_response(
+        self,
+        raw_response: str,
+        essay_type: EssayType,
+        preprocessing_result: PreprocessingResult
+    ) -> GradeResponse:
+        """Process AI response into structured grade response"""
+        ...
+    
+    def process_grading_response(
+        self,
+        response: GradeResponse,
+        essay_type: EssayType
+    ) -> Any:
+        """Process a grading response through validation, formatting, and insights"""
+        ...
+
+
+@runtime_checkable
+class APICoordinatorProtocol(Protocol):
+    """API coordination service interface"""
+    
+    async def grade_essay(
+        self,
+        essay_text: str,
+        essay_type: EssayType,
+        prompt: str
+    ) -> GradeResponse:
+        """Coordinate end-to-end essay grading workflow"""
         ...
 
 

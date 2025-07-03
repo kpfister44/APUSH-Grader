@@ -1,7 +1,7 @@
 """Grade models for APUSH essay grading"""
 
 from pydantic import BaseModel, computed_field
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 from enum import Enum
 
 
@@ -56,7 +56,7 @@ class GradeResponse(BaseModel):
     
     score: int
     max_score: int
-    breakdown: GradeBreakdown
+    breakdown: Dict[str, Any]  # Flexible structure for different essay types
     overall_feedback: str
     suggestions: List[str]
     warnings: Optional[List[str]] = None

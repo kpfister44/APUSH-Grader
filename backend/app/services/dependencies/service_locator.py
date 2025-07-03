@@ -140,6 +140,16 @@ class ServiceLocator:
         """Get error presentation service"""
         from app.services.processing.response import ErrorPresentationProtocol
         return self.get(ErrorPresentationProtocol)
+    
+    def get_prompt_generator(self):
+        """Get prompt generator service"""
+        from app.services.base.protocols import PromptGeneratorProtocol
+        return self.get(PromptGeneratorProtocol)
+    
+    def get_api_coordinator(self):
+        """Get API coordinator service"""
+        from app.services.base.protocols import APICoordinatorProtocol
+        return self.get(APICoordinatorProtocol)
 
 
 # Global service locator instance
@@ -170,7 +180,9 @@ def _configure_default_services(locator: ServiceLocator) -> None:
         EssayValidatorProtocol, 
         TextAnalyzerProtocol,
         TextCleanerProtocol,
-        WarningGeneratorProtocol
+        WarningGeneratorProtocol,
+        PromptGeneratorProtocol,
+        APICoordinatorProtocol
     )
     
     # Register essay processing services
@@ -217,6 +229,28 @@ def _configure_default_services(locator: ServiceLocator) -> None:
         # Services not yet implemented, will be registered when available
         import logging
         logging.getLogger(__name__).warning(f"Could not register response services: {e}")
+    
+    # Register prompt generation services
+    try:
+        from app.services.processing.prompt.generator import PromptGenerator
+        
+        locator.register_factory(PromptGeneratorProtocol, lambda s: PromptGenerator(s))
+        
+    except ImportError as e:
+        # Services not yet implemented, will be registered when available
+        import logging
+        logging.getLogger(__name__).warning(f"Could not register prompt services: {e}")
+    
+    # Register API coordination services
+    try:
+        from app.services.api.coordinator import APICoordinator
+        
+        locator.register_factory(APICoordinatorProtocol, lambda s: APICoordinator(s))
+        
+    except ImportError as e:
+        # Services not yet implemented, will be registered when available
+        import logging
+        logging.getLogger(__name__).warning(f"Could not register API services: {e}")
 
 
 # Service dependency helpers
