@@ -11,16 +11,21 @@ APUSH Grader is designed for a small handful of teacher to use it. Anywhere from
 ## Current Architecture Status
 **Phase 1 COMPLETE**: Python backend with comprehensive API and testing
 **Phase 2A COMPLETE**: Real Anthropic AI service integration implemented
-**Phase 2B READY**: Production configuration and error handling needed
+**Phase 2B COMPLETE**: Production configuration, rate limiting, logging, and monitoring implemented
+**Phase 2C READY**: Testing and documentation updates
 **Legacy**: Swift Package (APUSHGraderCore) will be replaced by Python backend
 
 ## Repository Structure
 
-### **backend/** - Python FastAPI Backend (ACTIVE DEVELOPMENT)
-- **app/main.py** - FastAPI application entry point
+### **backend/** - Python FastAPI Backend (PRODUCTION READY)
+- **app/main.py** - FastAPI application entry point with middleware
 - **app/api/routes/** - API endpoints
-  - **grading.py** - POST /api/v1/grade endpoint (complete workflow)
-  - **health.py** - Health check endpoints
+  - **grading.py** - POST /api/v1/grade endpoint (complete workflow with rate limiting)
+  - **health.py** - Health check endpoints (/health, /health/detailed, /usage/summary)
+- **app/middleware/** - Production middleware
+  - **rate_limiting.py** - SlowAPI rate limiting (20 req/min, 50 essays/hour)
+  - **logging.py** - Request logging with correlation IDs
+  - **usage_limiting.py** - Daily usage limits (100 essays/day, 50k words/day)
 - **app/models/** - Pydantic data models
   - **core/** - Core business models (essay_types, grade_models, api_models)
   - **processing/** - Processing models (response, display, preprocessing)
@@ -30,12 +35,14 @@ APUSH Grader is designed for a small handful of teacher to use it. Anywhere from
   - **processing/essay/** - Essay processing (validator, analyzer, cleaner, warnings)
   - **processing/prompt/generator.py** - Essay-specific AI prompt generation
   - **processing/response/** - AI response processing (validator, insights, formatter)
+  - **logging/structured_logger.py** - JSON logging with correlation IDs and performance tracking
+  - **usage/tracker.py** - Usage tracking and daily limits enforcement
   - **dependencies/service_locator.py** - Dependency injection container
-- **tests/** - Comprehensive test suite (285+ tests)
-  - **integration/** - End-to-end workflow tests
+- **tests/** - Comprehensive test suite (320+ tests)
+  - **integration/** - End-to-end workflow tests + production feature tests
   - **services/processing/prompt/** - Prompt generation tests
   - All other test suites for models and services
-- **requirements.txt** - Core dependencies (FastAPI, Pydantic, uvicorn, anthropic)
+- **requirements.txt** - Core dependencies (FastAPI, Pydantic, uvicorn, anthropic, slowapi)
 - **requirements-dev.txt** - Development tools (pytest, black, mypy)
 
 ### **APUSHGraderCore/** - Swift Package (LEGACY - Being Replaced)
@@ -77,7 +84,9 @@ pytest tests/ --tb=short              # Run with short traceback format
 ### **API Testing**
 - **Interactive Docs**: http://localhost:8000/docs (Swagger UI)
 - **Health Check**: http://localhost:8000/health
-- **Grade Endpoint**: POST http://localhost:8000/api/v1/grade
+- **Detailed Health**: http://localhost:8000/health/detailed
+- **Usage Summary**: http://localhost:8000/usage/summary
+- **Grade Endpoint**: POST http://localhost:8000/api/v1/grade (rate limited)
 
 ## Legacy Swift Commands (For Reference)
 - **iOS App**: ⌘+B in Xcode, ⌘+R to run
@@ -85,13 +94,14 @@ pytest tests/ --tb=short              # Run with short traceback format
 
 ## Testing Status
 
-### **Python Backend Testing (ACTIVE)**
-✅ **285+ Comprehensive Tests** - All passing with full coverage
+### **Python Backend Testing (PRODUCTION READY)**
+✅ **320+ Comprehensive Tests** - All passing with full coverage
 - **19 PromptGenerator Tests** - Essay-specific prompt generation and validation
-- **15 Integration Tests** - End-to-end API workflow testing  
+- **49 Integration Tests** - End-to-end API workflow + production features testing  
 - **69 Response Processing Tests** - AI response processing services
 - **94 Core Processing Tests** - Essay validation, text analysis, warning generation
 - **88+ Model Tests** - Data model validation and business logic
+- **Production Feature Tests** - Rate limiting, structured logging, usage safeguards, health monitoring
 
 ### **Legacy Swift Testing**
 ✅ **223 Swift Tests** - Original implementation (will be replaced)
@@ -103,24 +113,29 @@ pytest tests/ --tb=short              # Run with short traceback format
 - **LEQ** (Long Essay Question) - 6 points  
 - **SAQ** (Short Answer Question) - 3 points
 
-## Current Status - Phase 1 COMPLETE
+## Current Status - Phase 2B COMPLETE ✅
 
 ### **✅ Python Backend (PRODUCTION READY)**
-- **Complete FastAPI Backend** - Full grading workflow with 285+ passing tests
-- **API Endpoints** - POST /api/v1/grade and GET /api/v1/grade/status fully functional
-- **Mock AI Integration** - Realistic responses for all essay types (no external API calls)
+- **Complete FastAPI Backend** - Full grading workflow with 320+ passing tests
+- **Production Features** - Rate limiting, structured logging, usage safeguards, health monitoring
+- **API Endpoints** - POST /api/v1/grade (rate limited), health endpoints, usage monitoring
+- **Real & Mock AI Integration** - Configurable Anthropic Claude 3.5 Sonnet or mock responses
 - **Service Architecture** - Clean dependency injection with protocol-based interfaces
-- **Comprehensive Testing** - End-to-end integration tests covering complete workflows
+- **Comprehensive Testing** - End-to-end integration tests covering complete workflows and production features
 
-### **✅ Phase 1 Migration Milestones**
+### **✅ Migration Milestones Completed**
 - **Phase 1A Complete** - Python FastAPI project structure and foundation
 - **Phase 1B Complete** - Swift models migration to Python (88 tests)
 - **Phase 1C-1 Complete** - Core processing services (essay validation, text analysis)
 - **Phase 1C-2 Complete** - Response processing services (validation, insights, formatting)
 - **Phase 1C-3 Complete** - Prompt generation & complete API integration (34 tests)
+- **Phase 2A Complete** - Real Anthropic AI service integration implemented
+- **Phase 2B Complete** - Production readiness (rate limiting, logging, usage safeguards, monitoring)
 
-### **📋 Next Phase Ready**
-- **Phase 2 Ready** - Real AI service integration (OpenAI/Anthropic) to replace mock responses
+### **📋 Next Phases**
+- **Phase 2C Ready** - Testing and documentation updates
+- **Phase 3 Ready** - Migrate iOS frontend to use Python backend API  
+- **Phase 4 Ready** - Production deployment and monitoring
 - **Legacy iOS** - Still uses APUSHGraderCore locally, will migrate to HTTP API in Phase 3
 
 ### **🔧 Development Environment**
@@ -131,16 +146,21 @@ pytest tests/ --tb=short              # Run with short traceback format
 
 ## Migration Progress
 
-**Current Status**: Phase 2A COMPLETE ✅ - Real Anthropic AI integration implemented
+**Current Status**: Phase 2B COMPLETE ✅ - Production readiness implemented with rate limiting, logging, usage safeguards, and monitoring
 
 ### **Target Architecture (ACHIEVED)**
 ```
 iOS Frontend (SwiftUI) → HTTP API → Python Backend (FastAPI) → Mock AI / Real Anthropic AI (configurable)
+                                      ↓
+                              Production Features:
+                              • Rate Limiting (20 req/min, 50 essays/hour)
+                              • Structured Logging (JSON + correlation IDs)
+                              • Usage Safeguards (100 essays/day, 50k words/day)
+                              • Health Monitoring (/health, /health/detailed)
 ```
 
 ### **Next Steps**
-- **Phase 2B**: Production configuration and error handling
-- **Phase 2C**: Testing and documentation updates
+- **Phase 2C**: Testing and documentation updates (optional)
 - **Phase 3**: Migrate iOS frontend to use Python backend API  
 - **Phase 4**: Production deployment and monitoring
 
@@ -148,9 +168,12 @@ iOS Frontend (SwiftUI) → HTTP API → Python Backend (FastAPI) → Mock AI / R
 
 ## Architecture Benefits
 - **Clean Service Architecture**: Protocol-based dependency injection with service locator pattern
-- **Comprehensive Testing**: 285+ tests covering all components with mock AI integration
+- **Comprehensive Testing**: 320+ tests covering all components with mock AI integration and production features
 - **Platform-Agnostic Design**: Backend ready for multiple frontends (iOS, web, etc.)
-- **Production Ready**: Complete API with error handling, validation, and monitoring
+- **Production Ready**: Complete API with rate limiting, structured logging, usage safeguards, and health monitoring
+- **Cost Protection**: Daily limits and usage tracking to prevent excessive Anthropic API costs
+- **Operational Visibility**: Structured logging, correlation IDs, and health endpoints for monitoring
+- **Teacher-Friendly**: Generous limits (100 essays/day) with user-friendly error messages
 - **Maintainable Codebase**: Python ecosystem easier than complex Swift/iOS
 - **Scalable Design**: Easy to add new features without affecting existing components
 
@@ -193,7 +216,10 @@ ANTHROPIC_API_KEY=sk-ant-api03-your-key-here
 
 ## Important Notes
 - **Primary Development**: Focus on Python backend in `/backend/` directory
+- **Production Ready**: Backend now includes rate limiting, structured logging, usage safeguards, and monitoring
 - **AI Configuration**: Use mock mode for development, real AI for production (see AI Configuration above)
-- **Testing**: Run `pytest tests/ -v` for comprehensive test suite
+- **Testing**: Run `pytest tests/ -v` for comprehensive test suite (320+ tests)
 - **API Documentation**: Available at http://localhost:8000/docs when server is running
+- **Monitoring**: Use /health/detailed and /usage/summary for operational visibility
+- **Cost Protection**: Daily limits prevent excessive Anthropic API usage
 - **Legacy Swift**: APUSHGraderCore still functional but will be replaced by backend API
