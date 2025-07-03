@@ -4,9 +4,7 @@ API coordinator for end-to-end essay grading workflow.
 Orchestrates the complete pipeline: preprocessing → prompt generation → AI grading → response processing.
 """
 
-import json
 import logging
-from typing import Dict, Any
 
 from app.models.core.essay_types import EssayType
 from app.models.core.grade_models import GradeResponse
@@ -82,9 +80,10 @@ class APICoordinator(BaseService, APICoordinatorProtocol):
                 essay_text, essay_type, prompt, preprocessing_result
             )
             
-            # Step 3: Call mock AI service (Phase 1C-3 uses mock, Phase 2 will use real AI)
-            logger.debug("Step 3: Calling AI grading service (mock)")
-            raw_ai_response = await self._call_mock_ai_service(
+            # Step 3: Call AI service (configurable: mock or real AI)
+            logger.debug("Step 3: Calling AI grading service")
+            ai_service = self._service_locator.get_ai_service()
+            raw_ai_response = await ai_service.generate_response(
                 system_prompt, user_message, essay_type
             )
             
@@ -108,143 +107,6 @@ class APICoordinator(BaseService, APICoordinatorProtocol):
             logger.error(f"Unexpected error in grading workflow: {e}")
             raise APIError(f"Grading workflow failed: {str(e)}")
     
-    async def _call_mock_ai_service(
-        self, 
-        system_prompt: str,
-        user_message: str,
-        essay_type: EssayType
-    ) -> str:
-        """
-        Mock AI service call for Phase 1C-3 testing.
-        
-        In Phase 2, this will be replaced with real OpenAI/Anthropic API calls.
-        Returns realistic mock responses that match the expected JSON structure.
-        
-        Args:
-            system_prompt: AI system prompt with grading instructions
-            user_message: User message with essay content
-            essay_type: Essay type for appropriate mock response
-            
-        Returns:
-            Mock AI response in expected JSON format
-        """
-        logger.debug(f"Generating mock AI response for {essay_type.value}")
-        
-        # Generate mock response based on essay type
-        if essay_type == EssayType.DBQ:
-            mock_response = self._generate_mock_dbq_response()
-        elif essay_type == EssayType.LEQ:
-            mock_response = self._generate_mock_leq_response()
-        elif essay_type == EssayType.SAQ:
-            mock_response = self._generate_mock_saq_response()
-        else:
-            raise ProcessingError(f"Unknown essay type for mock response: {essay_type}")
-        
-        # Simulate AI processing delay
-        import asyncio
-        await asyncio.sleep(0.1)
-        
-        return json.dumps(mock_response, indent=2)
-    
-    def _generate_mock_dbq_response(self) -> Dict[str, Any]:
-        """Generate realistic mock DBQ response."""
-        return {
-            "score": 4,
-            "maxScore": 6,
-            "breakdown": {
-                "thesis": {
-                    "score": 1,
-                    "maxScore": 1,
-                    "feedback": "Clear thesis with line of reasoning addressing the prompt."
-                },
-                "contextualization": {
-                    "score": 0,
-                    "maxScore": 1,
-                    "feedback": "Limited contextualization. Need broader historical context."
-                },
-                "evidence": {
-                    "score": 2,
-                    "maxScore": 2,
-                    "feedback": "Good use of documents and outside evidence to support argument."
-                },
-                "analysis": {
-                    "score": 1,
-                    "maxScore": 2,
-                    "feedback": "Some document analysis present but lacks complexity."
-                }
-            },
-            "overallFeedback": "Solid essay with clear thesis and good evidence use. Strengthen contextualization and add more sophisticated analysis for higher score.",
-            "suggestions": [
-                "Provide broader historical context in introduction",
-                "Analyze document perspective and purpose more thoroughly",
-                "Connect evidence to argument more explicitly"
-            ]
-        }
-    
-    def _generate_mock_leq_response(self) -> Dict[str, Any]:
-        """Generate realistic mock LEQ response."""
-        return {
-            "score": 5,
-            "maxScore": 6,
-            "breakdown": {
-                "thesis": {
-                    "score": 1,
-                    "maxScore": 1,
-                    "feedback": "Strong thesis addressing all parts of the prompt."
-                },
-                "contextualization": {
-                    "score": 1,
-                    "maxScore": 1,
-                    "feedback": "Good contextualization situating argument in broader context."
-                },
-                "evidence": {
-                    "score": 2,
-                    "maxScore": 2,
-                    "feedback": "Excellent use of specific historical examples."
-                },
-                "analysis": {
-                    "score": 1,
-                    "maxScore": 2,
-                    "feedback": "Good historical reasoning but could demonstrate more complexity."
-                }
-            },
-            "overallFeedback": "Very strong essay with clear argument and excellent evidence. Minor improvements in analysis complexity needed for top score.",
-            "suggestions": [
-                "Add more sophisticated historical reasoning",
-                "Consider multiple perspectives on the topic",
-                "Strengthen conclusion with broader implications"
-            ]
-        }
-    
-    def _generate_mock_saq_response(self) -> Dict[str, Any]:
-        """Generate realistic mock SAQ response."""
-        return {
-            "score": 2,
-            "maxScore": 3,
-            "breakdown": {
-                "partA": {
-                    "score": 1,
-                    "maxScore": 1,
-                    "feedback": "Correctly identifies the historical development."
-                },
-                "partB": {
-                    "score": 1,
-                    "maxScore": 1,
-                    "feedback": "Good explanation with supporting evidence."
-                },
-                "partC": {
-                    "score": 0,
-                    "maxScore": 1,
-                    "feedback": "Explanation lacks sufficient detail about significance."
-                }
-            },
-            "overallFeedback": "Good responses to parts A and B. Part C needs more detailed explanation of significance.",
-            "suggestions": [
-                "Provide more specific details in part C",
-                "Explain the broader historical significance",
-                "Connect to larger historical themes"
-            ]
-        }
     
     def _validate_configuration(self) -> None:
         """Validate service configuration and dependencies."""

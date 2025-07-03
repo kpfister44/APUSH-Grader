@@ -150,6 +150,11 @@ class ServiceLocator:
         """Get API coordinator service"""
         from app.services.base.protocols import APICoordinatorProtocol
         return self.get(APICoordinatorProtocol)
+    
+    def get_ai_service(self):
+        """Get AI service"""
+        from app.services.ai.base import AIService
+        return self.get(AIService)
 
 
 # Global service locator instance
@@ -251,6 +256,18 @@ def _configure_default_services(locator: ServiceLocator) -> None:
         # Services not yet implemented, will be registered when available
         import logging
         logging.getLogger(__name__).warning(f"Could not register API services: {e}")
+    
+    # Register AI services
+    try:
+        from app.services.ai.base import AIService
+        from app.services.ai.factory import create_ai_service
+        
+        locator.register_factory(AIService, lambda s: create_ai_service(s))
+        
+    except ImportError as e:
+        # Services not yet implemented, will be registered when available
+        import logging
+        logging.getLogger(__name__).warning(f"Could not register AI services: {e}")
 
 
 # Service dependency helpers

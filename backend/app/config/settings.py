@@ -18,7 +18,8 @@ class Settings(BaseSettings):
     api_host: str = Field(default="0.0.0.0")
     api_port: int = Field(default=8000)
     
-    # AI Service API Keys
+    # AI Service Configuration
+    ai_service_type: str = Field(default="mock")  # "mock" or "anthropic"
     openai_api_key: str = Field(default="")
     anthropic_api_key: str = Field(default="")
     
