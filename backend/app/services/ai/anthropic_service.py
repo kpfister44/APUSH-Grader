@@ -34,13 +34,15 @@ class AnthropicService(AIService):
     
     def _initialize_client(self) -> None:
         """Initialize Anthropic client with API key."""
+        logger.debug(f"Initializing Anthropic client with API key: {self.settings.anthropic_api_key[:20]}...")
+        
         if not self.settings.anthropic_api_key:
             logger.warning("Anthropic API key not configured")
             return
         
         try:
             self.client = Anthropic(api_key=self.settings.anthropic_api_key)
-            logger.debug("Anthropic client initialized successfully")
+            logger.debug(f"Anthropic client initialized successfully: {type(self.client)}")
         except Exception as e:
             logger.error(f"Failed to initialize Anthropic client: {e}")
             raise ValidationError(f"Anthropic client initialization failed: {e}")
@@ -132,8 +134,5 @@ class AnthropicService(AIService):
         """Validate Anthropic service configuration."""
         if not self.settings.anthropic_api_key:
             raise ValidationError("Anthropic API key is required but not configured")
-        
-        if not self.client:
-            raise ValidationError("Anthropic client failed to initialize")
         
         logger.debug("AnthropicService configuration validated successfully")

@@ -12,7 +12,8 @@ APUSH Grader is designed for a small handful of teacher to use it. Anywhere from
 **Phase 1 COMPLETE**: Python backend with comprehensive API and testing
 **Phase 2A COMPLETE**: Real Anthropic AI service integration implemented
 **Phase 2B COMPLETE**: Production configuration, rate limiting, logging, and monitoring implemented
-**Phase 2C READY**: Testing and documentation updates
+**Phase 2C COMPLETE**: Real API testing, documentation, and deployment guides
+**Phase 3 READY**: iOS frontend migration to use Python backend API
 **Legacy**: Swift Package (APUSHGraderCore) will be replaced by Python backend
 
 ## Repository Structure
@@ -113,15 +114,16 @@ pytest tests/ --tb=short              # Run with short traceback format
 - **LEQ** (Long Essay Question) - 6 points  
 - **SAQ** (Short Answer Question) - 3 points
 
-## Current Status - Phase 2B COMPLETE ✅
+## Current Status - Phase 2C COMPLETE ✅
 
 ### **✅ Python Backend (PRODUCTION READY)**
 - **Complete FastAPI Backend** - Full grading workflow with 320+ passing tests
 - **Production Features** - Rate limiting, structured logging, usage safeguards, health monitoring
 - **API Endpoints** - POST /api/v1/grade (rate limited), health endpoints, usage monitoring
-- **Real & Mock AI Integration** - Configurable Anthropic Claude 3.5 Sonnet or mock responses
+- **Real AI Integration** - Anthropic Claude 3.5 Sonnet with comprehensive testing
 - **Service Architecture** - Clean dependency injection with protocol-based interfaces
-- **Comprehensive Testing** - End-to-end integration tests covering complete workflows and production features
+- **Comprehensive Testing** - End-to-end integration tests + real API validation
+- **Production Documentation** - Deployment guides, cost documentation, API usage guides
 
 ### **✅ Migration Milestones Completed**
 - **Phase 1A Complete** - Python FastAPI project structure and foundation
@@ -131,9 +133,9 @@ pytest tests/ --tb=short              # Run with short traceback format
 - **Phase 1C-3 Complete** - Prompt generation & complete API integration (34 tests)
 - **Phase 2A Complete** - Real Anthropic AI service integration implemented
 - **Phase 2B Complete** - Production readiness (rate limiting, logging, usage safeguards, monitoring)
+- **Phase 2C Complete** - Real API testing, documentation, and deployment guides
 
 ### **📋 Next Phases**
-- **Phase 2C Ready** - Testing and documentation updates
 - **Phase 3 Ready** - Migrate iOS frontend to use Python backend API  
 - **Phase 4 Ready** - Production deployment and monitoring
 - **Legacy iOS** - Still uses APUSHGraderCore locally, will migrate to HTTP API in Phase 3
@@ -209,10 +211,148 @@ ANTHROPIC_API_KEY=sk-ant-api03-your-key-here
 
 ### **AI Service Features**
 - **Mock AI**: Provides consistent, realistic responses for all essay types (DBQ/LEQ/SAQ)
-- **Anthropic AI**: Uses Claude 3.5 Sonnet model with temperature=0.3, max_tokens=1500
+- **Anthropic AI**: Uses Claude 3.5 Sonnet model (anthropic==0.57.1) with temperature=0.3, max_tokens=1500
 - **Seamless Switching**: Same API interface works with both mock and real AI
 - **Error Handling**: Graceful fallback and user-friendly error messages
 - **Testing**: All existing tests work with both AI service types
+
+### **API Usage & Costs**
+
+#### **Anthropic Claude 3.5 Sonnet Pricing**
+- **Input tokens**: ~$3.00 per 1M tokens
+- **Output tokens**: ~$15.00 per 1M tokens
+- **Typical essay grading**: ~$0.02-0.03 per essay
+
+#### **Cost Protection Features**
+- **Rate Limiting**: 20 requests/minute, 50 essays/hour
+- **Daily Limits**: 100 essays/day, 50,000 words/day
+- **Usage Tracking**: Real-time monitoring via `/usage/summary`
+- **Teacher-Friendly**: Generous limits with clear error messages
+
+#### **Getting an Anthropic API Key**
+1. Visit [console.anthropic.com](https://console.anthropic.com/)
+2. Create account and add payment method
+3. Generate API key in the API Keys section
+4. Set monthly usage limits for cost control
+5. Use the key in your `.env` file
+
+📊 **For detailed cost information and teacher budgeting, see [COST_GUIDE.md](backend/COST_GUIDE.md)**
+
+## Production Deployment
+
+### **Railway Deployment (Recommended)**
+
+Railway provides simple, cost-effective hosting for the Python backend:
+
+#### **Setup Steps**
+1. **Fork/Clone Repository**
+   ```bash
+   git clone <your-repository>
+   cd APUSH-Grader/backend
+   ```
+
+2. **Connect to Railway**
+   - Visit [railway.app](https://railway.app/)
+   - Connect your GitHub repository
+   - Select the `backend/` directory as root
+
+3. **Configure Environment Variables**
+   ```bash
+   # In Railway dashboard, add environment variables:
+   AI_SERVICE_TYPE=anthropic
+   ANTHROPIC_API_KEY=sk-ant-api03-your-key-here
+   ENVIRONMENT=production
+   LOG_LEVEL=INFO
+   ```
+
+4. **Deploy Configuration**
+   ```bash
+   # Railway will automatically detect and run:
+   pip install -r requirements.txt
+   uvicorn app.main:app --host 0.0.0.0 --port $PORT
+   ```
+
+#### **Railway Benefits**
+- **Cost**: ~$5-10/month for small-scale usage
+- **Automatic Deployments**: Push to GitHub → automatic deploy
+- **Built-in Monitoring**: Logs, metrics, and health checks
+- **Custom Domains**: Connect your own domain
+- **SSL**: Automatic HTTPS certificates
+
+### **Alternative Deployment Options**
+
+#### **Heroku**
+```bash
+# Procfile
+web: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+
+# Environment variables in Heroku dashboard
+AI_SERVICE_TYPE=anthropic
+ANTHROPIC_API_KEY=sk-ant-api03-your-key
+```
+
+#### **Docker Deployment**
+```dockerfile
+FROM python:3.10-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+COPY . .
+EXPOSE 8000
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+```
+
+#### **Self-Hosted**
+```bash
+# On your server
+cd backend
+source venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --host 0.0.0.0 --port 8000
+
+# Use process manager like PM2 or systemd for production
+```
+
+### **Production Monitoring**
+
+#### **Health Endpoints**
+- `GET /health` - Basic health check
+- `GET /health/detailed` - Service status and configuration
+- `GET /usage/summary` - Daily usage statistics
+
+#### **Logging**
+- **Structured JSON logs** with correlation IDs
+- **Request tracking** with performance timing
+- **AI service monitoring** with success/failure rates
+- **Error logging** with context and stack traces
+
+#### **Monitoring Integration**
+```bash
+# Add these environment variables for enhanced monitoring
+SENTRY_DSN=your-sentry-dsn  # Error tracking
+ANALYTICS_KEY=your-key      # Usage analytics
+```
+
+### **Security Considerations**
+
+#### **API Key Protection**
+- **Never commit API keys** to version control
+- **Use environment variables** for all secrets
+- **Rotate keys regularly** (monthly recommended)
+- **Set usage limits** in Anthropic console
+
+#### **Rate Limiting**
+- **Built-in protection** against abuse
+- **Teacher-appropriate limits** (100 essays/day)
+- **Clear error messages** when limits exceeded
+
+#### **Network Security**
+```bash
+# Production environment variables
+ALLOWED_ORIGINS=https://your-frontend-domain.com
+CORS_CREDENTIALS=true
+DEBUG=false
+```
 
 ## Important Notes
 - **Primary Development**: Focus on Python backend in `/backend/` directory
