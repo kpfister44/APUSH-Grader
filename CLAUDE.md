@@ -13,8 +13,8 @@ APUSH Grader is designed for a small handful of teacher to use it. Anywhere from
 **Phase 2A COMPLETE**: Real Anthropic AI service integration implemented
 **Phase 2B COMPLETE**: Production configuration, rate limiting, logging, and monitoring implemented
 **Phase 2C COMPLETE**: Real API testing, documentation, and deployment guides
-**Phase 3 READY**: iOS frontend migration to use Python backend API
-**Legacy**: Swift Package (APUSHGraderCore) will be replaced by Python backend
+**Phase 3 COMPLETE**: iOS frontend migration to Python backend API - APUSHGraderCore replaced
+**Phase 4 READY**: Production deployment and monitoring
 
 ## Repository Structure
 
@@ -46,13 +46,11 @@ APUSH Grader is designed for a small handful of teacher to use it. Anywhere from
 - **requirements.txt** - Core dependencies (FastAPI, Pydantic, uvicorn, anthropic, slowapi)
 - **requirements-dev.txt** - Development tools (pytest, black, mypy)
 
-### **APUSHGraderCore/** - Swift Package (LEGACY - Being Replaced)
-- Complete Swift implementation with 223 tests
-- Will be replaced by Python backend in Phase 3
-
-### **APUSHGrader/** - iOS App (UI Layer - Future API Integration)
-- Current: Uses APUSHGraderCore locally  
-- Future: Will use Python backend via HTTP API
+### **APUSHGrader/** - iOS App (UI Layer - API Integration Complete)
+- **Models/** - Simple API DTOs matching Python backend
+- **Services/NetworkService.swift** - HTTP client for Python backend API
+- **Views/** - SwiftUI interface using API responses
+- **Current**: Uses Python backend via HTTP API (localhost:8000)
 
 ## Python Backend Commands
 
@@ -89,9 +87,10 @@ pytest tests/ --tb=short              # Run with short traceback format
 - **Usage Summary**: http://localhost:8000/usage/summary
 - **Grade Endpoint**: POST http://localhost:8000/api/v1/grade (rate limited)
 
-## Legacy Swift Commands (For Reference)
-- **iOS App**: ⌘+B in Xcode, ⌘+R to run
-- **Swift Package Testing**: `swift run TestRunner` (from APUSHGraderCore/)
+## iOS App Commands
+- **iOS App**: ⌘+B in Xcode to build, ⌘+R to run
+- **Testing**: Use SwiftUI previews for quick API testing (calls real backend)
+- **Backend Required**: Ensure Python backend is running on localhost:8000
 
 ## Testing Status
 
@@ -104,17 +103,18 @@ pytest tests/ --tb=short              # Run with short traceback format
 - **88+ Model Tests** - Data model validation and business logic
 - **Production Feature Tests** - Rate limiting, structured logging, usage safeguards, health monitoring
 
-### **Legacy Swift Testing**
-✅ **223 Swift Tests** - Original implementation (will be replaced)
-- Custom TestRunner framework with modular organization
-- All Swift business logic successfully migrated to Python
+### **iOS App Testing**
+✅ **SwiftUI Integration** - iOS app successfully connects to Python backend
+- NetworkService handles HTTP API communication
+- Real-time testing possible via SwiftUI previews
+- All business logic now handled by Python backend API
 
 ## Essay Types Supported
 - **DBQ** (Document-Based Question) - 6 points
 - **LEQ** (Long Essay Question) - 6 points  
 - **SAQ** (Short Answer Question) - 3 points
 
-## Current Status - Phase 2C COMPLETE ✅
+## Current Status - Phase 3 COMPLETE ✅
 
 ### **✅ Python Backend (PRODUCTION READY)**
 - **Complete FastAPI Backend** - Full grading workflow with 320+ passing tests
@@ -134,11 +134,11 @@ pytest tests/ --tb=short              # Run with short traceback format
 - **Phase 2A Complete** - Real Anthropic AI service integration implemented
 - **Phase 2B Complete** - Production readiness (rate limiting, logging, usage safeguards, monitoring)
 - **Phase 2C Complete** - Real API testing, documentation, and deployment guides
+- **Phase 3 Complete** - iOS frontend migration to Python backend API, APUSHGraderCore removed
 
 ### **📋 Next Phases**
-- **Phase 3 Ready** - Migrate iOS frontend to use Python backend API  
 - **Phase 4 Ready** - Production deployment and monitoring
-- **Legacy iOS** - Still uses APUSHGraderCore locally, will migrate to HTTP API in Phase 3
+- **Future Enhancements** - Web frontend, additional features, optimizations
 
 ### **🔧 Development Environment**
 - **AI Service Configuration**: Switch between mock and real AI (see AI Configuration section below)
@@ -148,7 +148,7 @@ pytest tests/ --tb=short              # Run with short traceback format
 
 ## Migration Progress
 
-**Current Status**: Phase 2B COMPLETE ✅ - Production readiness implemented with rate limiting, logging, usage safeguards, and monitoring
+**Current Status**: Phase 3 COMPLETE ✅ - iOS frontend successfully migrated to Python backend API
 
 ### **Target Architecture (ACHIEVED)**
 ```
@@ -162,9 +162,8 @@ iOS Frontend (SwiftUI) → HTTP API → Python Backend (FastAPI) → Mock AI / R
 ```
 
 ### **Next Steps**
-- **Phase 2C**: Testing and documentation updates (optional)
-- **Phase 3**: Migrate iOS frontend to use Python backend API  
 - **Phase 4**: Production deployment and monitoring
+- **Future**: Web frontend expansion, additional features
 
 **See PLAN.md for detailed migration timeline and implementation details.**
 
@@ -362,4 +361,4 @@ DEBUG=false
 - **API Documentation**: Available at http://localhost:8000/docs when server is running
 - **Monitoring**: Use /health/detailed and /usage/summary for operational visibility
 - **Cost Protection**: Daily limits prevent excessive Anthropic API usage
-- **Legacy Swift**: APUSHGraderCore still functional but will be replaced by backend API
+- **Clean Architecture**: APUSHGraderCore completely removed, Python backend is single source of truth
