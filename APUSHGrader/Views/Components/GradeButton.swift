@@ -1,5 +1,4 @@
 import SwiftUI
-import APUSHGraderCore
 
 struct GradeButton: View {
     let essayType: EssayType

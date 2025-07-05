@@ -1,5 +1,4 @@
 import SwiftUI
-import APUSHGraderCore
 
 struct EssayInputView: View {
     @Binding var text: String

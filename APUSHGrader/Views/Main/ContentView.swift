@@ -1,5 +1,4 @@
 import SwiftUI
-import APUSHGraderCore
 
 struct ContentView: View {
     @State private var essayText: String = ""
@@ -7,13 +6,11 @@ struct ContentView: View {
     @State private var isGrading = false
     @State private var gradeResult: String = ""
     @State private var essayType: EssayType = .dbq
-    @State private var processedResult: ProcessedGradingResult?
+    @State private var processedResult: APIProcessedGradingResult?
     @State private var errorMessage: String?
     @State private var showingErrorAlert = false
     
-    private let apiService: APIServiceProtocol = //APIService()
-        MockAPIService()
-    // Use MockAPIService() for testing without API calls
+    private let networkService = NetworkService.shared
     
     private var isFormValid: Bool {
         !essayText.isEmpty && !promptText.isEmpty
@@ -39,7 +36,7 @@ struct ContentView: View {
                     )
                     
                     if let processedResult = processedResult {
-                        GradeResultsView(result: processedResult)
+                        APIGradeResultsView(result: processedResult)
                             .transition(.opacity.combined(with: .scale))
                     }
                     
@@ -63,11 +60,16 @@ struct ContentView: View {
         
         Task {
             do {
-                // Call the API service
-                let response = try await apiService.gradeEssay(essayText, type: essayType, prompt: promptText)
+                // Call the NetworkService
+                let response = try await networkService.gradeEssay(
+                    essayText: essayText,
+                    essayType: essayType.rawValue,
+                    prompt: promptText
+                )
                 
-                // Process the response
-                let processed = ResponseProcessor.processGradingResponse(response, for: essayType)
+                // Convert to API models
+                let apiResult = APIGradingResult(from: response)
+                let processed = APIProcessedGradingResult(from: apiResult)
                 
                 await MainActor.run {
                     withAnimation(.easeInOut(duration: 0.5)) {
@@ -77,9 +79,15 @@ struct ContentView: View {
                     self.isGrading = false
                 }
                 
+            } catch let networkError as NetworkError {
+                await MainActor.run {
+                    self.errorMessage = networkError.localizedDescription
+                    self.showingErrorAlert = true
+                    self.isGrading = false
+                }
             } catch {
                 await MainActor.run {
-                    self.errorMessage = ErrorPresentation.getUserFriendlyMessage(for: error)
+                    self.errorMessage = "An unexpected error occurred: \(error.localizedDescription)"
                     self.showingErrorAlert = true
                     self.isGrading = false
                 }

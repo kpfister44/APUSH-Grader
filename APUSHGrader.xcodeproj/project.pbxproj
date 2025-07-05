@@ -20,6 +20,10 @@
 		213E422B2E0ED33600ACB15D /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 213E42292E0ED33600ACB15D /* README.md */; };
 		213E422D2E0ED37B00ACB15D /* Info.plist.template in Resources */ = {isa = PBXBuildFile; fileRef = 213E422C2E0ED37B00ACB15D /* Info.plist.template */; };
 		2144896B2E0F3C0A00062046 /* APUSHGraderCore in Frameworks */ = {isa = PBXBuildFile; productRef = 2144896A2E0F3C0A00062046 /* APUSHGraderCore */; };
+		21E71A022E17F520008646FF /* PLAN.md in Resources */ = {isa = PBXBuildFile; fileRef = 21E71A012E17F520008646FF /* PLAN.md */; };
+		21E71A0A2E19C995008646FF /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E71A082E19C995008646FF /* NetworkService.swift */; };
+		21E71A0B2E19C995008646FF /* APIModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E71A062E19C995008646FF /* APIModels.swift */; };
+		21E71A0D2E19CF23008646FF /* APIGradeResultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E71A0C2E19CF23008646FF /* APIGradeResultsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,6 +41,10 @@
 		213E42282E0ED33600ACB15D /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		213E42292E0ED33600ACB15D /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		213E422C2E0ED37B00ACB15D /* Info.plist.template */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Info.plist.template; sourceTree = "<group>"; };
+		21E71A012E17F520008646FF /* PLAN.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = PLAN.md; sourceTree = "<group>"; };
+		21E71A062E19C995008646FF /* APIModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIModels.swift; sourceTree = "<group>"; };
+		21E71A082E19C995008646FF /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
+		21E71A0C2E19CF23008646FF /* APIGradeResultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIGradeResultsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +62,7 @@
 		1234567890123449 = {
 			isa = PBXGroup;
 			children = (
+				21E71A012E17F520008646FF /* PLAN.md */,
 				213E422C2E0ED37B00ACB15D /* Info.plist.template */,
 				213E42282E0ED33600ACB15D /* CLAUDE.md */,
 				213E42292E0ED33600ACB15D /* README.md */,
@@ -73,6 +82,8 @@
 		1234567890123454 /* APUSHGrader */ = {
 			isa = PBXGroup;
 			children = (
+				21E71A072E19C995008646FF /* Models */,
+				21E71A092E19C995008646FF /* Services */,
 				213E41B92E0EBB4200ACB15D /* App */,
 				213E41C42E0EBB4200ACB15D /* Resources */,
 				213E41DE2E0EBB4200ACB15D /* Utilities */,
@@ -152,6 +163,7 @@
 		213E41E62E0EBB4200ACB15D /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				21E71A0C2E19CF23008646FF /* APIGradeResultsView.swift */,
 				213E41E42E0EBB4200ACB15D /* ContentView.swift */,
 				213E41E52E0EBB4200ACB15D /* GradeResultsView.swift */,
 			);
@@ -165,6 +177,22 @@
 				213E41E62E0EBB4200ACB15D /* Main */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		21E71A072E19C995008646FF /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				21E71A062E19C995008646FF /* APIModels.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		21E71A092E19C995008646FF /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				21E71A082E19C995008646FF /* NetworkService.swift */,
+			);
+			path = Services;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -231,6 +259,7 @@
 				213E422D2E0ED37B00ACB15D /* Info.plist.template in Resources */,
 				213E41E92E0EBB4200ACB15D /* Assets.xcassets in Resources */,
 				213E422A2E0ED33600ACB15D /* CLAUDE.md in Resources */,
+				21E71A022E17F520008646FF /* PLAN.md in Resources */,
 				213E422B2E0ED33600ACB15D /* README.md in Resources */,
 				213E41EA2E0EBB4200ACB15D /* Preview Assets.xcassets in Resources */,
 			);
@@ -245,8 +274,11 @@
 			files = (
 				213E41ED2E0EBB4200ACB15D /* GradeButton.swift in Sources */,
 				213E41EF2E0EBB4200ACB15D /* PromptInputView.swift in Sources */,
+				21E71A0A2E19C995008646FF /* NetworkService.swift in Sources */,
+				21E71A0B2E19C995008646FF /* APIModels.swift in Sources */,
 				213E41F72E0EBB4200ACB15D /* EssayTypeSelector.swift in Sources */,
 				213E41FC2E0EBB4200ACB15D /* EssayInputView.swift in Sources */,
+				21E71A0D2E19CF23008646FF /* APIGradeResultsView.swift in Sources */,
 				213E42012E0EBB4200ACB15D /* GradeResultsView.swift in Sources */,
 				213E42042E0EBB4200ACB15D /* APUSHGraderApp.swift in Sources */,
 				213E42052E0EBB4200ACB15D /* ContentView.swift in Sources */,

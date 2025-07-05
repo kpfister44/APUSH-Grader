@@ -1,7 +1,12 @@
 {
   "permissions": {
     "allow": [
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(source:*)",
+      "Bash(python -m pytest tests/integration/test_grading_workflow.py -v --tb=short)",
+      "Bash(python -m pytest tests/integration/test_grading_workflow.py::TestGradingWorkflowIntegration::test_service_locator_integration -v)",
+      "Bash(python:*)",
+      "Bash(git add:*)"
     ],
     "deny": []
   }

@@ -1,5 +1,4 @@
 import SwiftUI
-import APUSHGraderCore
 
 struct EssayTypeSelector: View {
     @Binding var selectedType: EssayType
@@ -16,7 +15,7 @@ struct EssayTypeSelector: View {
             }
             .pickerStyle(SegmentedPickerStyle())
             
-            Text(selectedType.description)
+            Text(selectedType.displayName)
                 .font(.caption)
                 .foregroundColor(.secondary)
         }

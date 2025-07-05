@@ -1,5 +1,4 @@
 import SwiftUI
-import APUSHGraderCore
 
 struct PromptInputView: View {
     @Binding var text: String
