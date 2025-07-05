@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 60;
+	objectVersion = 56;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -13,13 +13,11 @@
 		213E41EF2E0EBB4200ACB15D /* PromptInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213E41E22E0EBB4200ACB15D /* PromptInputView.swift */; };
 		213E41F72E0EBB4200ACB15D /* EssayTypeSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213E41E02E0EBB4200ACB15D /* EssayTypeSelector.swift */; };
 		213E41FC2E0EBB4200ACB15D /* EssayInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213E41DF2E0EBB4200ACB15D /* EssayInputView.swift */; };
-		213E42012E0EBB4200ACB15D /* GradeResultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213E41E52E0EBB4200ACB15D /* GradeResultsView.swift */; };
 		213E42042E0EBB4200ACB15D /* APUSHGraderApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213E41B72E0EBB4200ACB15D /* APUSHGraderApp.swift */; };
 		213E42052E0EBB4200ACB15D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213E41E42E0EBB4200ACB15D /* ContentView.swift */; };
 		213E422A2E0ED33600ACB15D /* CLAUDE.md in Resources */ = {isa = PBXBuildFile; fileRef = 213E42282E0ED33600ACB15D /* CLAUDE.md */; };
 		213E422B2E0ED33600ACB15D /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 213E42292E0ED33600ACB15D /* README.md */; };
 		213E422D2E0ED37B00ACB15D /* Info.plist.template in Resources */ = {isa = PBXBuildFile; fileRef = 213E422C2E0ED37B00ACB15D /* Info.plist.template */; };
-		2144896B2E0F3C0A00062046 /* APUSHGraderCore in Frameworks */ = {isa = PBXBuildFile; productRef = 2144896A2E0F3C0A00062046 /* APUSHGraderCore */; };
 		21E71A022E17F520008646FF /* PLAN.md in Resources */ = {isa = PBXBuildFile; fileRef = 21E71A012E17F520008646FF /* PLAN.md */; };
 		21E71A0A2E19C995008646FF /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E71A082E19C995008646FF /* NetworkService.swift */; };
 		21E71A0B2E19C995008646FF /* APIModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E71A062E19C995008646FF /* APIModels.swift */; };
@@ -37,7 +35,6 @@
 		213E41E12E0EBB4200ACB15D /* GradeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradeButton.swift; sourceTree = "<group>"; };
 		213E41E22E0EBB4200ACB15D /* PromptInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromptInputView.swift; sourceTree = "<group>"; };
 		213E41E42E0EBB4200ACB15D /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		213E41E52E0EBB4200ACB15D /* GradeResultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradeResultsView.swift; sourceTree = "<group>"; };
 		213E42282E0ED33600ACB15D /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		213E42292E0ED33600ACB15D /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		213E422C2E0ED37B00ACB15D /* Info.plist.template */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Info.plist.template; sourceTree = "<group>"; };
@@ -52,7 +49,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2144896B2E0F3C0A00062046 /* APUSHGraderCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -165,7 +161,6 @@
 			children = (
 				21E71A0C2E19CF23008646FF /* APIGradeResultsView.swift */,
 				213E41E42E0EBB4200ACB15D /* ContentView.swift */,
-				213E41E52E0EBB4200ACB15D /* GradeResultsView.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -240,7 +235,6 @@
 			);
 			mainGroup = 1234567890123449;
 			packageReferences = (
-				214489692E0F3C0A00062046 /* XCLocalSwiftPackageReference "APUSHGraderCore" */,
 			);
 			productRefGroup = 1234567890123453 /* Products */;
 			projectDirPath = "";
@@ -279,7 +273,6 @@
 				213E41F72E0EBB4200ACB15D /* EssayTypeSelector.swift in Sources */,
 				213E41FC2E0EBB4200ACB15D /* EssayInputView.swift in Sources */,
 				21E71A0D2E19CF23008646FF /* APIGradeResultsView.swift in Sources */,
-				213E42012E0EBB4200ACB15D /* GradeResultsView.swift in Sources */,
 				213E42042E0EBB4200ACB15D /* APUSHGraderApp.swift in Sources */,
 				213E42052E0EBB4200ACB15D /* ContentView.swift in Sources */,
 			);
@@ -495,20 +488,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCLocalSwiftPackageReference section */
-		214489692E0F3C0A00062046 /* XCLocalSwiftPackageReference "APUSHGraderCore" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = APUSHGraderCore;
-		};
-/* End XCLocalSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		2144896A2E0F3C0A00062046 /* APUSHGraderCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = APUSHGraderCore;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 123456789012344A /* Project object */;
 }
