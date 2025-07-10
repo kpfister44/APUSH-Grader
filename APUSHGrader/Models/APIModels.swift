@@ -53,6 +53,40 @@ enum EssayType: String, CaseIterable {
     }
 }
 
+// MARK: - SAQ Multi-Part Support
+
+struct SAQParts: Codable {
+    let partA: String
+    let partB: String
+    let partC: String
+    
+    enum CodingKeys: String, CodingKey {
+        case partA = "part_a"
+        case partB = "part_b"
+        case partC = "part_c"
+    }
+    
+    init(partA: String, partB: String, partC: String) {
+        self.partA = partA.trimmingCharacters(in: .whitespacesAndNewlines)
+        self.partB = partB.trimmingCharacters(in: .whitespacesAndNewlines)
+        self.partC = partC.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+    
+    var isEmpty: Bool {
+        return partA.isEmpty || partB.isEmpty || partC.isEmpty
+    }
+    
+    var combinedText: String {
+        return """
+        A) \(partA)
+
+        B) \(partB)
+
+        C) \(partC)
+        """
+    }
+}
+
 // MARK: - Simple Response Models
 
 struct APIGradingResult {

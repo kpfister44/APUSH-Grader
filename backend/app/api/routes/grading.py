@@ -15,6 +15,7 @@ from app.models.requests.grading import (
     GradingResponse, 
     GradingErrorResponse
 )
+from app.models.core.essay_types import EssayType
 from app.services.base.protocols import APICoordinatorProtocol
 from app.services.base.exceptions import (
     ValidationError,
@@ -30,6 +31,26 @@ from app.services.logging.structured_logger import get_logger, PerformanceTimer
 logger = logging.getLogger(__name__)
 structured_logger = get_logger(__name__)
 router = APIRouter(prefix="/api/v1", tags=["grading"])
+
+
+def _combine_saq_parts(grading_request: GradingRequest) -> str:
+    """
+    Combine SAQ parts into a single text for processing.
+    
+    Args:
+        grading_request: The grading request containing SAQ parts
+        
+    Returns:
+        Combined essay text with parts labeled
+    """
+    if grading_request.saq_parts:
+        return f"""A) {grading_request.saq_parts.part_a}
+
+B) {grading_request.saq_parts.part_b}
+
+C) {grading_request.saq_parts.part_c}"""
+    else:
+        return grading_request.essay_text
 
 
 @router.post(
@@ -91,12 +112,16 @@ async def grade_essay(
     start_time = time.time()
     
     try:
+        # Get the essay text (combined for SAQ parts or regular text)
+        essay_text = _combine_saq_parts(grading_request)
+        
         # Enhanced structured logging
         structured_logger.info(
             "Grading request received",
             essay_type=grading_request.essay_type.value,
-            essay_length=len(grading_request.essay_text),
-            prompt_length=len(grading_request.prompt)
+            essay_length=len(essay_text),
+            prompt_length=len(grading_request.prompt),
+            has_saq_parts=grading_request.saq_parts is not None
         )
         
         # Use performance timer for the grading workflow
@@ -105,7 +130,7 @@ async def grade_essay(
             
             # Call the API coordinator to handle the complete workflow  
             grade_response = await api_coordinator.grade_essay(
-                essay_text=grading_request.essay_text,
+                essay_text=essay_text,
                 essay_type=grading_request.essay_type,
                 prompt=grading_request.prompt
             )
@@ -118,8 +143,8 @@ async def grade_essay(
         # For now, using placeholder values - this will be refined in integration
         api_response = GradingResponse.from_grade_response(
             grade_response=grade_response,
-            word_count=len(grading_request.essay_text.split()),  # Simple word count
-            paragraph_count=len([p for p in grading_request.essay_text.split('\n\n') if p.strip()]),
+            word_count=len(essay_text.split()),  # Simple word count
+            paragraph_count=len([p for p in essay_text.split('\n\n') if p.strip()]),
             warnings=[],  # Will be populated from preprocessing result
             processing_time_ms=processing_time_ms
         )
@@ -136,11 +161,12 @@ async def grade_essay(
         return api_response
         
     except ValidationError as e:
+        essay_text_for_logging = grading_request.essay_text or ""
         structured_logger.log_error(
             error_type="VALIDATION_ERROR",
             error_message=str(e),
             essay_type=grading_request.essay_type.value,
-            essay_length=len(grading_request.essay_text)
+            essay_length=len(essay_text_for_logging)
         )
         error_response = GradingErrorResponse(
             error="VALIDATION_ERROR",
@@ -150,11 +176,12 @@ async def grade_essay(
         raise HTTPException(status_code=400, detail=error_response.dict())
         
     except ProcessingError as e:
+        essay_text_for_logging = grading_request.essay_text or ""
         structured_logger.log_error(
             error_type="PROCESSING_ERROR",
             error_message=str(e),
             essay_type=grading_request.essay_type.value,
-            essay_length=len(grading_request.essay_text)
+            essay_length=len(essay_text_for_logging)
         )
         error_response = GradingErrorResponse(
             error="PROCESSING_ERROR", 
@@ -164,11 +191,12 @@ async def grade_essay(
         raise HTTPException(status_code=422, detail=error_response.dict())
         
     except APIError as e:
+        essay_text_for_logging = grading_request.essay_text or ""
         structured_logger.log_error(
             error_type="API_ERROR",
             error_message=str(e),
             essay_type=grading_request.essay_type.value,
-            essay_length=len(grading_request.essay_text)
+            essay_length=len(essay_text_for_logging)
         )
         error_response = GradingErrorResponse(
             error="API_ERROR",
@@ -178,11 +206,12 @@ async def grade_essay(
         raise HTTPException(status_code=500, detail=error_response.dict())
         
     except Exception as e:
+        essay_text_for_logging = grading_request.essay_text or ""
         structured_logger.log_error(
             error_type="INTERNAL_ERROR",
             error_message=str(e),
             essay_type=grading_request.essay_type.value,
-            essay_length=len(grading_request.essay_text),
+            essay_length=len(essay_text_for_logging),
             unexpected=True
         )
         error_response = GradingErrorResponse(

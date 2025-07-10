@@ -5,11 +5,43 @@ Defines the contract for the /api/v1/grade endpoint used by the iOS frontend.
 """
 
 from typing import Optional, List, Dict, Any
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, validator, root_validator
 from enum import Enum
 
 from app.models.core.essay_types import EssayType
 from app.models.core.grade_models import GradeResponse
+
+
+class SAQParts(BaseModel):
+    """Model for SAQ three-part structure."""
+    
+    part_a: str = Field(
+        ...,
+        description="Student response to SAQ Part A",
+        min_length=1,
+        max_length=2000
+    )
+    
+    part_b: str = Field(
+        ...,
+        description="Student response to SAQ Part B", 
+        min_length=1,
+        max_length=2000
+    )
+    
+    part_c: str = Field(
+        ...,
+        description="Student response to SAQ Part C",
+        min_length=1, 
+        max_length=2000
+    )
+    
+    @validator('part_a', 'part_b', 'part_c')
+    def validate_parts(cls, v):
+        """Validate SAQ part text is not empty or just whitespace."""
+        if not v or not v.strip():
+            raise ValueError("SAQ part text cannot be empty or just whitespace")
+        return v.strip()
 
 
 class GradingRequest(BaseModel):
@@ -19,9 +51,9 @@ class GradingRequest(BaseModel):
     Contains the essay content and metadata needed for grading.
     """
     
-    essay_text: str = Field(
-        ...,
-        description="The student's essay text to be graded",
+    essay_text: Optional[str] = Field(
+        None,
+        description="The student's essay text to be graded (for DBQ/LEQ or legacy SAQ)",
         min_length=1,
         max_length=10000
     )
@@ -38,12 +70,17 @@ class GradingRequest(BaseModel):
         max_length=2000
     )
     
+    saq_parts: Optional[SAQParts] = Field(
+        None,
+        description="SAQ essay parts (Part A, B, C) - used when essay_type is SAQ"
+    )
+    
     @validator('essay_text')
     def validate_essay_text(cls, v):
         """Validate essay text is not empty or just whitespace."""
-        if not v or not v.strip():
+        if v is not None and (not v or not v.strip()):
             raise ValueError("Essay text cannot be empty or just whitespace")
-        return v.strip()
+        return v.strip() if v else None
     
     @validator('prompt')
     def validate_prompt(cls, v):
@@ -52,17 +89,69 @@ class GradingRequest(BaseModel):
             raise ValueError("Prompt cannot be empty or just whitespace")
         return v.strip()
     
+    @validator('saq_parts')
+    def validate_saq_parts(cls, v, values):
+        """Validate SAQ parts are provided when essay_type is SAQ."""
+        essay_type = values.get('essay_type')
+        essay_text = values.get('essay_text')
+        
+        if essay_type == EssayType.SAQ:
+            # For SAQ, require either saq_parts or essay_text (for backward compatibility)
+            if not v and not essay_text:
+                raise ValueError("SAQ essays require either saq_parts or essay_text")
+        elif v is not None:
+            # For non-SAQ essays, saq_parts should not be provided
+            raise ValueError("saq_parts can only be used with SAQ essay type")
+        
+        return v
+    
+    @root_validator(skip_on_failure=True)
+    def validate_essay_content(cls, values):
+        """Validate that SAQ essays have either saq_parts or essay_text."""
+        essay_type = values.get('essay_type')
+        essay_text = values.get('essay_text')
+        saq_parts = values.get('saq_parts')
+        
+        if essay_type == EssayType.SAQ:
+            if not saq_parts and not essay_text:
+                raise ValueError("SAQ essays require either saq_parts or essay_text")
+        else:
+            # For non-SAQ essays, require essay_text
+            if not essay_text:
+                raise ValueError("DBQ and LEQ essays require essay_text")
+        
+        return values
+    
     class Config:
         json_encoders = {
             EssayType: lambda v: v.value
         }
         
         schema_extra = {
-            "example": {
-                "essay_text": "The American Revolution was a pivotal moment in history...",
-                "essay_type": "LEQ",
-                "prompt": "Evaluate the extent to which the American Revolution changed American society in the period from 1775 to 1800."
-            }
+            "examples": [
+                {
+                    "summary": "LEQ/DBQ Example",
+                    "description": "Standard essay format for LEQ and DBQ",
+                    "value": {
+                        "essay_text": "The American Revolution was a pivotal moment in history...",
+                        "essay_type": "LEQ",
+                        "prompt": "Evaluate the extent to which the American Revolution changed American society in the period from 1775 to 1800."
+                    }
+                },
+                {
+                    "summary": "SAQ Multi-Part Example",
+                    "description": "New SAQ format with separate parts",
+                    "value": {
+                        "essay_type": "SAQ",
+                        "prompt": "Use the image above to answer parts A, B, and C.",
+                        "saq_parts": {
+                            "part_a": "The Second Great Awakening was a religious revival movement in the early 1800s that emphasized personal salvation.",
+                            "part_b": "The Second Great Awakening led to increased participation in reform movements like abolition and temperance.",
+                            "part_c": "The Second Great Awakening was significant because it democratized religion and promoted social reform."
+                        }
+                    }
+                }
+            ]
         }
 
 

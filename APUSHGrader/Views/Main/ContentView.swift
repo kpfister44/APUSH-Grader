@@ -10,10 +10,19 @@ struct ContentView: View {
     @State private var errorMessage: String?
     @State private var showingErrorAlert = false
     
+    // SAQ multi-part fields
+    @State private var saqPartA: String = ""
+    @State private var saqPartB: String = ""
+    @State private var saqPartC: String = ""
+    
     private let networkService = NetworkService.shared
     
     private var isFormValid: Bool {
-        !essayText.isEmpty && !promptText.isEmpty
+        if essayType == .saq {
+            return !promptText.isEmpty && !saqPartA.isEmpty && !saqPartB.isEmpty && !saqPartC.isEmpty
+        } else {
+            return !essayText.isEmpty && !promptText.isEmpty
+        }
     }
     
     var body: some View {
@@ -23,10 +32,21 @@ struct ContentView: View {
                     HeaderView()
                     
                     EssayTypeSelector(selectedType: $essayType)
+                        .onChange(of: essayType) { _, _ in
+                            clearFields()
+                        }
                     
                     PromptInputView(text: $promptText, essayType: essayType)
                     
-                    EssayInputView(text: $essayText, essayType: essayType)
+                    if essayType == .saq {
+                        SAQMultiPartInputView(
+                            partA: $saqPartA,
+                            partB: $saqPartB,
+                            partC: $saqPartC
+                        )
+                    } else {
+                        EssayInputView(text: $essayText, essayType: essayType)
+                    }
                     
                     GradeButton(
                         essayType: essayType,
@@ -60,12 +80,23 @@ struct ContentView: View {
         
         Task {
             do {
-                // Call the NetworkService
-                let response = try await networkService.gradeEssay(
-                    essayText: essayText,
-                    essayType: essayType.rawValue,
-                    prompt: promptText
-                )
+                // Call the NetworkService with appropriate data based on essay type
+                let response: GradingResponse
+                
+                if essayType == .saq {
+                    let saqParts = SAQParts(partA: saqPartA, partB: saqPartB, partC: saqPartC)
+                    response = try await networkService.gradeEssayWithSAQParts(
+                        saqParts: saqParts,
+                        essayType: essayType.rawValue,
+                        prompt: promptText
+                    )
+                } else {
+                    response = try await networkService.gradeEssay(
+                        essayText: essayText,
+                        essayType: essayType.rawValue,
+                        prompt: promptText
+                    )
+                }
                 
                 // Convert to API models
                 let apiResult = APIGradingResult(from: response)
@@ -94,6 +125,16 @@ struct ContentView: View {
             }
         }
     }
+    
+    private func clearFields() {
+        // Clear all input fields when essay type changes
+        essayText = ""
+        saqPartA = ""
+        saqPartB = ""
+        saqPartC = ""
+        promptText = ""
+        processedResult = nil
+    }
 }
 
 // MARK: - Header Component
@@ -112,6 +153,89 @@ private struct HeaderView: View {
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
         }
+    }
+}
+
+// MARK: - SAQ Multi-Part Input Component
+
+private struct SAQMultiPartInputView: View {
+    @Binding var partA: String
+    @Binding var partB: String
+    @Binding var partC: String
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            HStack {
+                Image(systemName: "text.book.closed")
+                    .foregroundColor(.blue)
+                Text("SAQ Response (Three Parts)")
+                    .font(.headline)
+                    .fontWeight(.medium)
+            }
+            .padding(.horizontal)
+            
+            VStack(spacing: 12) {
+                // Part A
+                VStack(alignment: .leading, spacing: 6) {
+                    Label("Part A", systemImage: "a.circle")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                        .foregroundColor(.blue)
+                    
+                    TextEditor(text: $partA)
+                        .frame(minHeight: 80)
+                        .padding(8)
+                        .background(Color(.systemGray6))
+                        .cornerRadius(8)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(Color(.systemGray4), lineWidth: 1)
+                        )
+                }
+                
+                // Part B
+                VStack(alignment: .leading, spacing: 6) {
+                    Label("Part B", systemImage: "b.circle")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                        .foregroundColor(.blue)
+                    
+                    TextEditor(text: $partB)
+                        .frame(minHeight: 80)
+                        .padding(8)
+                        .background(Color(.systemGray6))
+                        .cornerRadius(8)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(Color(.systemGray4), lineWidth: 1)
+                        )
+                }
+                
+                // Part C
+                VStack(alignment: .leading, spacing: 6) {
+                    Label("Part C", systemImage: "c.circle")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                        .foregroundColor(.blue)
+                    
+                    TextEditor(text: $partC)
+                        .frame(minHeight: 80)
+                        .padding(8)
+                        .background(Color(.systemGray6))
+                        .cornerRadius(8)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(Color(.systemGray4), lineWidth: 1)
+                        )
+                }
+            }
+            .padding(.horizontal)
+        }
+        .padding(.vertical, 8)
+        .background(Color(.systemBackground))
+        .cornerRadius(12)
+        .shadow(color: Color.black.opacity(0.1), radius: 2, x: 0, y: 1)
+        .padding(.horizontal)
     }
 }
 
