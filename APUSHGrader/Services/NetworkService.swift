@@ -3,14 +3,32 @@ import Foundation
 // MARK: - Models
 
 struct GradingRequest: Codable {
-    let essayText: String
+    let essayText: String?
     let essayType: String
     let prompt: String
+    let saqParts: SAQParts?
     
     enum CodingKeys: String, CodingKey {
         case essayText = "essay_text"
         case essayType = "essay_type"
         case prompt
+        case saqParts = "saq_parts"
+    }
+    
+    // Legacy initializer for DBQ/LEQ
+    init(essayText: String, essayType: String, prompt: String) {
+        self.essayText = essayText
+        self.essayType = essayType
+        self.prompt = prompt
+        self.saqParts = nil
+    }
+    
+    // New initializer for SAQ with parts
+    init(saqParts: SAQParts, essayType: String, prompt: String) {
+        self.essayText = nil
+        self.essayType = essayType
+        self.prompt = prompt
+        self.saqParts = saqParts
     }
 }
 
@@ -123,6 +141,90 @@ class NetworkService {
         
         let request = GradingRequest(
             essayText: essayText,
+            essayType: essayType,
+            prompt: prompt
+        )
+        
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = "POST"
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        do {
+            let jsonData = try JSONEncoder().encode(request)
+            urlRequest.httpBody = jsonData
+            
+            let (data, response) = try await session.data(for: urlRequest)
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
+                throw NetworkError.invalidResponse
+            }
+            
+            // Handle different HTTP status codes
+            switch httpResponse.statusCode {
+            case 200...299:
+                // Success - decode the response
+                do {
+                    let gradingResponse = try JSONDecoder().decode(GradingResponse.self, from: data)
+                    return gradingResponse
+                } catch {
+                    throw NetworkError.decodingError(error.localizedDescription)
+                }
+                
+            case 429:
+                // Rate limited
+                throw NetworkError.rateLimited
+                
+            case 400...499:
+                // Client error - try to decode error response
+                if let errorResponse = try? JSONDecoder().decode(ErrorResponse.self, from: data) {
+                    throw NetworkError.serverError(errorResponse.message)
+                } else {
+                    throw NetworkError.serverError("Client error: \(httpResponse.statusCode)")
+                }
+                
+            case 500...599:
+                // Server error
+                if let errorResponse = try? JSONDecoder().decode(ErrorResponse.self, from: data) {
+                    throw NetworkError.serverError(errorResponse.message)
+                } else {
+                    throw NetworkError.serverError("Server error: \(httpResponse.statusCode)")
+                }
+                
+            default:
+                throw NetworkError.serverError("Unexpected response: \(httpResponse.statusCode)")
+            }
+            
+        } catch let error as NetworkError {
+            throw error
+        } catch {
+            // Handle URLSession errors
+            if let urlError = error as? URLError {
+                switch urlError.code {
+                case .notConnectedToInternet, .networkConnectionLost:
+                    throw NetworkError.networkUnavailable
+                case .timedOut:
+                    throw NetworkError.requestTimeout
+                default:
+                    throw NetworkError.serverError(urlError.localizedDescription)
+                }
+            } else {
+                throw NetworkError.serverError(error.localizedDescription)
+            }
+        }
+    }
+    
+    func gradeEssayWithSAQParts(
+        saqParts: SAQParts,
+        essayType: String,
+        prompt: String
+    ) async throws -> GradingResponse {
+        
+        guard let url = URL(string: "\(baseURL)/api/v1/grade") else {
+            throw NetworkError.invalidURL
+        }
+        
+        let request = GradingRequest(
+            saqParts: saqParts,
             essayType: essayType,
             prompt: prompt
         )

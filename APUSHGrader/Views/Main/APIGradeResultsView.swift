@@ -242,7 +242,7 @@ struct APIDetailedBreakdownView: View {
             VStack(spacing: 8) {
                 ForEach(breakdown.keys.sorted(), id: \.self) { key in
                     if let item = breakdown[key] {
-                        APIRubricItemView(item: item, name: key.capitalized)
+                        APIRubricItemView(item: item, name: formatRubricName(key))
                     }
                 }
             }
@@ -250,6 +250,19 @@ struct APIDetailedBreakdownView: View {
         .padding()
         .background(Color(.systemGray6))
         .cornerRadius(12)
+    }
+    
+    private func formatRubricName(_ key: String) -> String {
+        switch key.lowercased() {
+        case "parta":
+            return "Part A"
+        case "partb":
+            return "Part B"
+        case "partc":
+            return "Part C"
+        default:
+            return key.capitalized
+        }
     }
 }
 
