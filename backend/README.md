@@ -31,7 +31,7 @@ backend/
 
 ### Prerequisites
 
-- Python 3.11 or higher
+- Python 3.12 (recommended for M-series Mac compatibility)
 - pip
 
 ### Installation
@@ -39,7 +39,7 @@ backend/
 1. **Create virtual environment**:
    ```bash
    cd backend
-   python -m venv venv
+   python3.12 -m venv venv
    
    # Activate virtual environment
    # On macOS/Linux:
@@ -50,6 +50,7 @@ backend/
 
 2. **Install dependencies**:
    ```bash
+   pip install --upgrade pip
    pip install -r requirements.txt
    pip install -r requirements-dev.txt
    ```
@@ -65,29 +66,40 @@ backend/
 ### Running the application
 
 ```bash
+# Ensure you're in the backend directory and virtual environment is activated
+cd backend
+source venv/bin/activate
+
 # Start development server with auto-reload
 uvicorn app.main:app --reload
 
-# Or run with Python
-python -m app.main
+# Or specify port if 8000 is in use
+uvicorn app.main:app --reload --port 8001
 
 # Application will be available at:
 # - API: http://localhost:8000
 # - Interactive docs: http://localhost:8000/docs
 # - ReDoc: http://localhost:8000/redoc
+# - Health check: http://localhost:8000/health
 ```
 
 ### Running tests
 
 ```bash
-# Run all tests
-pytest
+# Ensure virtual environment is activated
+source venv/bin/activate
 
-# Run tests with coverage
-pytest --cov=app
+# Run all tests with verbose output
+pytest tests/ -v
+
+# Run integration tests only
+pytest tests/integration/ -v
+
+# Run tests with short traceback
+pytest tests/ --tb=short
 
 # Run specific test file
-pytest tests/test_health.py
+pytest tests/test_health.py -v
 ```
 
 ### Code Quality
@@ -151,11 +163,16 @@ This is Phase 1A of the migration plan. Next phases will add:
 
 ## Development Status
 
-- ✅ FastAPI application setup
-- ✅ Health check endpoint
-- ✅ Configuration management
-- ✅ Basic testing framework
-- ✅ Project structure
-- 📋 Essay processing logic (Phase 1B)
-- 📋 AI service integration (Phase 2)
-- 📋 Grading endpoints (Phase 2)
+**Phase 3 COMPLETE** - Production Ready Backend
+
+- ✅ FastAPI application setup with middleware
+- ✅ Complete grading workflow (POST /api/v1/grade)
+- ✅ Health check endpoints (/health, /health/detailed, /usage/summary)
+- ✅ Real Anthropic Claude 3.5 Sonnet integration
+- ✅ Production features: rate limiting, structured logging, usage safeguards
+- ✅ Comprehensive test suite (320+ tests)
+- ✅ Essay processing for DBQ, LEQ, SAQ types
+- ✅ Multi-part SAQ support
+- ✅ iOS frontend integration complete
+- ✅ Configuration management with environment variables
+- ✅ Error handling and user-friendly messages

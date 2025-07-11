@@ -57,28 +57,53 @@ APUSH Grader is designed for a small handful of teacher to use it. Anywhere from
 ### **Development Environment Setup**
 ```bash
 cd backend
+# Create virtual environment (use Python 3.12 for compatibility)
+python3.12 -m venv venv               # Create virtual environment
 source venv/bin/activate              # Activate Python virtual environment
+pip install --upgrade pip            # Upgrade pip to latest version
 pip install -r requirements.txt       # Install core dependencies  
 pip install -r requirements-dev.txt   # Install development tools
 ```
 
+**Important**: Always ensure you're in the `/backend/` directory and the virtual environment is activated before running any Python commands.
+
+**Note**: Use Python 3.12 instead of 3.13 for better package compatibility on M-series Macs.
+
 ### **Running the Server**
 ```bash
+# Method 1: From project root
 cd backend
 source venv/bin/activate
-uvicorn app.main:app --reload         # Development server with auto-reload
-uvicorn app.main:app --reload --port 8001  # Use different port if needed
+uvicorn app.main:app --reload
+
+# Method 2: If already in backend directory
+source venv/bin/activate
+uvicorn app.main:app --reload
+
+# Use different port if 8000 is in use
+uvicorn app.main:app --reload --port 8001
+
+# Server will be available at:
+# - API: http://localhost:8000
+# - Interactive docs: http://localhost:8000/docs  
+# - Health check: http://localhost:8000/health
 ```
+
+**Note**: The server must be running for the iOS app to connect. If you see connection errors in the iOS app, verify the backend is running and accessible.
 
 ### **Testing**
 ```bash
+# Ensure you're in backend directory with virtual environment activated
 cd backend
 source venv/bin/activate
+
 pytest tests/ -v                      # Run all tests with verbose output
 pytest tests/integration/ -v          # Run integration tests only
 pytest tests/services/processing/prompt/ -v  # Run prompt generation tests only
 pytest tests/ --tb=short              # Run with short traceback format
 ```
+
+**Important**: Always activate the virtual environment before running tests to ensure all dependencies are available.
 
 ### **API Testing**
 - **Interactive Docs**: http://localhost:8000/docs (Swagger UI)
@@ -91,6 +116,60 @@ pytest tests/ --tb=short              # Run with short traceback format
 - **iOS App**: ⌘+B in Xcode to build, ⌘+R to run
 - **Testing**: Use SwiftUI previews for quick API testing (calls real backend)
 - **Backend Required**: Ensure Python backend is running on localhost:8000
+
+## Git and GitHub Workflow
+
+### **Creating Feature Branches**
+```bash
+git checkout -b feature/your-feature-name
+# Make your changes
+git add path/to/changed/files
+git commit -m "Your commit message"
+```
+
+### **Pushing and Creating Pull Requests**
+```bash
+# If authentication issues occur, authenticate with GitHub CLI first:
+echo "your-github-token" | gh auth login --with-token
+
+# Set remote URL with token for authentication (if needed)
+git remote set-url origin https://your-github-token@github.com/kpfister44/APUSH-Grader.git
+
+# Push feature branch
+git push -u origin feature/your-feature-name
+
+# Create pull request using GitHub CLI
+gh pr create --title "Your PR Title" --body "Your PR description" --head feature/your-feature-name --base main
+
+# Merge PR (squash and delete branch)
+gh pr merge PR_NUMBER --squash --delete-branch
+
+# Switch back to main and pull latest
+git checkout main
+git pull origin main
+```
+
+### **GitHub CLI Authentication**
+If you encounter authentication issues with git push, use GitHub CLI:
+```bash
+# Authenticate with your personal access token
+echo "ghp_your_token_here" | gh auth login --with-token
+
+# Verify authentication
+gh auth status
+
+# Set repository default
+gh repo set-default kpfister44/APUSH-Grader
+```
+
+### **Alternative: Manual Git with Token**
+If GitHub CLI isn't available, you can authenticate git directly:
+```bash
+git remote set-url origin https://ghp_your_token_here@github.com/kpfister44/APUSH-Grader.git
+git push -u origin your-branch-name
+```
+
+**Note**: Replace `ghp_your_token_here` with your actual GitHub Personal Access Token.
 
 ## Testing Status
 
@@ -135,10 +214,6 @@ pytest tests/ --tb=short              # Run with short traceback format
 - **Phase 2B Complete** - Production readiness (rate limiting, logging, usage safeguards, monitoring)
 - **Phase 2C Complete** - Real API testing, documentation, and deployment guides
 - **Phase 3 Complete** - iOS frontend migration to Python backend API, APUSHGraderCore removed
-
-### **📋 Next Phases**
-- **Phase 4 Ready** - Production deployment and monitoring
-- **Future Enhancements** - Web frontend, additional features, optimizations
 
 ### **🔧 Development Environment**
 - **AI Service Configuration**: Switch between mock and real AI (see AI Configuration section below)
@@ -228,117 +303,14 @@ ANTHROPIC_API_KEY=sk-ant-api03-your-key-here
 - **Usage Tracking**: Real-time monitoring via `/usage/summary`
 - **Teacher-Friendly**: Generous limits with clear error messages
 
-#### **Getting an Anthropic API Key**
-1. Visit [console.anthropic.com](https://console.anthropic.com/)
-2. Create account and add payment method
-3. Generate API key in the API Keys section
-4. Set monthly usage limits for cost control
-5. Use the key in your `.env` file
 
-📊 **For detailed cost information and teacher budgeting, see [COST_GUIDE.md](backend/COST_GUIDE.md)**
 
-## Production Deployment
-
-### **Railway Deployment (Recommended)**
-
-Railway provides simple, cost-effective hosting for the Python backend:
-
-#### **Setup Steps**
-1. **Fork/Clone Repository**
-   ```bash
-   git clone <your-repository>
-   cd APUSH-Grader/backend
-   ```
-
-2. **Connect to Railway**
-   - Visit [railway.app](https://railway.app/)
-   - Connect your GitHub repository
-   - Select the `backend/` directory as root
-
-3. **Configure Environment Variables**
-   ```bash
-   # In Railway dashboard, add environment variables:
-   AI_SERVICE_TYPE=anthropic
-   ANTHROPIC_API_KEY=sk-ant-api03-your-key-here
-   ENVIRONMENT=production
-   LOG_LEVEL=INFO
-   ```
-
-4. **Deploy Configuration**
-   ```bash
-   # Railway will automatically detect and run:
-   pip install -r requirements.txt
-   uvicorn app.main:app --host 0.0.0.0 --port $PORT
-   ```
-
-#### **Railway Benefits**
-- **Cost**: ~$5-10/month for small-scale usage
-- **Automatic Deployments**: Push to GitHub → automatic deploy
-- **Built-in Monitoring**: Logs, metrics, and health checks
-- **Custom Domains**: Connect your own domain
-- **SSL**: Automatic HTTPS certificates
-
-### **Alternative Deployment Options**
-
-#### **Heroku**
-```bash
-# Procfile
-web: uvicorn app.main:app --host 0.0.0.0 --port $PORT
-
-# Environment variables in Heroku dashboard
-AI_SERVICE_TYPE=anthropic
-ANTHROPIC_API_KEY=sk-ant-api03-your-key
-```
-
-#### **Docker Deployment**
-```dockerfile
-FROM python:3.10-slim
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-COPY . .
-EXPOSE 8000
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
-```
-
-#### **Self-Hosted**
-```bash
-# On your server
-cd backend
-source venv/bin/activate
-pip install -r requirements.txt
-uvicorn app.main:app --host 0.0.0.0 --port 8000
-
-# Use process manager like PM2 or systemd for production
-```
-
-### **Production Monitoring**
-
-#### **Health Endpoints**
-- `GET /health` - Basic health check
-- `GET /health/detailed` - Service status and configuration
-- `GET /usage/summary` - Daily usage statistics
-
-#### **Logging**
-- **Structured JSON logs** with correlation IDs
-- **Request tracking** with performance timing
-- **AI service monitoring** with success/failure rates
-- **Error logging** with context and stack traces
-
-#### **Monitoring Integration**
-```bash
-# Add these environment variables for enhanced monitoring
-SENTRY_DSN=your-sentry-dsn  # Error tracking
-ANALYTICS_KEY=your-key      # Usage analytics
-```
 
 ### **Security Considerations**
 
 #### **API Key Protection**
 - **Never commit API keys** to version control
 - **Use environment variables** for all secrets
-- **Rotate keys regularly** (monthly recommended)
-- **Set usage limits** in Anthropic console
 
 #### **Rate Limiting**
 - **Built-in protection** against abuse
