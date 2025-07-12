@@ -5,17 +5,23 @@ Defines the contract for AI services that can grade essays.
 """
 
 from abc import ABC, abstractmethod
-from typing import Dict, Any
+import logging
+from typing import Optional
 from app.models.core import EssayType
-from app.services.base.base_service import BaseService
+from app.config.settings import Settings, get_settings
 
 
-class AIService(BaseService, ABC):
+class AIService(ABC):
     """
     Abstract base class for AI grading services.
     
     Provides the interface that all AI services (mock, Anthropic, etc.) must implement.
     """
+    
+    def __init__(self, settings: Optional[Settings] = None):
+        self.settings = settings or get_settings()
+        self.logger = logging.getLogger(self.__class__.__name__)
+        self._validate_configuration()
     
     @abstractmethod
     async def generate_response(

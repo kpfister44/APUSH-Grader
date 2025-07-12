@@ -7,8 +7,8 @@ import json
 import logging
 from typing import Dict, Any
 
-from app.models.core import GradeResponse, RubricItem, GradeBreakdown, EssayType
-from app.services.base.exceptions import ProcessingError
+from app.models.core import GradeResponse, RubricItem, DBQLeqBreakdown, SAQBreakdown, EssayType
+from app.exceptions import ProcessingError
 
 logger = logging.getLogger(__name__)
 
@@ -48,9 +48,13 @@ def _validate_response_structure(data: Dict[str, Any], essay_type: EssayType) ->
         if field not in data:
             raise ProcessingError(f"Missing required field: {field}")
     
-    # Validate breakdown structure
+    # Validate breakdown structure based on essay type
     breakdown = data["breakdown"]
-    required_breakdown_fields = ["thesis", "contextualization", "evidence", "analysis"]
+    
+    if essay_type == EssayType.SAQ:
+        required_breakdown_fields = ["part_a", "part_b", "part_c"]
+    else:  # DBQ and LEQ
+        required_breakdown_fields = ["thesis", "contextualization", "evidence", "analysis"]
     
     for field in required_breakdown_fields:
         if field not in breakdown:
@@ -67,22 +71,33 @@ def _validate_response_structure(data: Dict[str, Any], essay_type: EssayType) ->
 def _build_grade_response(data: Dict[str, Any], essay_type: EssayType) -> GradeResponse:
     """Build GradeResponse from validated data"""
     
-    # Handle potential field name variations (maxScore vs max_score)
     breakdown_data = data["breakdown"]
     
-    # Build rubric items
-    thesis = _build_rubric_item(breakdown_data["thesis"])
-    contextualization = _build_rubric_item(breakdown_data["contextualization"])
-    evidence = _build_rubric_item(breakdown_data["evidence"])
-    analysis = _build_rubric_item(breakdown_data["analysis"])
-    
-    # Build breakdown
-    breakdown = GradeBreakdown(
-        thesis=thesis,
-        contextualization=contextualization,
-        evidence=evidence,
-        analysis=analysis
-    )
+    # Build appropriate breakdown based on essay type
+    if essay_type == EssayType.SAQ:
+        # Build SAQ breakdown
+        part_a = _build_rubric_item(breakdown_data["part_a"])
+        part_b = _build_rubric_item(breakdown_data["part_b"])
+        part_c = _build_rubric_item(breakdown_data["part_c"])
+        
+        breakdown = SAQBreakdown(
+            part_a=part_a,
+            part_b=part_b,
+            part_c=part_c
+        )
+    else:
+        # Build DBQ/LEQ breakdown
+        thesis = _build_rubric_item(breakdown_data["thesis"])
+        contextualization = _build_rubric_item(breakdown_data["contextualization"])
+        evidence = _build_rubric_item(breakdown_data["evidence"])
+        analysis = _build_rubric_item(breakdown_data["analysis"])
+        
+        breakdown = DBQLeqBreakdown(
+            thesis=thesis,
+            contextualization=contextualization,
+            evidence=evidence,
+            analysis=analysis
+        )
     
     # Build main response
     return GradeResponse(

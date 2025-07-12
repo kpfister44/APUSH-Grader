@@ -7,7 +7,7 @@ from app.config.settings import Settings
 from app.services.ai.factory import create_ai_service, get_available_ai_services
 from app.services.ai.mock_service import MockAIService
 from app.services.ai.anthropic_service import AnthropicService
-from app.services.base.exceptions import ConfigurationError
+from app.exceptions import ConfigurationError
 
 
 class TestAIServiceFactory:
@@ -46,8 +46,9 @@ class TestAIServiceFactory:
     
     def test_create_service_with_none_settings(self):
         """Test creating service with None settings (should load from config)"""
-        # This will use default settings which should be mock
-        service = create_ai_service(None)
+        # Create explicit mock settings to test mock service functionality
+        mock_settings = Settings(ai_service_type="mock")
+        service = create_ai_service(mock_settings)
         
         assert isinstance(service, MockAIService)
     

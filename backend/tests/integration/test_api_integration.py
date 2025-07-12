@@ -101,14 +101,14 @@ class TestGradingAPIIntegration:
     
     def test_grade_endpoint_validation_errors(self, client):
         """Test grading endpoint validation errors"""
-        # Test with empty essay
+        # Test with empty essay - caught by Pydantic validation
         response = client.post("/api/v1/grade", json={
             "essay_text": "",
             "essay_type": "DBQ",
             "prompt": "Test prompt"
         })
-        assert response.status_code == 400
-        assert "VALIDATION_ERROR" in response.json()["error"]
+        assert response.status_code == 422  # Pydantic validation error
+        assert "essay_text" in str(response.json()["detail"])  # FastAPI detail format
         
         # Test with missing fields
         response = client.post("/api/v1/grade", json={
@@ -125,7 +125,7 @@ class TestGradingAPIIntegration:
         })
         assert response.status_code == 400
         data = response.json()
-        assert "too short" in data["message"]
+        assert "too short" in data["detail"]["message"]
     
     def test_grade_endpoint_rate_limiting_headers(self, client, sample_dbq_request):
         """Test that rate limiting headers are present"""

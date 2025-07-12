@@ -16,11 +16,7 @@ from app.models.requests.grading import (
     GradingErrorResponse
 )
 from app.models.core import EssayType
-from app.services.base.exceptions import (
-    ValidationError,
-    ProcessingError,
-    APIError
-)
+from app.exceptions import ValidationError, ProcessingError, APIError
 from app.middleware.rate_limiting import limiter
 from app.utils.simple_usage import get_simple_usage_tracker
 from app.utils.grading_workflow import grade_essay_with_validation

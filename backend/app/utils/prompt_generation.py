@@ -77,10 +77,9 @@ IMPORTANT: Return your response as valid JSON with this exact structure:
     "overall_feedback": "<comprehensive feedback>",
     "suggestions": ["<suggestion1>", "<suggestion2>", ...],
     "breakdown": {
-        "thesis": {"score": <number>, "max_score": 1, "feedback": "<feedback>"},
-        "contextualization": {"score": <number>, "max_score": 1, "feedback": "<feedback>"},
-        "evidence": {"score": <number>, "max_score": 1, "feedback": "<feedback>"},
-        "analysis": {"score": 0, "max_score": 0, "feedback": "Not applicable for SAQ"}
+        "part_a": {"score": <number>, "max_score": 1, "feedback": "<feedback>"},
+        "part_b": {"score": <number>, "max_score": 1, "feedback": "<feedback>"},
+        "part_c": {"score": <number>, "max_score": 1, "feedback": "<feedback>"}
     }
 }
 

@@ -11,7 +11,7 @@ from typing import Dict, Any
 
 from app.models.core import EssayType
 from app.services.ai.base import AIService
-from app.services.base.exceptions import ProcessingError
+from app.exceptions import ProcessingError
 
 
 logger = logging.getLogger(__name__)

@@ -9,7 +9,7 @@ from app.services.ai.factory import create_ai_service
 from app.utils.essay_processing import preprocess_essay
 from app.utils.prompt_generation import generate_grading_prompt
 from app.utils.response_processing import process_ai_response
-from app.services.base.exceptions import ValidationError, ProcessingError, APIError
+from app.exceptions import ValidationError, ProcessingError, APIError
 
 logger = logging.getLogger(__name__)
 

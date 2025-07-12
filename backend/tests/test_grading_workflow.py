@@ -5,8 +5,8 @@ from unittest.mock import AsyncMock, patch
 from app.utils.grading_workflow import (
     grade_essay, grade_essay_with_validation, validate_grading_request
 )
-from app.models.core import EssayType, GradeResponse, GradeBreakdown, RubricItem
-from app.services.base.exceptions import ValidationError, ProcessingError, APIError
+from app.models.core import EssayType, GradeResponse, DBQLeqBreakdown, SAQBreakdown, RubricItem
+from app.exceptions import ValidationError, ProcessingError, APIError
 
 
 class TestGradingWorkflow:

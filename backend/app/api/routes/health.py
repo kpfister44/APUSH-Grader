@@ -5,14 +5,14 @@ from typing import Dict, Any
 from fastapi import APIRouter, Depends
 from app.models.requests.health import HealthResponse
 from app.config.settings import Settings
-from app.api.deps import get_app_settings
+from app.config.settings import get_settings
 from app.utils.simple_usage import get_simple_usage_tracker
 
 router = APIRouter()
 
 
 @router.get("/health", response_model=HealthResponse)
-async def health_check(settings: Settings = Depends(get_app_settings)) -> HealthResponse:
+async def health_check(settings: Settings = Depends(get_settings)) -> HealthResponse:
     """
     Enhanced health check endpoint that returns the current status of the application
     and its dependencies.

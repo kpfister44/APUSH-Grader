@@ -121,7 +121,7 @@ class TestResponseProcessing:
     
     def test_process_invalid_json_response(self):
         """Test handling invalid JSON response"""
-        from app.services.base.exceptions import ProcessingError
+        from app.exceptions import ProcessingError
         
         invalid_response = "This is not JSON"
         

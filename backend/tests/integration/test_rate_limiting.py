@@ -18,10 +18,11 @@ class TestRateLimiting:
         
     def test_rate_limiting_normal_usage(self):
         """Test that normal usage works within rate limits"""
-        # Create a sample grading request
+        # Create a sample grading request with proper word count for LEQ (200+ words)
+        long_essay = " ".join(["This is a sample essay about the causes of the American Revolution. The colonists were upset about taxation without representation, which led to protests and eventually war. The British imposed numerous taxes and acts that angered the colonists including the Stamp Act, Tea Act, and Intolerable Acts. Colonial resistance grew through boycotts, protests, and the formation of groups like the Sons of Liberty."] * 8)  # Repeat to get 200+ words
         request_data = {
-            "essay_text": "This is a sample essay about the causes of the American Revolution. The colonists were upset about taxation without representation, which led to protests and eventually war.",
-            "essay_type": "LEQ",
+            "essay_text": long_essay,
+            "essay_type": "LEQ", 
             "prompt": "Evaluate the causes of the American Revolution."
         }
         
@@ -32,9 +33,10 @@ class TestRateLimiting:
             
     def test_rate_limiting_per_minute_exceeded(self):
         """Test that rate limiting works when per-minute limit is exceeded"""
-        # Create a sample grading request
+        # Create a sample grading request with proper word count for SAQ (50+ words)
+        saq_essay = "This is a longer SAQ response about the causes of the American Revolution. The colonists were upset about taxation without representation, which led to protests and eventually war. The British imposed numerous taxes including the Stamp Act and Tea Act that angered colonists and led to resistance through boycotts and protests."
         request_data = {
-            "essay_text": "Short essay for testing rate limits.",
+            "essay_text": saq_essay,
             "essay_type": "SAQ",
             "prompt": "Test prompt"
         }

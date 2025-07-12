@@ -5,7 +5,7 @@ Simplified for hobby project serving 2-12 teachers.
 
 from enum import Enum
 from pydantic import BaseModel, computed_field
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict, Any, Union
 
 
 # Essay Types
@@ -122,13 +122,25 @@ class GradeResponse(BaseModel):
             return "Below Basic"
 
 
-class GradeBreakdown(BaseModel):
-    """Detailed rubric breakdown for DBQ/LEQ essays"""
+class DBQLeqBreakdown(BaseModel):
+    """Detailed rubric breakdown for DBQ/LEQ essays (6-point rubric)"""
     
     thesis: RubricItem
     contextualization: RubricItem
     evidence: RubricItem
     analysis: RubricItem
+
+
+class SAQBreakdown(BaseModel):
+    """Detailed rubric breakdown for SAQ essays (3-point rubric)"""
+    
+    part_a: RubricItem
+    part_b: RubricItem
+    part_c: RubricItem
+
+
+# Union type for essay breakdowns
+GradeBreakdown = Union[DBQLeqBreakdown, SAQBreakdown]
 
 
 # Custom Exceptions

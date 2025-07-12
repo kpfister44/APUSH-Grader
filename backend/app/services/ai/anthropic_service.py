@@ -12,7 +12,7 @@ from anthropic import Anthropic
 
 from app.models.core import EssayType
 from app.services.ai.base import AIService
-from app.services.base.exceptions import ProcessingError, ValidationError
+from app.exceptions import ProcessingError, ValidationError
 logger = logging.getLogger(__name__)
 
 

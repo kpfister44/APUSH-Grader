@@ -11,7 +11,7 @@ from app.config.settings import Settings
 from app.services.ai.base import AIService
 from app.services.ai.mock_service import MockAIService
 from app.services.ai.anthropic_service import AnthropicService
-from app.services.base.exceptions import ConfigurationError
+from app.exceptions import ConfigurationError
 
 
 logger = logging.getLogger(__name__)
