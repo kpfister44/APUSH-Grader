@@ -9,7 +9,7 @@ import logging
 import asyncio
 from typing import Dict, Any
 
-from app.models.core.essay_types import EssayType
+from app.models.core import EssayType
 from app.services.ai.base import AIService
 from app.services.base.exceptions import ProcessingError
 

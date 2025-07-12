@@ -1,1 +1,0 @@
-"""Monitoring services for the APUSH Grader backend"""

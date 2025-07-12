@@ -25,7 +25,7 @@ struct GradingRequest: Codable {
     
     // New initializer for SAQ with parts
     init(saqParts: SAQParts, essayType: String, prompt: String) {
-        self.essayText = nil
+        self.essayText = ""  // Backend will use saq_parts instead
         self.essayType = essayType
         self.prompt = prompt
         self.saqParts = saqParts
@@ -78,6 +78,10 @@ struct ErrorResponse: Codable {
     let error: String
     let message: String
     let details: [String: String]?
+}
+
+struct BackendErrorResponse: Codable {
+    let detail: ErrorResponse
 }
 
 // MARK: - Network Errors
@@ -175,8 +179,10 @@ class NetworkService {
                 throw NetworkError.rateLimited
                 
             case 400...499:
-                // Client error - try to decode error response
-                if let errorResponse = try? JSONDecoder().decode(ErrorResponse.self, from: data) {
+                // Client error - try to decode backend error response
+                if let backendError = try? JSONDecoder().decode(BackendErrorResponse.self, from: data) {
+                    throw NetworkError.serverError(backendError.detail.message)
+                } else if let errorResponse = try? JSONDecoder().decode(ErrorResponse.self, from: data) {
                     throw NetworkError.serverError(errorResponse.message)
                 } else {
                     throw NetworkError.serverError("Client error: \(httpResponse.statusCode)")
@@ -184,7 +190,9 @@ class NetworkService {
                 
             case 500...599:
                 // Server error
-                if let errorResponse = try? JSONDecoder().decode(ErrorResponse.self, from: data) {
+                if let backendError = try? JSONDecoder().decode(BackendErrorResponse.self, from: data) {
+                    throw NetworkError.serverError(backendError.detail.message)
+                } else if let errorResponse = try? JSONDecoder().decode(ErrorResponse.self, from: data) {
                     throw NetworkError.serverError(errorResponse.message)
                 } else {
                     throw NetworkError.serverError("Server error: \(httpResponse.statusCode)")
@@ -259,8 +267,10 @@ class NetworkService {
                 throw NetworkError.rateLimited
                 
             case 400...499:
-                // Client error - try to decode error response
-                if let errorResponse = try? JSONDecoder().decode(ErrorResponse.self, from: data) {
+                // Client error - try to decode backend error response
+                if let backendError = try? JSONDecoder().decode(BackendErrorResponse.self, from: data) {
+                    throw NetworkError.serverError(backendError.detail.message)
+                } else if let errorResponse = try? JSONDecoder().decode(ErrorResponse.self, from: data) {
                     throw NetworkError.serverError(errorResponse.message)
                 } else {
                     throw NetworkError.serverError("Client error: \(httpResponse.statusCode)")
@@ -268,7 +278,9 @@ class NetworkService {
                 
             case 500...599:
                 // Server error
-                if let errorResponse = try? JSONDecoder().decode(ErrorResponse.self, from: data) {
+                if let backendError = try? JSONDecoder().decode(BackendErrorResponse.self, from: data) {
+                    throw NetworkError.serverError(backendError.detail.message)
+                } else if let errorResponse = try? JSONDecoder().decode(ErrorResponse.self, from: data) {
                     throw NetworkError.serverError(errorResponse.message)
                 } else {
                     throw NetworkError.serverError("Server error: \(httpResponse.statusCode)")

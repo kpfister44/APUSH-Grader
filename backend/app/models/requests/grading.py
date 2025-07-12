@@ -8,8 +8,8 @@ from typing import Optional, List, Dict, Any
 from pydantic import BaseModel, Field, validator, root_validator
 from enum import Enum
 
-from app.models.core.essay_types import EssayType
-from app.models.core.grade_models import GradeResponse
+from app.models.core import EssayType
+from app.models.core import GradeResponse
 
 
 class SAQParts(BaseModel):
@@ -54,7 +54,6 @@ class GradingRequest(BaseModel):
     essay_text: Optional[str] = Field(
         None,
         description="The student's essay text to be graded (for DBQ/LEQ or legacy SAQ)",
-        min_length=1,
         max_length=10000
     )
     
@@ -75,12 +74,7 @@ class GradingRequest(BaseModel):
         description="SAQ essay parts (Part A, B, C) - used when essay_type is SAQ"
     )
     
-    @validator('essay_text')
-    def validate_essay_text(cls, v):
-        """Validate essay text is not empty or just whitespace."""
-        if v is not None and (not v or not v.strip()):
-            raise ValueError("Essay text cannot be empty or just whitespace")
-        return v.strip() if v else None
+    # Note: essay_text validation moved to root_validator to handle SAQ vs non-SAQ logic
     
     @validator('prompt')
     def validate_prompt(cls, v):
@@ -107,18 +101,23 @@ class GradingRequest(BaseModel):
     
     @root_validator(skip_on_failure=True)
     def validate_essay_content(cls, values):
-        """Validate that SAQ essays have either saq_parts or essay_text."""
+        """Validate essay content requirements based on essay type."""
         essay_type = values.get('essay_type')
         essay_text = values.get('essay_text')
         saq_parts = values.get('saq_parts')
         
         if essay_type == EssayType.SAQ:
-            if not saq_parts and not essay_text:
+            # SAQ can use either saq_parts or essay_text
+            if not saq_parts and (not essay_text or not essay_text.strip()):
                 raise ValueError("SAQ essays require either saq_parts or essay_text")
         else:
-            # For non-SAQ essays, require essay_text
-            if not essay_text:
+            # For non-SAQ essays, require non-empty essay_text
+            if not essay_text or not essay_text.strip():
                 raise ValueError("DBQ and LEQ essays require essay_text")
+        
+        # Clean essay_text if it exists
+        if essay_text:
+            values['essay_text'] = essay_text.strip()
         
         return values
     
@@ -268,7 +267,7 @@ class GradingResponse(BaseModel):
             percentage=grade_response.percentage_score,
             letter_grade=grade_response.letter_grade,
             performance_level=grade_response.performance_level,
-            breakdown=grade_response.breakdown,
+            breakdown=grade_response.breakdown.model_dump() if grade_response.breakdown else {},
             overall_feedback=grade_response.overall_feedback,
             suggestions=grade_response.suggestions,
             warnings=warnings or [],

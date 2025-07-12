@@ -1,16 +1,21 @@
 """FastAPI application for APUSH Grader backend"""
 
+import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config.settings import get_settings
 from app.api.routes import health_router, grading_router
 from app.middleware.rate_limiting import limiter, custom_rate_limit_handler
-from app.middleware.logging import RequestLoggingMiddleware
-from app.middleware.usage_limiting import UsageLimitingMiddleware
 from slowapi.errors import RateLimitExceeded
 
 # Get application settings
 settings = get_settings()
+
+# Configure simple logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
 
 # Create FastAPI application
 app = FastAPI(
@@ -24,12 +29,6 @@ app = FastAPI(
 # Add rate limiting
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, custom_rate_limit_handler)
-
-# Add logging middleware (should be first to capture all requests)
-app.add_middleware(RequestLoggingMiddleware)
-
-# Add usage limiting middleware (before CORS but after logging)
-app.add_middleware(UsageLimitingMiddleware)
 
 # Add CORS middleware
 app.add_middleware(

@@ -6,7 +6,7 @@ Defines the contract for AI services that can grade essays.
 
 from abc import ABC, abstractmethod
 from typing import Dict, Any
-from app.models.core.essay_types import EssayType
+from app.models.core import EssayType
 from app.services.base.base_service import BaseService
 
 

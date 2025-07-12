@@ -1,1 +1,0 @@
-"""Logging services for the APUSH Grader backend"""

@@ -10,14 +10,10 @@ from typing import Dict, Any
 
 from anthropic import Anthropic
 
-from app.models.core.essay_types import EssayType
+from app.models.core import EssayType
 from app.services.ai.base import AIService
 from app.services.base.exceptions import ProcessingError, ValidationError
-from app.services.logging.structured_logger import get_logger
-
-
 logger = logging.getLogger(__name__)
-structured_logger = get_logger(__name__)
 
 
 class AnthropicService(AIService):
@@ -72,13 +68,7 @@ class AnthropicService(AIService):
             raise ValidationError("Anthropic client not initialized - check API key configuration")
         
         try:
-            structured_logger.info(
-                "Starting Anthropic API call",
-                essay_type=essay_type.value,
-                model="claude-3-5-sonnet-20241022",
-                max_tokens=1500,
-                temperature=0.3
-            )
+            logger.info(f"Starting Anthropic API call for {essay_type.value} essay")
             
             start_time = time.time()
             
@@ -102,15 +92,7 @@ class AnthropicService(AIService):
             # Extract response content
             response_content = message.content[0].text
             
-            # Log successful API call with structured data
-            structured_logger.log_ai_service_call(
-                service_type="anthropic",
-                duration_ms=api_duration_ms,
-                success=True,
-                essay_type=essay_type.value,
-                response_length=len(response_content),
-                model="claude-3-5-sonnet-20241022"
-            )
+            logger.info(f"Anthropic API call successful ({api_duration_ms}ms, {len(response_content)} chars)")
             
             return response_content
             
@@ -118,15 +100,7 @@ class AnthropicService(AIService):
             # Calculate duration for failed call
             api_duration_ms = (time.time() - start_time) * 1000 if 'start_time' in locals() else 0
             
-            # Log failed API call
-            structured_logger.log_ai_service_call(
-                service_type="anthropic",
-                duration_ms=api_duration_ms,
-                success=False,
-                essay_type=essay_type.value,
-                error_message=str(e),
-                model="claude-3-5-sonnet-20241022"
-            )
+            logger.error(f"Anthropic API call failed ({api_duration_ms}ms): {str(e)}")
             
             raise ProcessingError(f"Anthropic AI service failed: {str(e)}")
     

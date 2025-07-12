@@ -15,8 +15,8 @@ import os
 import json
 
 from app.config.settings import Settings
-from app.models.core.essay_types import EssayType
-from app.services.dependencies.service_locator import ServiceLocator
+from app.models.core import EssayType
+from app.utils.grading_workflow import grade_essay_with_validation
 
 
 # Check if API key is available for real API testing
@@ -73,24 +73,19 @@ class TestAnthropicRealAPIMinimal:
         3. The response structure is complete and valid
         4. The system processes real AI responses correctly
         """
-        # Use ServiceScope to temporarily configure real API settings
-        from app.services.dependencies.service_locator import ServiceScope, _configure_default_services
+        # Set environment to use real Anthropic service
+        os.environ["AI_SERVICE_TYPE"] = "anthropic"
+        os.environ["ANTHROPIC_API_KEY"] = ANTHROPIC_API_KEY
         
-        with ServiceScope(real_anthropic_settings) as service_locator:
-            # Configure all default services
-            _configure_default_services(service_locator)
-            
-            api_coordinator = service_locator.get_api_coordinator()
-            
-            # Execute complete workflow with real Anthropic API
-            print(f"\n🔄 Making real Anthropic API call for LEQ essay...")
-            print(f"   Essay length: {len(high_quality_leq_essay.split())} words")
-            
-            result = await api_coordinator.grade_essay(
-                essay_text=high_quality_leq_essay,
-                essay_type=EssayType.LEQ,
-                prompt=leq_prompt
-            )
+        # Execute complete workflow with real Anthropic API using simplified architecture
+        print(f"\n🔄 Making real Anthropic API call for LEQ essay...")
+        print(f"   Essay length: {len(high_quality_leq_essay.split())} words")
+        
+        result = await grade_essay_with_validation(
+            essay_text=high_quality_leq_essay,
+            essay_type=EssayType.LEQ,
+            prompt=leq_prompt
+        )
         
         # Validate basic result structure (core GradeResponse fields)
         assert hasattr(result, 'score'), "Result missing 'score' attribute"
@@ -212,24 +207,19 @@ class TestAnthropicRealAPIMinimal:
         
         saq_prompt = "a - Briefly describe one British government policy enacted in colonial North America from 1763 to 1776. b - Briefly explain one similarity OR difference in how TWO groups in North America responded to a British policy from 1763 to 1783. c - Briefly explain how one specific historical development contributed to the American colonists' victory over Great Britain from 1775 to 1783."
         
-        # Use ServiceScope to temporarily configure real API settings
-        from app.services.dependencies.service_locator import ServiceScope, _configure_default_services
+        # Set environment to use real Anthropic service
+        os.environ["AI_SERVICE_TYPE"] = "anthropic"
+        os.environ["ANTHROPIC_API_KEY"] = ANTHROPIC_API_KEY
         
-        with ServiceScope(real_anthropic_settings) as service_locator:
-            # Configure all default services
-            _configure_default_services(service_locator)
-            
-            api_coordinator = service_locator.get_api_coordinator()
-            
-            # Execute complete workflow with real Anthropic API
-            print(f"\n🔄 Making real Anthropic API call for SAQ essay...")
-            print(f"   Essay length: {len(saq_essay.split())} words")
-            
-            result = await api_coordinator.grade_essay(
-                essay_text=saq_essay,
-                essay_type=EssayType.SAQ,
-                prompt=saq_prompt
-            )
+        # Execute complete workflow with real Anthropic API using simplified architecture
+        print(f"\n🔄 Making real Anthropic API call for SAQ essay...")
+        print(f"   Essay length: {len(saq_essay.split())} words")
+        
+        result = await grade_essay_with_validation(
+            essay_text=saq_essay,
+            essay_type=EssayType.SAQ,
+            prompt=saq_prompt
+        )
         
         # Validate basic result structure (core GradeResponse fields)
         assert hasattr(result, 'score'), "Result missing 'score' attribute"

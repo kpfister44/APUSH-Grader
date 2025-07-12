@@ -15,21 +15,19 @@ from app.models.requests.grading import (
     GradingResponse, 
     GradingErrorResponse
 )
-from app.models.core.essay_types import EssayType
-from app.services.base.protocols import APICoordinatorProtocol
+from app.models.core import EssayType
 from app.services.base.exceptions import (
     ValidationError,
     ProcessingError,
     APIError
 )
-from app.services.dependencies.service_locator import get_service_locator
-from app.api.deps import get_api_coordinator
 from app.middleware.rate_limiting import limiter
-from app.services.logging.structured_logger import get_logger, PerformanceTimer
+from app.utils.simple_usage import get_simple_usage_tracker
+from app.utils.grading_workflow import grade_essay_with_validation
 
 
 logger = logging.getLogger(__name__)
-structured_logger = get_logger(__name__)
+usage_tracker = get_simple_usage_tracker()
 router = APIRouter(prefix="/api/v1", tags=["grading"])
 
 
@@ -66,10 +64,10 @@ C) {grading_request.saq_parts.part_c}"""
     description="""
     Grade a student essay using AI-powered analysis.
     
-    This endpoint orchestrates the complete grading workflow:
+    This endpoint uses a simplified grading workflow:
     1. Preprocesses and validates the essay text
     2. Generates AI prompts based on essay type and rubric
-    3. Calls AI grading service (currently mock, will be real in Phase 2)
+    3. Calls AI grading service (Anthropic Claude 3.5 Sonnet)
     4. Processes and formats the response
     
     **Essay Types:**
@@ -92,8 +90,7 @@ C) {grading_request.saq_parts.part_c}"""
 @limiter.limit("50/hour")
 async def grade_essay(
     request: Request,
-    grading_request: GradingRequest,
-    api_coordinator: APICoordinatorProtocol = Depends(get_api_coordinator)
+    grading_request: GradingRequest
 ) -> GradingResponse:
     """
     Grade an essay using the complete grading workflow.
@@ -114,26 +111,33 @@ async def grade_essay(
     try:
         # Get the essay text (combined for SAQ parts or regular text)
         essay_text = _combine_saq_parts(grading_request)
+        word_count = len(essay_text.split())
         
-        # Enhanced structured logging
-        structured_logger.info(
-            "Grading request received",
-            essay_type=grading_request.essay_type.value,
-            essay_length=len(essay_text),
-            prompt_length=len(grading_request.prompt),
-            has_saq_parts=grading_request.saq_parts is not None
-        )
+        # Get client IP for usage tracking
+        client_ip = request.client.host if request.client else "unknown"
         
-        # Use performance timer for the grading workflow
-        with PerformanceTimer(structured_logger, "essay_grading_workflow", 
-                            essay_type=grading_request.essay_type.value):
-            
-            # Call the API coordinator to handle the complete workflow  
-            grade_response = await api_coordinator.grade_essay(
-                essay_text=essay_text,
-                essay_type=grading_request.essay_type,
-                prompt=grading_request.prompt
+        # Check usage limits
+        can_process, reason = usage_tracker.can_process_essay(client_ip, word_count)
+        if not can_process:
+            logger.warning(f"Usage limit exceeded for {client_ip}: {reason}")
+            raise HTTPException(
+                status_code=429,
+                detail={
+                    "error": "Daily usage limit exceeded",
+                    "message": f"{reason}. This helps manage costs and ensures the service remains available for all teachers.",
+                    "limit_type": "daily_usage"
+                }
             )
+        
+        # Simple logging
+        logger.info(f"Grading {grading_request.essay_type.value} essay ({word_count} words) for {client_ip}")
+        
+        # Call the simplified grading workflow
+        grade_response = await grade_essay_with_validation(
+            essay_text=essay_text,
+            essay_type=grading_request.essay_type,
+            prompt=grading_request.prompt
+        )
         
         # Calculate processing time
         processing_time_ms = int((time.time() - start_time) * 1000)
@@ -149,25 +153,14 @@ async def grade_essay(
             processing_time_ms=processing_time_ms
         )
         
-        # Log successful grading with structured data
-        structured_logger.log_essay_grading(
-            essay_type=grading_request.essay_type.value,
-            word_count=api_response.word_count,
-            processing_time_ms=processing_time_ms,
-            score=api_response.score,
-            max_score=api_response.max_score
-        )
+        # Record successful processing and log
+        usage_tracker.record_essay_processed(client_ip, grading_request.essay_type.value, word_count)
+        logger.info(f"Successfully graded essay: {api_response.score}/{api_response.max_score} ({processing_time_ms}ms)")
         
         return api_response
         
     except ValidationError as e:
-        essay_text_for_logging = grading_request.essay_text or ""
-        structured_logger.log_error(
-            error_type="VALIDATION_ERROR",
-            error_message=str(e),
-            essay_type=grading_request.essay_type.value,
-            essay_length=len(essay_text_for_logging)
-        )
+        logger.error(f"Validation error for {grading_request.essay_type.value}: {str(e)}")
         error_response = GradingErrorResponse(
             error="VALIDATION_ERROR",
             message=str(e),
@@ -176,13 +169,7 @@ async def grade_essay(
         raise HTTPException(status_code=400, detail=error_response.dict())
         
     except ProcessingError as e:
-        essay_text_for_logging = grading_request.essay_text or ""
-        structured_logger.log_error(
-            error_type="PROCESSING_ERROR",
-            error_message=str(e),
-            essay_type=grading_request.essay_type.value,
-            essay_length=len(essay_text_for_logging)
-        )
+        logger.error(f"Processing error for {grading_request.essay_type.value}: {str(e)}")
         error_response = GradingErrorResponse(
             error="PROCESSING_ERROR", 
             message=str(e),
@@ -191,13 +178,7 @@ async def grade_essay(
         raise HTTPException(status_code=422, detail=error_response.dict())
         
     except APIError as e:
-        essay_text_for_logging = grading_request.essay_text or ""
-        structured_logger.log_error(
-            error_type="API_ERROR",
-            error_message=str(e),
-            essay_type=grading_request.essay_type.value,
-            essay_length=len(essay_text_for_logging)
-        )
+        logger.error(f"API error for {grading_request.essay_type.value}: {str(e)}")
         error_response = GradingErrorResponse(
             error="API_ERROR",
             message=str(e),
@@ -206,14 +187,7 @@ async def grade_essay(
         raise HTTPException(status_code=500, detail=error_response.dict())
         
     except Exception as e:
-        essay_text_for_logging = grading_request.essay_text or ""
-        structured_logger.log_error(
-            error_type="INTERNAL_ERROR",
-            error_message=str(e),
-            essay_type=grading_request.essay_type.value,
-            essay_length=len(essay_text_for_logging),
-            unexpected=True
-        )
+        logger.error(f"Unexpected error for {grading_request.essay_type.value}: {str(e)}")
         error_response = GradingErrorResponse(
             error="INTERNAL_ERROR",
             message="An internal server error occurred",
@@ -235,20 +209,24 @@ async def get_grading_status() -> Dict[str, Any]:
         Status information including service availability and configuration
     """
     try:
-        # Check if API coordinator can be resolved
-        service_locator = get_service_locator()
-        api_coordinator = service_locator.get_api_coordinator()
+        # Check simplified workflow components
+        from app.utils import essay_processing, prompt_generation, response_processing, grading_workflow
+        from app.services.ai.factory import create_ai_service
+        
+        # Test that we can create AI service
+        ai_service = create_ai_service()
         
         return {
             "status": "operational",
             "services": {
-                "api_coordinator": "available",
-                "essay_processor": "available", 
-                "prompt_generator": "available",
-                "response_processor": "available"
+                "grading_workflow": "available",
+                "essay_processing": "available", 
+                "prompt_generation": "available",
+                "response_processing": "available",
+                "ai_service": "available"
             },
             "supported_essay_types": ["DBQ", "LEQ", "SAQ"],
-            "mode": "mock_ai"  # Will change to "production" in Phase 2
+            "mode": "simplified_architecture"
         }
         
     except Exception as e:
@@ -257,6 +235,6 @@ async def get_grading_status() -> Dict[str, Any]:
             "status": "degraded",
             "error": str(e),
             "services": {
-                "api_coordinator": "unavailable"
+                "grading_workflow": "unavailable"
             }
         }
