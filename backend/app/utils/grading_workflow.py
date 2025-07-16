@@ -4,7 +4,7 @@ Replaces complex API coordinator with direct function calls.
 """
 
 import logging
-from app.models.core import EssayType, GradeResponse
+from app.models.core import EssayType, SAQType, GradeResponse
 from app.services.ai.factory import create_ai_service
 from app.utils.essay_processing import preprocess_essay
 from app.utils.prompt_generation import generate_grading_prompt
@@ -14,7 +14,7 @@ from app.exceptions import ValidationError, ProcessingError, APIError
 logger = logging.getLogger(__name__)
 
 
-async def grade_essay(essay_text: str, essay_type: EssayType, prompt: str) -> GradeResponse:
+async def grade_essay(essay_text: str, essay_type: EssayType, prompt: str, saq_type: SAQType = None) -> GradeResponse:
     """
     Complete essay grading workflow using simplified utilities.
     
@@ -22,6 +22,7 @@ async def grade_essay(essay_text: str, essay_type: EssayType, prompt: str) -> Gr
         essay_text: The student's essay text
         essay_type: The type of essay (DBQ, LEQ, SAQ)
         prompt: The essay question/prompt
+        saq_type: SAQ subtype (optional, only used for SAQ essays)
         
     Returns:
         GradeResponse with scores, feedback, and breakdown
@@ -47,7 +48,7 @@ async def grade_essay(essay_text: str, essay_type: EssayType, prompt: str) -> Gr
         # Step 2: Generate AI prompts
         logger.debug("Step 2: Generating AI prompts")
         system_prompt, user_message = generate_grading_prompt(
-            essay_text, essay_type, prompt, preprocessing_result
+            essay_text, essay_type, prompt, preprocessing_result, saq_type
         )
         
         # Step 3: Call AI service
@@ -101,7 +102,7 @@ def validate_grading_request(essay_text: str, essay_type: EssayType, prompt: str
         raise ValidationError("Essay prompt is too long (max 5,000 characters)")
 
 
-async def grade_essay_with_validation(essay_text: str, essay_type: EssayType, prompt: str) -> GradeResponse:
+async def grade_essay_with_validation(essay_text: str, essay_type: EssayType, prompt: str, saq_type: SAQType = None) -> GradeResponse:
     """
     Grade essay with input validation.
     Convenience function that combines validation and grading.
@@ -110,4 +111,4 @@ async def grade_essay_with_validation(essay_text: str, essay_type: EssayType, pr
     validate_grading_request(essay_text, essay_type, prompt)
     
     # Perform grading
-    return await grade_essay(essay_text, essay_type, prompt)
+    return await grade_essay(essay_text, essay_type, prompt, saq_type)
