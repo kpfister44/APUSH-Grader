@@ -140,8 +140,13 @@ python manual_essay_tester.py
 - Set `ANTHROPIC_API_KEY` environment variable to use real AI grading
 - Real AI costs ~$0.02-0.03 per essay
 
-**SAQ Type Testing**: Test specific SAQ types with:
+**SAQ Type Testing**: Test specific SAQ types with type differentiation:
 ```bash
+# Test different SAQ types with simplified syntax
+python manual_essay_tester.py --sample saq stimulus           # Test stimulus SAQ
+python manual_essay_tester.py --sample saq non_stimulus       # Test non-stimulus SAQ
+python manual_essay_tester.py --sample saq secondary_comparison # Test secondary comparison SAQ
+
 # Test different SAQ types with specific files
 python manual_essay_tester.py sample_essays/saq_stimulus_essay.txt saq sample_essays/prompts/saq_stimulus_prompt.txt
 python manual_essay_tester.py sample_essays/saq_non_stimulus_essay.txt saq sample_essays/prompts/saq_non_stimulus_prompt.txt
@@ -231,17 +236,23 @@ git push -u origin your-branch-name
 ## Essay Types Supported
 - **DBQ** (Document-Based Question) - 6 points
 - **LEQ** (Long Essay Question) - 6 points  
-- **SAQ** (Short Answer Question) - 3 points
+- **SAQ** (Short Answer Question) - 3 points with **type differentiation**:
   - **Stimulus SAQ** - Uses primary/secondary source document for analysis
   - **Non-Stimulus SAQ** - Pure text-based questions without accompanying sources
   - **Secondary Stimulus Comparison SAQ** - Compares contrasting historical interpretations
+
+### **SAQ Type Differentiation**
+The backend now supports specialized grading for different SAQ types with type-specific AI prompts:
+- **Stimulus SAQ**: Evaluates source analysis skills and contextualization
+- **Non-Stimulus SAQ**: Focuses on historical content knowledge and evidence quality
+- **Secondary Comparison SAQ**: Assesses historiographical understanding and interpretation analysis
 
 ## Current Status - Backend Simplification COMPLETE ✅
 
 ### **✅ Python Backend (PRODUCTION READY + FULLY SIMPLIFIED)**
 - **Complete FastAPI Backend** - Full grading workflow with simplified architecture
 - **Simplified Infrastructure** - Rate limiting, basic logging, simple usage tracking (93% complexity reduction)
-- **Consolidated Models** - Core models unified with proper SAQ/DBQ/LEQ support (55% complexity reduction)
+- **Consolidated Models** - Core models unified with proper SAQ/DBQ/LEQ support + SAQ type differentiation (55% complexity reduction)
 - **API Endpoints** - POST /api/v1/grade (rate limited), /health, /usage/summary
 - **Real AI Integration** - Anthropic Claude 3.5 Sonnet with comprehensive testing
 - **Simplified Service Architecture** - Direct utility functions replacing complex dependency injection (75% complexity reduction)
@@ -398,3 +409,4 @@ DEBUG=false
 - **Clean Architecture**: APUSHGraderCore completely removed, Python backend is single source of truth
 - **Hobby Project Scale**: Infrastructure simplified for 2-12 teacher usage, not enterprise scale
 - **Model Structure**: Consolidated to 3 files (core.py, processing.py, requests/) vs original 12 files
+- **SAQ Type Differentiation**: Backend supports specialized grading for stimulus, non-stimulus, and secondary comparison SAQs
