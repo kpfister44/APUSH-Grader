@@ -8,7 +8,7 @@ from typing import Optional, List, Dict, Any
 from pydantic import BaseModel, Field, validator, root_validator
 from enum import Enum
 
-from app.models.core import EssayType
+from app.models.core import EssayType, SAQType
 from app.models.core import GradeResponse
 
 
@@ -74,6 +74,11 @@ class GradingRequest(BaseModel):
         description="SAQ essay parts (Part A, B, C) - used when essay_type is SAQ"
     )
     
+    saq_type: Optional[SAQType] = Field(
+        None,
+        description="SAQ subtype (stimulus, non_stimulus, secondary_comparison) - used when essay_type is SAQ"
+    )
+    
     # Note: essay_text validation moved to root_validator to handle SAQ vs non-SAQ logic
     
     @validator('prompt')
@@ -96,6 +101,20 @@ class GradingRequest(BaseModel):
         elif v is not None:
             # For non-SAQ essays, saq_parts should not be provided
             raise ValueError("saq_parts can only be used with SAQ essay type")
+        
+        return v
+    
+    @validator('saq_type')
+    def validate_saq_type(cls, v, values):
+        """Validate SAQ type is provided when essay_type is SAQ."""
+        essay_type = values.get('essay_type')
+        
+        if essay_type == EssayType.SAQ:
+            # For SAQ, saq_type is optional but recommended
+            pass
+        elif v is not None:
+            # For non-SAQ essays, saq_type should not be provided
+            raise ValueError("saq_type can only be used with SAQ essay type")
         
         return v
     
@@ -123,7 +142,8 @@ class GradingRequest(BaseModel):
     
     class Config:
         json_encoders = {
-            EssayType: lambda v: v.value
+            EssayType: lambda v: v.value,
+            SAQType: lambda v: v.value
         }
         
         schema_extra = {
@@ -143,6 +163,7 @@ class GradingRequest(BaseModel):
                     "value": {
                         "essay_type": "SAQ",
                         "prompt": "Use the image above to answer parts A, B, and C.",
+                        "saq_type": "stimulus",
                         "saq_parts": {
                             "part_a": "The Second Great Awakening was a religious revival movement in the early 1800s that emphasized personal salvation.",
                             "part_b": "The Second Great Awakening led to increased participation in reform movements like abolition and temperance.",

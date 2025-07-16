@@ -132,7 +132,8 @@ async def grade_essay(
         grade_response = await grade_essay_with_validation(
             essay_text=essay_text,
             essay_type=grading_request.essay_type,
-            prompt=grading_request.prompt
+            prompt=grading_request.prompt,
+            saq_type=grading_request.saq_type
         )
         
         # Calculate processing time

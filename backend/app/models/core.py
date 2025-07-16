@@ -37,6 +37,35 @@ class EssayType(str, Enum):
         return scores[self.value]
 
 
+# SAQ Type Differentiation
+class SAQType(str, Enum):
+    """SAQ type enumeration for different question formats"""
+    
+    STIMULUS = "stimulus"
+    NON_STIMULUS = "non_stimulus"
+    SECONDARY_COMPARISON = "secondary_comparison"
+    
+    @property
+    def description(self) -> str:
+        """Get SAQ type description"""
+        descriptions = {
+            "stimulus": "Stimulus-based SAQ with primary/secondary source analysis",
+            "non_stimulus": "Non-stimulus SAQ with pure content questions",
+            "secondary_comparison": "Secondary stimulus comparison SAQ with historiographical analysis"
+        }
+        return descriptions[self.value]
+    
+    @property
+    def display_name(self) -> str:
+        """Get user-friendly display name"""
+        names = {
+            "stimulus": "Source Analysis",
+            "non_stimulus": "Content Question",
+            "secondary_comparison": "Historical Comparison"
+        }
+        return names[self.value]
+
+
 # AI Provider Configuration 
 class Provider(str, Enum):
     """AI provider enumeration"""

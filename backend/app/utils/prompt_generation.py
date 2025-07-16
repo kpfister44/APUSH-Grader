@@ -4,28 +4,35 @@ Replaces complex service with direct functions.
 """
 
 import logging
-from app.models.core import EssayType
+from app.models.core import EssayType, SAQType
 from app.models.processing import PreprocessingResult
 
 logger = logging.getLogger(__name__)
 
 
-def generate_grading_prompt(essay_text: str, essay_type: EssayType, prompt: str, preprocessing_result: PreprocessingResult) -> tuple[str, str]:
+def generate_grading_prompt(essay_text: str, essay_type: EssayType, prompt: str, preprocessing_result: PreprocessingResult, saq_type: SAQType = None) -> tuple[str, str]:
     """
     Generate system prompt and user message for AI grading.
+    
+    Args:
+        essay_text: The essay text to grade
+        essay_type: Type of essay (DBQ, LEQ, SAQ)
+        prompt: The original prompt/question
+        preprocessing_result: Essay preprocessing results
+        saq_type: SAQ subtype (only used when essay_type is SAQ)
     
     Returns:
         Tuple of (system_prompt, user_message)
     """
-    system_prompt = _get_system_prompt(essay_type)
+    system_prompt = _get_system_prompt(essay_type, saq_type)
     user_message = _build_user_message(essay_text, essay_type, prompt, preprocessing_result)
     
-    logger.info(f"Generated prompts for {essay_type.value} grading")
+    logger.info(f"Generated prompts for {essay_type.value} grading" + (f" ({saq_type.value})" if saq_type else ""))
     return system_prompt, user_message
 
 
-def _get_system_prompt(essay_type: EssayType) -> str:
-    """Get system prompt for essay type"""
+def _get_system_prompt(essay_type: EssayType, saq_type: SAQType = None) -> str:
+    """Get system prompt for essay type and SAQ subtype"""
     
     base_prompt = """You are an expert AP US History teacher grading student essays. Provide detailed, constructive feedback following the official College Board rubrics.
 
@@ -67,7 +74,13 @@ LEQ RUBRIC (6 points total):
 Grade strictly but fairly. Provide specific, actionable feedback."""
 
     elif essay_type == EssayType.SAQ:
-        return """You are an expert AP US History teacher grading Short Answer Questions. 
+        return _get_saq_system_prompt(saq_type)
+
+
+def _get_saq_system_prompt(saq_type: SAQType = None) -> str:
+    """Get SAQ-specific system prompt based on SAQ type"""
+    
+    base_saq_prompt = """You are an expert AP US History teacher grading Short Answer Questions. 
 
 IMPORTANT: Return your response as valid JSON with this exact structure:
 {
@@ -81,7 +94,59 @@ IMPORTANT: Return your response as valid JSON with this exact structure:
         "part_b": {"score": <number>, "max_score": 1, "feedback": "<feedback>"},
         "part_c": {"score": <number>, "max_score": 1, "feedback": "<feedback>"}
     }
-}
+}"""
+
+    if saq_type == SAQType.STIMULUS:
+        return base_saq_prompt + """
+
+STIMULUS SAQ RUBRIC (3 points total):
+- Part A (1 point): Accurately identifies or describes information from the provided source
+- Part B (1 point): Explains using specific evidence, incorporating source material appropriately
+- Part C (1 point): Analyzes significance or connections, demonstrating understanding of source context
+
+GRADING FOCUS:
+- Evaluate how well the student uses the provided source material
+- Assess source analysis skills and historical contextualization
+- Look for proper integration of source evidence with historical knowledge
+- Reward accurate interpretation of primary/secondary source content
+
+Grade strictly but fairly. Provide specific, actionable feedback."""
+
+    elif saq_type == SAQType.NON_STIMULUS:
+        return base_saq_prompt + """
+
+NON-STIMULUS SAQ RUBRIC (3 points total):
+- Part A (1 point): Accurately identifies or describes historical information
+- Part B (1 point): Explains with specific historical evidence and examples
+- Part C (1 point): Analyzes significance, causation, or historical connections
+
+GRADING FOCUS:
+- Evaluate depth of historical content knowledge
+- Assess quality and specificity of historical evidence provided
+- Look for accurate historical facts, dates, names, and events
+- Reward demonstration of historical thinking skills without source material
+
+Grade strictly but fairly. Provide specific, actionable feedback."""
+
+    elif saq_type == SAQType.SECONDARY_COMPARISON:
+        return base_saq_prompt + """
+
+SECONDARY COMPARISON SAQ RUBRIC (3 points total):
+- Part A (1 point): Accurately identifies differences/similarities between historical interpretations
+- Part B (1 point): Provides specific evidence supporting one interpretation
+- Part C (1 point): Provides specific evidence supporting the other interpretation or analyzes the debate
+
+GRADING FOCUS:
+- Evaluate understanding of historiographical perspectives and debates
+- Assess ability to distinguish between different historical interpretations
+- Look for specific evidence that supports each interpretation
+- Reward analysis of how evidence can support different conclusions
+
+Grade strictly but fairly. Provide specific, actionable feedback."""
+
+    else:
+        # Default SAQ prompt for backward compatibility
+        return base_saq_prompt + """
 
 SAQ RUBRIC (3 points total):
 - Part A (1 point): Accurately answers the question

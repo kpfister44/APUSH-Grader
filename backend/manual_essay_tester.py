@@ -32,7 +32,7 @@ from typing import Optional, Tuple
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '.'))
 
 from app.config.settings import Settings
-from app.models.core import EssayType
+from app.models.core import EssayType, SAQType
 from app.utils.grading_workflow import grade_essay_with_validation
 
 
@@ -134,16 +134,40 @@ def get_essay_type(type_str: str) -> Optional[EssayType]:
     return type_map.get(type_str.lower())
 
 
-def sample_mode(essay_type_str: str) -> Optional[Tuple[str, EssayType, str]]:
+def get_saq_type(type_str: str) -> Optional[SAQType]:
+    """Convert string to SAQType enum"""
+    type_map = {
+        'stimulus': SAQType.STIMULUS,
+        'non_stimulus': SAQType.NON_STIMULUS,
+        'non-stimulus': SAQType.NON_STIMULUS,
+        'secondary_comparison': SAQType.SECONDARY_COMPARISON,
+        'secondary-comparison': SAQType.SECONDARY_COMPARISON,
+        'comparison': SAQType.SECONDARY_COMPARISON,
+    }
+    return type_map.get(type_str.lower())
+
+
+def sample_mode(essay_type_str: str, saq_type_str: str = None) -> Optional[Tuple[str, EssayType, str, SAQType]]:
     """Run with sample essays"""
     essay_type = get_essay_type(essay_type_str)
     if not essay_type:
         print(f"❌ Invalid essay type: {essay_type_str}. Use DBQ, LEQ, or SAQ")
         return None
     
+    saq_type = None
+    if essay_type == EssayType.SAQ and saq_type_str:
+        saq_type = get_saq_type(saq_type_str)
+        if not saq_type:
+            print(f"❌ Invalid SAQ type: {saq_type_str}. Use stimulus, non_stimulus, or secondary_comparison")
+            return None
+    
     # Load sample files
-    essay_file = f"sample_essays/{essay_type_str.lower()}_essay.txt"
-    prompt_file = f"sample_essays/prompts/{essay_type_str.lower()}_prompt.txt"
+    if essay_type == EssayType.SAQ and saq_type:
+        essay_file = f"sample_essays/saq_{saq_type.value}_essay.txt"
+        prompt_file = f"sample_essays/prompts/saq_{saq_type.value}_prompt.txt"
+    else:
+        essay_file = f"sample_essays/{essay_type_str.lower()}_essay.txt"
+        prompt_file = f"sample_essays/prompts/{essay_type_str.lower()}_prompt.txt"
     
     essay_text = load_file(essay_file)
     if not essay_text:
@@ -153,8 +177,12 @@ def sample_mode(essay_type_str: str) -> Optional[Tuple[str, EssayType, str]]:
     if not prompt:
         return None
     
-    print(f"✅ Loaded sample {essay_type_str.upper()} essay and prompt")
-    return essay_text, essay_type, prompt
+    type_display = f"{essay_type_str.upper()}"
+    if saq_type:
+        type_display += f" ({saq_type.display_name})"
+    
+    print(f"✅ Loaded sample {type_display} essay and prompt")
+    return essay_text, essay_type, prompt, saq_type
 
 
 def interactive_mode() -> Optional[Tuple[str, EssayType, str]]:
@@ -235,10 +263,12 @@ def print_usage():
     print("Usage:")
     print("  python manual_essay_tester.py [essay_file] [essay_type] [prompt_file]")
     print("  python manual_essay_tester.py --sample [dbq|leq|saq]")
+    print("  python manual_essay_tester.py --sample saq [stimulus|non_stimulus|secondary_comparison]")
     print("  python manual_essay_tester.py  (interactive mode)")
     print("\nExamples:")
     print("  python manual_essay_tester.py sample_essays/dbq_essay.txt dbq sample_essays/prompts/dbq_prompt.txt")
     print("  python manual_essay_tester.py --sample dbq")
+    print("  python manual_essay_tester.py --sample saq stimulus")
     print("  python manual_essay_tester.py")
 
 
@@ -266,14 +296,29 @@ async def main():
     if len(sys.argv) == 1:
         # Interactive mode
         result = interactive_mode()
+        if result:
+            essay_text, essay_type, prompt = result
+            saq_type = None
     elif len(sys.argv) == 3 and sys.argv[1] == "--sample":
         # Sample mode
         essay_type_str = sys.argv[2]
         result = sample_mode(essay_type_str)
+        if result:
+            essay_text, essay_type, prompt, saq_type = result
+    elif len(sys.argv) == 4 and sys.argv[1] == "--sample":
+        # Sample mode with SAQ type
+        essay_type_str = sys.argv[2]
+        saq_type_str = sys.argv[3]
+        result = sample_mode(essay_type_str, saq_type_str)
+        if result:
+            essay_text, essay_type, prompt, saq_type = result
     elif len(sys.argv) == 4:
         # File mode
         essay_file, essay_type_str, prompt_file = sys.argv[1], sys.argv[2], sys.argv[3]
         result = file_mode(essay_file, essay_type_str, prompt_file)
+        if result:
+            essay_text, essay_type, prompt = result
+            saq_type = None
     else:
         print_usage()
         return
@@ -281,10 +326,12 @@ async def main():
     if not result:
         return
     
-    essay_text, essay_type, prompt = result
-    
     # Grade the essay
-    print(f"\n🔄 Grading {essay_type.value.upper()} essay...")
+    type_display = f"{essay_type.value.upper()}"
+    if saq_type:
+        type_display += f" ({saq_type.display_name})"
+    
+    print(f"\n🔄 Grading {type_display} essay...")
     print(f"   Service: {ai_service_type.upper()}")
     print(f"   Essay length: {len(essay_text.split())} words")
     
@@ -292,7 +339,8 @@ async def main():
         grade_result = await grade_essay_with_validation(
             essay_text=essay_text,
             essay_type=essay_type,
-            prompt=prompt
+            prompt=prompt,
+            saq_type=saq_type
         )
         
         # Display results
