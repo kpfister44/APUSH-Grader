@@ -66,7 +66,8 @@ class MockAIService(AIService):
         """Generate realistic mock DBQ response."""
         return {
             "score": 4,
-            "maxScore": 6,
+            "max_score": 6,
+            "letter_grade": "C",
             "breakdown": {
                 "thesis": {
                     "score": 1,
@@ -89,7 +90,7 @@ class MockAIService(AIService):
                     "feedback": "Some document analysis present but lacks complexity."
                 }
             },
-            "overallFeedback": "Solid essay with clear thesis and good evidence use. Strengthen contextualization and add more sophisticated analysis for higher score.",
+            "overall_feedback": "Solid essay with clear thesis and good evidence use. Strengthen contextualization and add more sophisticated analysis for higher score.",
             "suggestions": [
                 "Provide broader historical context in introduction",
                 "Analyze document perspective and purpose more thoroughly",
@@ -101,7 +102,8 @@ class MockAIService(AIService):
         """Generate realistic mock LEQ response."""
         return {
             "score": 5,
-            "maxScore": 6,
+            "max_score": 6,
+            "letter_grade": "B",
             "breakdown": {
                 "thesis": {
                     "score": 1,
@@ -124,7 +126,7 @@ class MockAIService(AIService):
                     "feedback": "Good historical reasoning but could demonstrate more complexity."
                 }
             },
-            "overallFeedback": "Very strong essay with clear argument and excellent evidence. Minor improvements in analysis complexity needed for top score.",
+            "overall_feedback": "Very strong essay with clear argument and excellent evidence. Minor improvements in analysis complexity needed for top score.",
             "suggestions": [
                 "Add more sophisticated historical reasoning",
                 "Consider multiple perspectives on the topic",
@@ -136,25 +138,26 @@ class MockAIService(AIService):
         """Generate realistic mock SAQ response."""
         return {
             "score": 2,
-            "maxScore": 3,
+            "max_score": 3,
+            "letter_grade": "C",
             "breakdown": {
-                "partA": {
+                "part_a": {
                     "score": 1,
                     "maxScore": 1,
                     "feedback": "Correctly identifies the historical development."
                 },
-                "partB": {
+                "part_b": {
                     "score": 1,
                     "maxScore": 1,
                     "feedback": "Good explanation with supporting evidence."
                 },
-                "partC": {
+                "part_c": {
                     "score": 0,
                     "maxScore": 1,
                     "feedback": "Explanation lacks sufficient detail about significance."
                 }
             },
-            "overallFeedback": "Good responses to parts A and B. Part C needs more detailed explanation of significance.",
+            "overall_feedback": "Good responses to parts A and B. Part C needs more detailed explanation of significance.",
             "suggestions": [
                 "Provide more specific details in part C",
                 "Explain the broader historical significance",

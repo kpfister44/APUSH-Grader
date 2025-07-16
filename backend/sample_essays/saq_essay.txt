@@ -1,0 +1,10 @@
+This is a sample SAQ essay placeholder text.
+
+You can replace this with your actual SAQ essay content. The essay should answer the specific parts of the SAQ prompt.
+
+A typical SAQ essay includes:
+- Part A: Brief answer to first question
+- Part B: Brief answer to second question  
+- Part C: Brief answer to third question
+
+Replace this entire content with your real SAQ essay for testing.

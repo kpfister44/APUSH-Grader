@@ -1,0 +1,14 @@
+This is a sample SAQ prompt placeholder.
+
+Replace this with your actual SAQ prompt. A typical SAQ prompt includes three parts:
+
+a) Brief question about historical topic
+b) Brief question about historical topic  
+c) Brief question about historical topic
+
+Example format:
+"a) Briefly describe [historical topic].
+b) Briefly explain [historical relationship or comparison].
+c) Briefly explain [historical cause/effect or significance]."
+
+Replace this entire content with your real SAQ prompt for testing.

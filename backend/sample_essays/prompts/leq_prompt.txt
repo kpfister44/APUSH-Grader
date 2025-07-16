@@ -1,0 +1,11 @@
+This is a sample LEQ prompt placeholder.
+
+Replace this with your actual LEQ prompt. A typical LEQ prompt includes:
+- Historical context and time period
+- The question to analyze
+- Instructions for historical argumentation
+
+Example format:
+"Evaluate the extent to which [historical topic] during [time period]. In your response, use specific historical evidence to support your argument."
+
+Replace this entire content with your real LEQ prompt for testing.

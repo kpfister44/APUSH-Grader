@@ -37,7 +37,7 @@ APUSH Grader is designed for a small handful of teacher to use it. Anywhere from
   - **dependencies/service_locator.py** - Dependency injection container
 - **app/utils/** - Simple utility functions
   - **simple_usage.py** - Basic daily usage tracking (50 essays/day limit)
-- **tests/** - Comprehensive test suite (320+ tests)
+- **tests/** - Simplified test suite (51 tests)
   - **integration/** - End-to-end workflow tests + production feature tests
   - **services/processing/prompt/** - Prompt generation tests
   - All other test suites for models and services
@@ -102,6 +102,51 @@ pytest tests/ --tb=short              # Run with short traceback format
 ```
 
 **Important**: Always activate the virtual environment before running tests to ensure all dependencies are available.
+
+### **Manual Essay Testing**
+For testing real essays and evaluating grading quality, use the manual essay testing script:
+
+```bash
+# Ensure you're in backend directory with virtual environment activated
+cd backend
+source venv/bin/activate
+
+# Quick test with sample essays (for testing the system)
+python manual_essay_tester.py --sample dbq    # Test with sample DBQ essay
+python manual_essay_tester.py --sample leq    # Test with sample LEQ essay
+python manual_essay_tester.py --sample saq    # Test with sample SAQ essay
+
+# Test with your own essay files
+python manual_essay_tester.py my_essay.txt dbq my_prompt.txt
+
+# Interactive mode - enter essay and prompt manually
+python manual_essay_tester.py
+```
+
+**Sample Essay Files**: The script uses text files in `/backend/sample_essays/` directory:
+- `dbq_essay.txt`, `leq_essay.txt`, `saq_essay.txt` - Sample essays (replace with real content)
+- `saq_stimulus_essay.txt`, `saq_non_stimulus_essay.txt`, `saq_secondary_comparison_essay.txt` - SAQ type-specific essays
+- `prompts/dbq_prompt.txt`, `prompts/leq_prompt.txt`, `prompts/saq_prompt.txt` - Sample prompts
+- `prompts/saq_stimulus_prompt.txt`, `prompts/saq_non_stimulus_prompt.txt`, `prompts/saq_secondary_comparison_prompt.txt` - SAQ type-specific prompts
+
+**Output**: The script displays detailed grading results including:
+- Overall score and letter grade
+- Breakdown by rubric categories with individual scores and feedback
+- Overall feedback from AI
+- Specific suggestions for improvement
+
+**AI Service**: 
+- Uses mock AI by default (no API key required)
+- Set `ANTHROPIC_API_KEY` environment variable to use real AI grading
+- Real AI costs ~$0.02-0.03 per essay
+
+**SAQ Type Testing**: Test specific SAQ types with:
+```bash
+# Test different SAQ types with specific files
+python manual_essay_tester.py sample_essays/saq_stimulus_essay.txt saq sample_essays/prompts/saq_stimulus_prompt.txt
+python manual_essay_tester.py sample_essays/saq_non_stimulus_essay.txt saq sample_essays/prompts/saq_non_stimulus_prompt.txt
+python manual_essay_tester.py sample_essays/saq_secondary_comparison_essay.txt saq sample_essays/prompts/saq_secondary_comparison_prompt.txt
+```
 
 ### **API Testing**
 - **Interactive Docs**: http://localhost:8000/docs (Swagger UI)
@@ -171,13 +216,11 @@ git push -u origin your-branch-name
 ## Testing Status
 
 ### **Python Backend Testing (PRODUCTION READY)**
-✅ **320+ Comprehensive Tests** - All passing with full coverage
-- **19 PromptGenerator Tests** - Essay-specific prompt generation and validation
-- **49 Integration Tests** - End-to-end API workflow + production features testing  
-- **69 Response Processing Tests** - AI response processing services
-- **94 Core Processing Tests** - Essay validation, text analysis, warning generation
-- **88+ Model Tests** - Data model validation and business logic
-- **Production Feature Tests** - Rate limiting, structured logging, usage safeguards, health monitoring
+✅ **51 Simplified Tests** - All passing with focused coverage
+- **10 Core Workflow Tests** - Essential grading workflow and validation
+- **13 Integration Tests** - End-to-end API workflow + production features testing  
+- **23 Utility Tests** - Essay processing, prompt generation, response processing
+- **5 Health/Monitoring Tests** - Rate limiting, usage tracking, health monitoring
 
 ### **iOS App Testing**
 ✅ **SwiftUI Integration** - iOS app successfully connects to Python backend
@@ -189,17 +232,20 @@ git push -u origin your-branch-name
 - **DBQ** (Document-Based Question) - 6 points
 - **LEQ** (Long Essay Question) - 6 points  
 - **SAQ** (Short Answer Question) - 3 points
+  - **Stimulus SAQ** - Uses primary/secondary source document for analysis
+  - **Non-Stimulus SAQ** - Pure text-based questions without accompanying sources
+  - **Secondary Stimulus Comparison SAQ** - Compares contrasting historical interpretations
 
-## Current Status - Phase 2 COMPLETE ✅ (Backend Simplification In Progress)
+## Current Status - Backend Simplification COMPLETE ✅
 
-### **✅ Python Backend (PRODUCTION READY + SIMPLIFIED)**
+### **✅ Python Backend (PRODUCTION READY + FULLY SIMPLIFIED)**
 - **Complete FastAPI Backend** - Full grading workflow with simplified architecture
 - **Simplified Infrastructure** - Rate limiting, basic logging, simple usage tracking (93% complexity reduction)
-- **Consolidated Models** - Core models unified, UI logic removed (55% complexity reduction)
+- **Consolidated Models** - Core models unified with proper SAQ/DBQ/LEQ support (55% complexity reduction)
 - **API Endpoints** - POST /api/v1/grade (rate limited), /health, /usage/summary
 - **Real AI Integration** - Anthropic Claude 3.5 Sonnet with comprehensive testing
 - **Simplified Service Architecture** - Direct utility functions replacing complex dependency injection (75% complexity reduction)
-- **Testing Coverage** - End-to-end integration tests + real API validation
+- **Testing Coverage** - All integration tests passing, comprehensive coverage of core functionality
 - **Production Documentation** - Deployment guides, cost documentation, API usage guides
 
 ### **✅ Migration Milestones Completed**
@@ -215,9 +261,10 @@ git push -u origin your-branch-name
 
 ### **✅ Backend Simplification Milestones Completed**
 - **Phase 1 Infrastructure Simplification Complete** - Removed complex logging/monitoring, simplified usage tracking (93% reduction)
-- **Phase 2 Model Consolidation Complete** - Unified core models, removed UI logic (55% reduction, 12 files → 3 files)
-- **Phase 3 Service Architecture Simplification Complete** - Replaced dependency injection with utility functions (75% reduction, 31 files → 4 utility files)
-- **Phase 4 Test Suite Optimization Complete** - Reduced tests to essential coverage (82% reduction, 320+ tests → 58 essential tests)
+- **Phase 2 Model Consolidation Complete** - Unified core models, proper SAQ/DBQ/LEQ support (55% reduction)
+- **Phase 3 Service Architecture Simplification Complete** - Replaced dependency injection with utility functions (75% reduction)
+- **Phase 4 Test Suite Optimization Complete** - Fixed integration tests, removed complex infrastructure tests
+- **Phase 5 Final Cleanup Complete** - All tests passing, simplified exceptions handling
 
 ### **🔧 Development Environment**
 - **AI Service Configuration**: Switch between mock and real AI (see AI Configuration section below)
@@ -227,7 +274,7 @@ git push -u origin your-branch-name
 
 ## Migration Progress
 
-**Current Status**: Backend Simplification COMPLETE ✅ - All 4 phases implemented with 87% overall complexity reduction
+**Current Status**: Backend Simplification COMPLETE ✅ - All 5 phases implemented with 87% overall complexity reduction
 
 ### **Target Architecture (ACHIEVED)**
 ```
@@ -238,14 +285,14 @@ iOS Frontend (SwiftUI) → HTTP API → Python Backend (FastAPI) → Mock AI / R
                               • Basic Python Logging (replaced structured logging)
                               • Simple Usage Limits (50 essays/day)
                               • Utility-based Processing (replaced service architecture)
-                              • Essential Test Coverage (58 tests, focused on business logic)
+                              • Essential Test Coverage (51 tests, focused on business logic)
                               • Health Monitoring (/health, /usage/summary)
 ```
 
 ### **🎯 Production Ready**
 The backend has been fully simplified and is ready for production deployment with:
 - **Complete Functionality**: All grading workflows work with simplified architecture
-- **Essential Test Coverage**: 58 focused tests covering core business logic
+- **Essential Test Coverage**: 51 focused tests covering core business logic
 - **Clean Codebase**: 87% complexity reduction makes maintenance simple
 - **Cost Protection**: Built-in rate limiting and usage safeguards
 - **Easy Deployment**: Straightforward architecture suitable for hobby project scale
@@ -344,7 +391,7 @@ DEBUG=false
 - **Simplified Architecture**: Backend uses basic logging, simple usage tracking, consolidated models
 - **Ongoing Simplification**: Currently in Phase 2 complete, Phase 3-4 planned for service/test simplification
 - **AI Configuration**: Use mock mode for development, real AI for production (see AI Configuration above)
-- **Testing**: Run `pytest tests/ -v` for comprehensive test suite (currently 320+ tests, target ~75 after Phase 4)
+- **Testing**: Run `pytest tests/ -v` for simplified test suite (51 tests, focused on core business logic)
 - **API Documentation**: Available at http://localhost:8000/docs when server is running
 - **Monitoring**: Use /health and /usage/summary for basic operational visibility
 - **Cost Protection**: Daily limits prevent excessive Anthropic API usage (50 essays/day)
