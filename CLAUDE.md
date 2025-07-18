@@ -242,10 +242,17 @@ git push -u origin your-branch-name
   - **Secondary Stimulus Comparison SAQ** - Compares contrasting historical interpretations
 
 ### **SAQ Type Differentiation**
-The backend now supports specialized grading for different SAQ types with type-specific AI prompts:
+The backend and frontend now support specialized grading for different SAQ types with type-specific AI prompts:
 - **Stimulus SAQ**: Evaluates source analysis skills and contextualization
 - **Non-Stimulus SAQ**: Focuses on historical content knowledge and evidence quality
 - **Secondary Comparison SAQ**: Assesses historiographical understanding and interpretation analysis
+
+### **iOS Frontend SAQ Type Selection**
+The iOS app now includes SAQ type selection UI for improved grading accuracy:
+- **Optional Dropdown**: Appears only when SAQ essay type is selected
+- **User-Friendly Labels**: "Source Analysis", "Content Question", "Historical Comparison"
+- **Backward Compatible**: Existing SAQ submissions work without type selection
+- **State Management**: SAQ type selection resets when essay type changes
 
 ## Current Status - Backend Simplification COMPLETE ✅
 
