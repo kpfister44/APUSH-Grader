@@ -14,6 +14,7 @@ struct ContentView: View {
     @State private var saqPartA: String = ""
     @State private var saqPartB: String = ""
     @State private var saqPartC: String = ""
+    @State private var saqType: SAQType? = nil
     
     private let networkService = NetworkService.shared
     
@@ -35,6 +36,10 @@ struct ContentView: View {
                         .onChange(of: essayType) { _, _ in
                             clearFields()
                         }
+                    
+                    if essayType == .saq {
+                        SAQTypeSelector(selectedType: $saqType)
+                    }
                     
                     PromptInputView(text: $promptText, essayType: essayType)
                     
@@ -88,13 +93,15 @@ struct ContentView: View {
                     response = try await networkService.gradeEssayWithSAQParts(
                         saqParts: saqParts,
                         essayType: essayType.rawValue,
-                        prompt: promptText
+                        prompt: promptText,
+                        saqType: saqType?.rawValue
                     )
                 } else {
                     response = try await networkService.gradeEssay(
                         essayText: essayText,
                         essayType: essayType.rawValue,
-                        prompt: promptText
+                        prompt: promptText,
+                        saqType: saqType?.rawValue
                     )
                 }
                 
@@ -132,6 +139,7 @@ struct ContentView: View {
         saqPartA = ""
         saqPartB = ""
         saqPartC = ""
+        saqType = nil
         promptText = ""
         processedResult = nil
     }
@@ -235,6 +243,40 @@ private struct SAQMultiPartInputView: View {
         .background(Color(.systemBackground))
         .cornerRadius(12)
         .shadow(color: Color.black.opacity(0.1), radius: 2, x: 0, y: 1)
+        .padding(.horizontal)
+    }
+}
+
+// MARK: - SAQ Type Selector Component
+
+private struct SAQTypeSelector: View {
+    @Binding var selectedType: SAQType?
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("SAQ Type (Optional)")
+                .font(.headline)
+            
+            Picker("SAQ Type", selection: $selectedType) {
+                Text("Not Selected").tag(nil as SAQType?)
+                
+                ForEach(SAQType.allCases, id: \.self) { type in
+                    Text(type.displayName).tag(type as SAQType?)
+                }
+            }
+            .pickerStyle(MenuPickerStyle())
+            .frame(maxWidth: .infinity, alignment: .leading)
+            
+            if let selectedType = selectedType {
+                Text(selectedType.description)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            } else {
+                Text("Choose the type of SAQ for more accurate grading")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+        }
         .padding(.horizontal)
     }
 }
