@@ -7,28 +7,32 @@ struct GradingRequest: Codable {
     let essayType: String
     let prompt: String
     let saqParts: SAQParts?
+    let saqType: String?
     
     enum CodingKeys: String, CodingKey {
         case essayText = "essay_text"
         case essayType = "essay_type"
         case prompt
         case saqParts = "saq_parts"
+        case saqType = "saq_type"
     }
     
     // Legacy initializer for DBQ/LEQ
-    init(essayText: String, essayType: String, prompt: String) {
+    init(essayText: String, essayType: String, prompt: String, saqType: String? = nil) {
         self.essayText = essayText
         self.essayType = essayType
         self.prompt = prompt
         self.saqParts = nil
+        self.saqType = saqType
     }
     
     // New initializer for SAQ with parts
-    init(saqParts: SAQParts, essayType: String, prompt: String) {
+    init(saqParts: SAQParts, essayType: String, prompt: String, saqType: String? = nil) {
         self.essayText = ""  // Backend will use saq_parts instead
         self.essayType = essayType
         self.prompt = prompt
         self.saqParts = saqParts
+        self.saqType = saqType
     }
 }
 
@@ -136,7 +140,8 @@ class NetworkService {
     func gradeEssay(
         essayText: String,
         essayType: String,
-        prompt: String
+        prompt: String,
+        saqType: String? = nil
     ) async throws -> GradingResponse {
         
         guard let url = URL(string: "\(baseURL)/api/v1/grade") else {
@@ -146,7 +151,8 @@ class NetworkService {
         let request = GradingRequest(
             essayText: essayText,
             essayType: essayType,
-            prompt: prompt
+            prompt: prompt,
+            saqType: saqType
         )
         
         var urlRequest = URLRequest(url: url)
@@ -224,7 +230,8 @@ class NetworkService {
     func gradeEssayWithSAQParts(
         saqParts: SAQParts,
         essayType: String,
-        prompt: String
+        prompt: String,
+        saqType: String? = nil
     ) async throws -> GradingResponse {
         
         guard let url = URL(string: "\(baseURL)/api/v1/grade") else {
@@ -234,7 +241,8 @@ class NetworkService {
         let request = GradingRequest(
             saqParts: saqParts,
             essayType: essayType,
-            prompt: prompt
+            prompt: prompt,
+            saqType: saqType
         )
         
         var urlRequest = URLRequest(url: url)

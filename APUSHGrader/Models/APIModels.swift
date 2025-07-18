@@ -53,6 +53,36 @@ enum EssayType: String, CaseIterable {
     }
 }
 
+// MARK: - SAQ Type
+
+enum SAQType: String, CaseIterable {
+    case stimulus = "stimulus"
+    case nonStimulus = "non_stimulus"
+    case secondaryComparison = "secondary_comparison"
+    
+    var displayName: String {
+        switch self {
+        case .stimulus:
+            return "Source Analysis"
+        case .nonStimulus:
+            return "Content Question"
+        case .secondaryComparison:
+            return "Historical Comparison"
+        }
+    }
+    
+    var description: String {
+        switch self {
+        case .stimulus:
+            return "Analyzes primary or secondary source documents"
+        case .nonStimulus:
+            return "Tests historical content knowledge without sources"
+        case .secondaryComparison:
+            return "Compares different historical interpretations"
+        }
+    }
+}
+
 // MARK: - SAQ Multi-Part Support
 
 struct SAQParts: Codable {
