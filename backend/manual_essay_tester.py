@@ -28,6 +28,10 @@ import sys
 from pathlib import Path
 from typing import Optional, Tuple
 
+# Load environment variables from .env file
+from dotenv import load_dotenv
+load_dotenv()
+
 # Add the app directory to the Python path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '.'))
 

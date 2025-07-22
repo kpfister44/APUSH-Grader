@@ -1,11 +1,9 @@
-This is a sample LEQ essay placeholder text.
+The American Revolution represented a moderately radical departure from previous ways of governing and life in America, creating significant political changes while maintaining many existing social and economic structures. While the Revolution established new democratic ideals and republican government, many aspects of colonial society remained unchanged, particularly social hierarchies and economic systems.
 
-You can replace this with your actual LEQ essay content. The essay should develop a thesis-driven argument responding to the historical prompt.
+Prior to 1763, American colonists lived under British imperial rule with established social hierarchies and mercantile economic policies. The French and Indian War ended this period of "salutary neglect," as Britain began implementing new taxes and regulations like the Sugar Act and Stamp Act to recover war debts. These policies sparked colonial resistance based on Enlightenment principles of natural rights and consent of the governed.
 
-A typical LEQ essay includes:
-- Introduction with thesis statement
-- Historical contextualization
-- Body paragraphs with evidence and analysis
-- Conclusion
+The Revolution brought radical political changes. The Declaration of Independence proclaimed that governments derive their power from the consent of the governed, fundamentally challenging monarchical authority. The Articles of Confederation and later the Constitution established republican government, replacing hereditary rule with elected representatives. The principle of popular sovereignty meant common people could participate in politics, a dramatic shift from colonial deference to royal governors and aristocratic elites.
 
-Replace this entire content with your real LEQ essay for testing.
+However, the Revolution maintained significant continuities. The economic system remained largely agricultural and commercial, with similar class structures persisting. Slavery continued and even expanded, contradicting revolutionary ideals of equality. Women's legal status remained unchanged, and Native Americans faced continued displacement. The Constitution preserved property requirements for voting in most states, limiting political participation.
+
+Therefore, while the American Revolution created new governmental structures and democratic ideals, it represented only a partial transformation of American society, maintaining many existing social and economic patterns alongside political innovation.

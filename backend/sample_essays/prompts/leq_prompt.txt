@@ -1,11 +1,8 @@
-This is a sample LEQ prompt placeholder.
+Evaluate the extent to which the American Revolution was a radical departure from previous ways of governing and life in America in the period from 1763 to 1800.
 
-Replace this with your actual LEQ prompt. A typical LEQ prompt includes:
-- Historical context and time period
-- The question to analyze
-- Instructions for historical argumentation
-
-Example format:
-"Evaluate the extent to which [historical topic] during [time period]. In your response, use specific historical evidence to support your argument."
-
-Replace this entire content with your real LEQ prompt for testing.
+In your response, you should do the following:
+• Respond to the prompt with a historically defensible thesis or claim that establishes a line of reasoning.
+• Describe a broader historical context relevant to the prompt.
+• Support an argument in response to the prompt using specific and relevant examples of evidence.
+• Use historical reasoning (e.g., comparison, causation, continuity and change over time) to frame or structure an argument that addresses the prompt.
+• Use evidence to corroborate, qualify, or modify an argument that addresses the prompt.
