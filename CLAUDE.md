@@ -136,8 +136,9 @@ python manual_essay_tester.py
 - Specific suggestions for improvement
 
 **AI Service**: 
-- Uses mock AI by default (no API key required)
-- Set `ANTHROPIC_API_KEY` environment variable to use real AI grading
+- ✅ **Real Anthropic API Integration Complete** - Configured via .env file
+- Uses real AI when `ANTHROPIC_API_KEY` environment variable is set
+- Falls back to mock AI if no API key provided (for development)
 - Real AI costs ~$0.02-0.03 per essay
 
 **SAQ Type Testing**: Test specific SAQ types with type differentiation:
