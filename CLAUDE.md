@@ -3,7 +3,7 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview
-APUSH Grader - Migrating from iOS SwiftUI app to **Python FastAPI backend + iOS frontend** architecture. Uses AI (OpenAI/Anthropic) to grade AP US History essays based on College Board rubrics.
+APUSH Grader - Migrating from iOS SwiftUI app to **Python FastAPI backend + multi-platform frontend** architecture. Uses AI (OpenAI/Anthropic) to grade AP US History essays based on College Board rubrics. Now includes both **iOS SwiftUI frontend** and **ChatGPT-style web frontend** for maximum teacher accessibility.
 
 ## Target Audience and Scope
 APUSH Grader is designed for a small handful of teacher to use it. Anywhere from 2-12 teachers. Prioritize simplicity over complexity whenever possible. Functionality is more important than comprehensiveness and minimize complexity wherever possible. This is NOT meant to be a full scale enterprise project that can support 1000's of users!
@@ -15,6 +15,7 @@ APUSH Grader is designed for a small handful of teacher to use it. Anywhere from
 **Phase 2C COMPLETE**: Real API testing, documentation, and deployment guides
 **Phase 3 COMPLETE**: iOS frontend migration to Python backend API - APUSHGraderCore replaced
 **Phase 4 READY**: Production deployment and monitoring
+**Phase 5 IN PROGRESS**: ChatGPT-style web frontend development - 16 GitHub issues created, ready to begin
 
 ## Repository Structure
 
@@ -49,6 +50,16 @@ APUSH Grader is designed for a small handful of teacher to use it. Anywhere from
 - **Services/NetworkService.swift** - HTTP client for Python backend API
 - **Views/** - SwiftUI interface using API responses
 - **Current**: Uses Python backend via HTTP API (localhost:8000)
+
+### **webfrontend/** - ChatGPT-Style Web Frontend (IN DEVELOPMENT)
+- **src/components/** - Reusable React UI components with ChatGPT-inspired design
+- **src/contexts/** - React Context for state management (grading, API, UI)
+- **src/services/** - API client service for Python backend integration
+- **src/types/** - TypeScript interface definitions matching backend models
+- **src/pages/** - Page components for routing
+- **package.json** - React + TypeScript + Tailwind CSS + esbuild dependencies
+- **tailwind.config.js** - ChatGPT-inspired design tokens and spacing system
+- **Current**: 16 GitHub issues created for phased development (Issues #23-38)
 
 ## Python Backend Commands
 
@@ -164,6 +175,54 @@ python manual_essay_tester.py sample_essays/saq_secondary_comparison_essay.txt s
 - **iOS App**: ⌘+B in Xcode to build, ⌘+R to run
 - **Testing**: Use SwiftUI previews for quick API testing (calls real backend)
 - **Backend Required**: Ensure Python backend is running on localhost:8000
+
+## Web Frontend Commands
+
+### **Development Environment Setup**
+```bash
+# From project root
+cd webfrontend
+
+# Install dependencies (when webfrontend directory is created)
+npm install
+
+# Start development server
+npm run dev
+
+# Server will be available at:
+# - Web App: http://localhost:3000
+# - Connects to backend API at http://localhost:8000
+```
+
+### **Development Workflow (Issue-Based)**
+```bash
+# Each development session follows GitHub issues #23-38
+# Start by reading the current issue and WEB_FRONTEND_PLAN.md
+
+# Create feature branch for current issue
+git checkout -b feature/web-issue-X-brief-description
+
+# Work on the specific issue deliverables
+# Update WEB_FRONTEND_PLAN.md progress when issue is completed
+# Create PR referencing the issue number
+```
+
+### **Build Commands**
+```bash
+# Development build (when implemented)
+npm run build:dev
+
+# Production build (when implemented)
+npm run build
+
+# Built files will be copied to backend/static/ for deployment
+```
+
+**Important**: 
+- **Backend Required**: Ensure Python backend is running on localhost:8000
+- **Issue-Based Development**: Follow GitHub issues #23-38 in sequential order
+- **Plan Updates**: Update WEB_FRONTEND_PLAN.md after completing each issue
+- **See WEB_FRONTEND_PLAN.md**: Complete development plan with ChatGPT-style design specifications
 
 ## Git and GitHub Workflow
 
@@ -295,10 +354,11 @@ The iOS app now includes SAQ type selection UI for improved grading accuracy:
 
 **Current Status**: Backend Simplification COMPLETE ✅ - All 5 phases implemented with 87% overall complexity reduction
 
-### **Target Architecture (ACHIEVED)**
+### **Target Architecture (MULTI-PLATFORM)**
 ```
-iOS Frontend (SwiftUI) → HTTP API → Python Backend (FastAPI) → Mock AI / Real Anthropic AI (configurable)
-                                      ↓
+iOS Frontend (SwiftUI) ────┐
+                           ├─→ HTTP API → Python Backend (FastAPI) → Mock AI / Real Anthropic AI (configurable)
+Web Frontend (React) ─────┘                ↓
                               Simplified Features (87% complexity reduction):
                               • Rate Limiting (20 req/min, 50 essays/hour)
                               • Basic Python Logging (replaced structured logging)
@@ -306,6 +366,7 @@ iOS Frontend (SwiftUI) → HTTP API → Python Backend (FastAPI) → Mock AI / R
                               • Utility-based Processing (replaced service architecture)
                               • Essential Test Coverage (51 tests, focused on business logic)
                               • Health Monitoring (/health, /usage/summary)
+                              • Static File Serving (for web frontend deployment)
 ```
 
 ### **🎯 Production Ready**
@@ -316,17 +377,20 @@ The backend has been fully simplified and is ready for production deployment wit
 - **Cost Protection**: Built-in rate limiting and usage safeguards
 - **Easy Deployment**: Straightforward architecture suitable for hobby project scale
 
-### **🚀 Future Production Steps**
-- **Production Deployment**: Simplified architecture deployment
-- **Web Frontend**: Optional expansion for additional platforms
+### **🚀 Next Development Phase**
+- **Web Frontend Development**: 16 GitHub issues created for ChatGPT-style web interface (Issues #23-38)
+- **Production Deployment**: Multi-platform deployment with both iOS and web frontends
+- **Static File Integration**: Web frontend will be served by FastAPI backend
 
-**See PLAN.md for detailed migration timeline and implementation details.**
+**See WEB_FRONTEND_PLAN.md for detailed web frontend development plan and GitHub issue workflow.**
 
 ## Architecture Benefits After Simplification
 - **Hobby Project Appropriate**: Simplified architecture suitable for 2-12 teachers (not enterprise scale)
+- **Multi-Platform Ready**: Backend serves both iOS SwiftUI app and ChatGPT-style web frontend
 - **Reduced Complexity**: 93% infrastructure reduction + 55% model consolidation
 - **Maintainable Codebase**: Much simpler Python codebase with direct imports and flat structure
-- **Platform-Agnostic Design**: Backend ready for multiple frontends (iOS, web, etc.)
+- **Platform-Agnostic Design**: Single backend API supports multiple frontend technologies
+- **Teacher Accessibility**: Both mobile (iOS) and web access for maximum convenience
 - **Essential Features Only**: Rate limiting, basic logging, simple usage tracking
 - **Cost Protection**: Appropriate daily limits (50 essays/day) to prevent excessive Anthropic API costs
 - **Teacher-Friendly**: Clear error messages and reasonable limits for small user base
@@ -406,12 +470,17 @@ DEBUG=false
 ```
 
 ## Important Notes
-- **Primary Development**: Focus on Python backend in `/backend/` directory
-- **Simplified Architecture**: Backend uses basic logging, simple usage tracking, consolidated models
-- **Ongoing Simplification**: Currently in Phase 2 complete, Phase 3-4 planned for service/test simplification
+- **Backend Complete**: Python backend in `/backend/` directory is production-ready with simplified architecture
+- **Web Frontend Development**: Current focus on ChatGPT-style web interface using GitHub issues #23-38
+- **Issue-Based Workflow**: Each web frontend development session should follow sequential GitHub issues
+- **Development Plans**: 
+  - **Backend**: Fully implemented with 51 tests, production-ready
+  - **iOS Frontend**: Complete and using backend API
+  - **Web Frontend**: See WEB_FRONTEND_PLAN.md for comprehensive development plan and workflow
 - **AI Configuration**: Use mock mode for development, real AI for production (see AI Configuration above)
-- **Testing**: Run `pytest tests/ -v` for simplified test suite (51 tests, focused on core business logic)
+- **Backend Testing**: Run `pytest tests/ -v` for simplified test suite (51 tests, focused on core business logic)
 - **API Documentation**: Available at http://localhost:8000/docs when server is running
+- **Multi-Platform Support**: Backend serves both iOS app and upcoming web frontend
 - **Monitoring**: Use /health and /usage/summary for basic operational visibility
 - **Cost Protection**: Daily limits prevent excessive Anthropic API usage (50 essays/day)
 - **Clean Architecture**: APUSHGraderCore completely removed, Python backend is single source of truth
