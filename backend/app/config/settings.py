@@ -23,8 +23,11 @@ class Settings(BaseSettings):
     openai_api_key: str = Field(default="")
     anthropic_api_key: str = Field(default="")
     
-    # CORS Configuration
-    allowed_origins: List[str] = Field(default=["http://localhost:3000"])
+    # CORS Configuration - Specific origins (wildcard + credentials not allowed)
+    allowed_origins: List[str] = Field(default=[
+        "http://localhost:8001", 
+        "http://127.0.0.1:8001"
+    ])
     
     class Config:
         env_file = ".env"
