@@ -6,7 +6,7 @@
   "scripts": {
     "dev:css": "tailwindcss -i ./src/input.css -o ./public/output.css --watch",
     "dev:js": "esbuild src/index.tsx --bundle --servedir=public --outdir=public/js --watch",
-    "dev": "npm run dev:css & npm run dev:js",
+    "dev": "tailwindcss -i ./src/input.css -o ./public/output.css && npm run dev:css & npm run dev:js",
     "build:css": "tailwindcss -i ./src/input.css -o ./dist/output.css --minify",
     "build:js": "esbuild src/index.tsx --bundle --minify --outdir=dist/js",
     "build": "npm run build:css && npm run build:js"
