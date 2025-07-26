@@ -15,7 +15,7 @@ APUSH Grader is designed for a small handful of teacher to use it. Anywhere from
 **Phase 2C COMPLETE**: Real API testing, documentation, and deployment guides
 **Phase 3 COMPLETE**: iOS frontend migration to Python backend API - APUSHGraderCore replaced
 **Phase 4 READY**: Production deployment and monitoring
-**Phase 5 IN PROGRESS**: ChatGPT-style web frontend development - Issue #25 complete, ready for Issue #26
+**Phase 5 IN PROGRESS**: ChatGPT-style web frontend development - Issue #27 complete, ready for Issue #28
 
 ## Repository Structure
 
@@ -51,9 +51,14 @@ APUSH Grader is designed for a small handful of teacher to use it. Anywhere from
 - **Views/** - SwiftUI interface using API responses
 - **Current**: Uses Python backend via HTTP API (localhost:8000)
 
-### **webfrontend/** - ChatGPT-Style Web Frontend (API INTEGRATION COMPLETE)
+### **webfrontend/** - ChatGPT-Style Web Frontend (SAQ FORM COMPLETE)
 - **src/components/** - Reusable React UI components with ChatGPT-inspired design
+  - **input/EssayTypeSelector.tsx** - Clean 3-button interface (DBQ/LEQ/SAQ) with ChatGPT styling
+  - **input/SAQTypeSelector.tsx** - Dropdown for SAQ type differentiation (stimulus/non-stimulus/secondary comparison)
+  - **input/SAQMultiPartInput.tsx** - Three-part SAQ input system with real-time word counting
+  - **layout/** - ChatGPT-style layout components (Header, MainContent, ChatLayout)
 - **src/contexts/** - React Context for state management (grading, API, UI)
+  - **GradingContext.tsx** - Comprehensive form state management with validation and field clearing
 - **src/services/** - Complete API client service for Python backend integration
   - **api.ts** - HTTP client with error handling, retry logic, and CORS support
   - **config.ts** - Environment configuration system (development/production)
@@ -65,7 +70,7 @@ APUSH Grader is designed for a small handful of teacher to use it. Anywhere from
 - **src/pages/** - Page components with working API integration testing
 - **package.json** - React + TypeScript + Tailwind CSS + esbuild dependencies
 - **src/input.css** - Tailwind CSS setup using clean CLI approach (no config file needed)
-- **Current**: Issue #25 complete (API service layer & TypeScript interfaces), ready for Issue #26
+- **Current**: Issue #27 complete (SAQ multi-part input system), ready for Issue #28
 
 ## Python Backend Commands
 
@@ -207,7 +212,9 @@ npm run dev
 # Issue #23 COMPLETE: React + TypeScript + Tailwind foundation
 # Issue #24 COMPLETE: ChatGPT-style base components & layout
 # Issue #25 COMPLETE: API service layer & TypeScript interfaces
-# CURRENT: Ready for Issue #26 (Implement Essay Type Selection)
+# Issue #26 COMPLETE: Essay type selection with ChatGPT-style buttons
+# Issue #27 COMPLETE: SAQ multi-part input system with type differentiation
+# CURRENT: Ready for Issue #28 (ChatGPT-Style Text Input Components)
 
 # Create feature branch for current issue
 git checkout -b feature/web-issue-X-brief-description
