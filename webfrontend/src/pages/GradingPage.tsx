@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { ChatLayout, Header, MainContent } from '../components/layout';
+import { EssayTypeSelector } from '../components/input';
+import { GradingProvider, useGrading } from '../contexts/GradingContext';
 import { apiService } from '../services/api';
 
 /**
- * Main grading page component using ChatGPT-style layout
- * This will eventually contain the essay grading interface
+ * Inner component that uses the grading context
  */
-const GradingPage: React.FC = () => {
+const GradingPageContent: React.FC = () => {
+  const { state, actions } = useGrading();
   const [testResults, setTestResults] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -61,14 +63,46 @@ const GradingPage: React.FC = () => {
     <ChatLayout>
       <Header />
       <MainContent>
-        <div className="text-center space-y-6">
-          <h2 className="text-2xl font-semibold text-gray-900">
-            Welcome to APUSH Grader
-          </h2>
-          <p className="text-gray-600 leading-relaxed">
-            Ready to start grading AP US History essays with AI assistance.
-            The ChatGPT-style interface will be implemented in the next phases.
-          </p>
+        <div className="space-y-6">
+          {/* Main Grading Interface */}
+          <div className="max-w-2xl mx-auto">
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-semibold text-gray-900">
+                APUSH Essay Grader
+              </h2>
+              <p className="text-gray-600 leading-relaxed mt-2">
+                Grade AP US History essays with AI assistance
+              </p>
+            </div>
+
+            {/* Essay Grading Form */}
+            <div className="bg-white rounded-lg border border-gray-200 p-6 space-y-6">
+              <EssayTypeSelector
+                selectedType={state.form.essayType}
+                onTypeChange={actions.setEssayType}
+                disabled={state.isSubmitting}
+              />
+
+              {/* Form validation feedback */}
+              {state.validationErrors.essayType && (
+                <div className="text-red-600 text-sm">
+                  {state.validationErrors.essayType}
+                </div>
+              )}
+
+              {/* Placeholder for future form fields */}
+              {state.form.essayType && (
+                <div className="border-t pt-6">
+                  <p className="text-gray-500 text-center italic">
+                    {state.form.essayType} essay form components will be implemented in the next issues
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Development Progress Sections */}
+          <div className="max-w-4xl mx-auto space-y-6">
           <div className="bg-gray-50 rounded-lg p-6 text-left">
             <h3 className="font-semibold text-gray-900 mb-3">
               Issue #24 Components Complete:
@@ -96,6 +130,7 @@ const GradingPage: React.FC = () => {
               </li>
             </ul>
           </div>
+
 
           {/* API Testing Section - Issue #25 */}
           <div className="bg-blue-50 rounded-lg p-6 text-left">
@@ -139,9 +174,21 @@ const GradingPage: React.FC = () => {
               </div>
             )}
           </div>
+          </div>
         </div>
       </MainContent>
     </ChatLayout>
+  );
+};
+
+/**
+ * Main grading page component wrapped with context provider
+ */
+const GradingPage: React.FC = () => {
+  return (
+    <GradingProvider>
+      <GradingPageContent />
+    </GradingProvider>
   );
 };
 
