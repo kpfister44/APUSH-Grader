@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ChatLayout, Header, MainContent } from '../components/layout';
-import { EssayTypeSelector } from '../components/input';
+import { EssayTypeSelector, SAQTypeSelector, SAQMultiPartInput } from '../components/input';
 import { GradingProvider, useGrading } from '../contexts/GradingContext';
 import { apiService } from '../services/api';
 
@@ -90,8 +90,26 @@ const GradingPageContent: React.FC = () => {
                 </div>
               )}
 
-              {/* Placeholder for future form fields */}
-              {state.form.essayType && (
+              {/* SAQ-specific components */}
+              {state.form.essayType === 'SAQ' && (
+                <div className="border-t pt-6 space-y-6">
+                  <SAQTypeSelector
+                    selectedType={state.form.saqType}
+                    onTypeChange={actions.setSaqType}
+                    disabled={state.isSubmitting}
+                  />
+                  
+                  <SAQMultiPartInput
+                    saqParts={state.form.saqParts}
+                    onPartChange={actions.setSaqPart}
+                    disabled={state.isSubmitting}
+                    validationErrors={state.validationErrors}
+                  />
+                </div>
+              )}
+
+              {/* Placeholder for DBQ/LEQ form fields */}
+              {(state.form.essayType === 'DBQ' || state.form.essayType === 'LEQ') && (
                 <div className="border-t pt-6">
                   <p className="text-gray-500 text-center italic">
                     {state.form.essayType} essay form components will be implemented in the next issues

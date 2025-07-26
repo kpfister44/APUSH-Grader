@@ -98,6 +98,19 @@ const validateForm = (form: GradingFormState): Record<string, string> => {
     if (!hasContent) {
       errors.saqParts = 'Please provide content for at least one SAQ part';
     }
+
+    // Individual part validation (optional but helpful for user experience)
+    // Note: These are warnings, not blocking errors since SAQ parts are optional
+    const parts = ['part_a', 'part_b', 'part_c'] as const;
+    parts.forEach(part => {
+      const content = form.saqParts[part].trim();
+      if (content) {
+        const wordCount = content.split(/\s+/).length;
+        if (wordCount < 20) {
+          errors[part] = `${part.replace('_', ' ').toUpperCase()} seems short. Consider expanding your response.`;
+        }
+      }
+    });
   } else if (form.essayType === 'DBQ' || form.essayType === 'LEQ') {
     // For DBQ/LEQ, essay text is required
     if (!form.essayText.trim()) {
