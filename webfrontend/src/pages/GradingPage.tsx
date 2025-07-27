@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ChatLayout, Header, MainContent } from '../components/layout';
-import { EssayTypeSelector, SAQTypeSelector, SAQMultiPartInput } from '../components/input';
+import { EssayTypeSelector, SAQTypeSelector, SAQMultiPartInput, ChatTextArea, PromptInput } from '../components/input';
 import { GradingProvider, useGrading } from '../contexts/GradingContext';
 import { apiService } from '../services/api';
 
@@ -90,6 +90,28 @@ const GradingPageContent: React.FC = () => {
                 </div>
               )}
 
+              {/* Prompt input - appears for all essay types */}
+              {state.form.essayType && (
+                <div className="space-y-3">
+                  <label htmlFor="prompt-input" className="block text-sm font-medium text-gray-700">
+                    Essay Prompt / Question
+                  </label>
+                  <PromptInput
+                    id="prompt-input"
+                    value={state.form.prompt}
+                    onChange={actions.setPrompt}
+                    essayType={state.form.essayType}
+                    saqType={state.form.saqType}
+                    disabled={state.isSubmitting}
+                    error={state.validationErrors.prompt}
+                    ariaDescribedBy="prompt-help"
+                  />
+                  <div id="prompt-help" className="text-xs text-gray-500">
+                    Enter the essay question or prompt that students are responding to
+                  </div>
+                </div>
+              )}
+
               {/* SAQ-specific components */}
               {state.form.essayType === 'SAQ' && (
                 <div className="border-t pt-6 space-y-6">
@@ -108,12 +130,26 @@ const GradingPageContent: React.FC = () => {
                 </div>
               )}
 
-              {/* Placeholder for DBQ/LEQ form fields */}
+              {/* DBQ/LEQ essay text input */}
               {(state.form.essayType === 'DBQ' || state.form.essayType === 'LEQ') && (
-                <div className="border-t pt-6">
-                  <p className="text-gray-500 text-center italic">
-                    {state.form.essayType} essay form components will be implemented in the next issues
-                  </p>
+                <div className="border-t pt-6 space-y-3">
+                  <label htmlFor="essay-text-input" className="block text-sm font-medium text-gray-700">
+                    Student Essay Text
+                  </label>
+                  <ChatTextArea
+                    id="essay-text-input"
+                    value={state.form.essayText}
+                    onChange={actions.setEssayText}
+                    placeholder={`Enter the student's ${state.form.essayType} essay text here...`}
+                    disabled={state.isSubmitting}
+                    error={state.validationErrors.essayText}
+                    minRows={6}
+                    maxRows={20}
+                    ariaDescribedBy="essay-text-help"
+                  />
+                  <div id="essay-text-help" className="text-xs text-gray-500">
+                    Paste the complete student essay response for grading
+                  </div>
                 </div>
               )}
             </div>

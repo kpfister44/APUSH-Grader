@@ -6,7 +6,8 @@
       "Bash(python -m pytest tests/integration/test_grading_workflow.py -v --tb=short)",
       "Bash(python -m pytest tests/integration/test_grading_workflow.py::TestGradingWorkflowIntegration::test_service_locator_integration -v)",
       "Bash(python:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(gh issue create:*)"
     ],
     "deny": []
   }

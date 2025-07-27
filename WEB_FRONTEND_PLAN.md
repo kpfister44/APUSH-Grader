@@ -515,16 +515,17 @@ This project uses **individual GitHub issues** for each development task, allowi
 - **Issue #24** ✅: [WEB] Phase 1: Create ChatGPT-Style Base Components & Layout (PR #40 merged)
 - **Issue #25** ✅: [WEB] Phase 1: Set Up API Service Layer & TypeScript Interfaces (PR #41 merged)
 - **Issue #26** ✅: [WEB] Phase 2A: Implement Essay Type Selection (PR #42 merged)
-- **Issue #27** ✅: [WEB] Phase 2A: Build SAQ Multi-Part Input System (Ready for PR)
+- **Issue #27** ✅: [WEB] Phase 2A: Build SAQ Multi-Part Input System (PR #43 merged)
+- **Issue #28** ✅: [WEB] Phase 2A: Create ChatGPT-Style Text Input Components (Ready for PR)
 
 #### **🔄 Current Task**
-**Issue #28**: [WEB] Phase 2A: Create ChatGPT-Style Text Input Components
-
-#### **📋 Next Up**
 **Issue #29**: [WEB] Phase 2A: Implement Real-Time Form Validation
 
+#### **📋 Next Up**
+**Issue #30**: [WEB] Phase 2B: Integrate Grading API with Loading States
+
 #### **⚠️ Blockers/Dependencies**
-*None currently identified - Issue #28 ready to start*
+*None currently identified - Issue #29 ready to start*
 
 ### **🏷️ GitHub Labels Used**
 - `web-frontend`: All web frontend development tasks
@@ -572,7 +573,7 @@ This project uses **individual GitHub issues** for each development task, allowi
 **Phase 2A Form Components:**
 - [x] Essay type selection implemented (Issue #26) ✅
 - [x] SAQ multi-part input system built (Issue #27) ✅
-- [ ] ChatGPT-style text input components created (Issue #28)
+- [x] ChatGPT-style text input components created (Issue #28) ✅
 - [ ] Real-time form validation implemented (Issue #29)
 
 **Phase 2B Results & API:**
