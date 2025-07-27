@@ -15,7 +15,7 @@ APUSH Grader is designed for a small handful of teacher to use it. Anywhere from
 **Phase 2C COMPLETE**: Real API testing, documentation, and deployment guides
 **Phase 3 COMPLETE**: iOS frontend migration to Python backend API - APUSHGraderCore replaced
 **Phase 4 READY**: Production deployment and monitoring
-**Phase 5 IN PROGRESS**: ChatGPT-style web frontend development - Issue #27 complete, ready for Issue #28
+**Phase 5 IN PROGRESS**: ChatGPT-style web frontend development - Issue #28 complete, ready for Issue #29
 
 ## Repository Structure
 
@@ -70,7 +70,7 @@ APUSH Grader is designed for a small handful of teacher to use it. Anywhere from
 - **src/pages/** - Page components with working API integration testing
 - **package.json** - React + TypeScript + Tailwind CSS + esbuild dependencies
 - **src/input.css** - Tailwind CSS setup using clean CLI approach (no config file needed)
-- **Current**: Issue #27 complete (SAQ multi-part input system), ready for Issue #28
+- **Current**: Issue #28 complete (ChatGPT-style text input components), ready for Issue #29
 
 ## Python Backend Commands
 
@@ -214,7 +214,8 @@ npm run dev
 # Issue #25 COMPLETE: API service layer & TypeScript interfaces
 # Issue #26 COMPLETE: Essay type selection with ChatGPT-style buttons
 # Issue #27 COMPLETE: SAQ multi-part input system with type differentiation
-# CURRENT: Ready for Issue #28 (ChatGPT-Style Text Input Components)
+# Issue #28 COMPLETE: ChatGPT-style text input components with auto-resize and unified design
+# CURRENT: Ready for Issue #29 (Real-Time Form Validation)
 
 # Create feature branch for current issue
 git checkout -b feature/web-issue-X-brief-description
