@@ -4,6 +4,7 @@ import { EssayTypeSelector, SAQTypeSelector, SAQMultiPartInput, ChatTextArea, Pr
 import { SubmitButton } from '../components/ui';
 import { GradingProvider, useGrading } from '../contexts/GradingContext';
 import { apiService } from '../services/api';
+import { GradingRequest } from '../types/api';
 
 /**
  * Inner component that uses the grading context
@@ -12,6 +13,65 @@ const GradingPageContent: React.FC = () => {
   const { state, actions } = useGrading();
   const [testResults, setTestResults] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
+  const [submitError, setSubmitError] = useState<string>('');
+  
+  // Helper function to build GradingRequest from form state
+  const buildGradingRequest = (): GradingRequest => {
+    const request: GradingRequest = {
+      essay_type: state.form.essayType!,
+      prompt: state.form.prompt
+    };
+    
+    if (state.form.essayType === 'SAQ') {
+      request.saq_parts = state.form.saqParts;
+      if (state.form.saqType) {
+        request.saq_type = state.form.saqType;
+      }
+    } else {
+      // For DBQ/LEQ, use essay_text
+      request.essay_text = state.form.essayText;
+    }
+    
+    return request;
+  };
+  
+  // Real grading submission handler
+  const handleGradingSubmit = async () => {
+    setSubmitError('');
+    actions.setSubmitting(true);
+    
+    try {
+      const request = buildGradingRequest();
+      const result = await apiService.gradeEssay(request);
+      actions.setResult(result);
+    } catch (error: any) {
+      // Handle different error types with teacher-friendly messages
+      let errorMessage = 'An error occurred while grading the essay.';
+      
+      switch (error.type) {
+        case 'RATE_LIMIT_ERROR':
+          errorMessage = 'Rate limit exceeded. Please wait a few minutes before submitting another essay.';
+          break;
+        case 'NETWORK_ERROR':
+          errorMessage = 'Connection problem. Please check your internet connection and try again.';
+          break;
+        case 'VALIDATION_ERROR':
+          errorMessage = `Validation error: ${error.message}`;
+          break;
+        case 'TIMEOUT_ERROR':
+          errorMessage = 'Request timed out. The AI service may be busy. Please try again.';
+          break;
+        case 'SERVER_ERROR':
+          errorMessage = 'Server error occurred. Please try again in a few moments.';
+          break;
+        default:
+          errorMessage = `Error: ${error.message}`;
+      }
+      
+      setSubmitError(errorMessage);
+      actions.setSubmitting(false);
+    }
+  };
 
   const testHealthCheck = async () => {
     setLoading(true);
@@ -168,14 +228,44 @@ const GradingPageContent: React.FC = () => {
                   <SubmitButton
                     isValid={state.isFormValid}
                     isSubmitting={state.isSubmitting}
-                    onClick={() => console.log('Grade essay clicked - full implementation in Issue #30')}
+                    onClick={handleGradingSubmit}
                   />
-                  <div className="text-xs text-gray-500 text-center mt-2">
-                    Submit button will be fully implemented in Issue #30
-                  </div>
+                  
+                  {/* Inline error display */}
+                  {submitError && (
+                    <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                      <div className="flex items-center gap-2 text-red-700">
+                        <span className="text-red-500">⚠</span>
+                        <span className="text-sm font-medium">Error</span>
+                      </div>
+                      <p className="text-sm text-red-600 mt-1">{submitError}</p>
+                      <button
+                        onClick={() => setSubmitError('')}
+                        className="mt-2 text-xs text-red-600 hover:text-red-700 underline"
+                      >
+                        Dismiss
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
+            
+            {/* Basic Results Display - Issue #32 will enhance this */}
+            {state.lastResult && (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4 mt-4">
+                <h3 className="font-semibold text-green-900 mb-2">✅ Grading Complete!</h3>
+                <p className="text-green-800 text-sm">
+                  Score: {state.lastResult.score}/{state.lastResult.max_score} ({state.lastResult.percentage}%) - {state.lastResult.letter_grade}
+                </p>
+                <button
+                  onClick={() => actions.setResult(null)}
+                  className="mt-2 text-xs text-green-700 hover:text-green-800 underline"
+                >
+                  Grade another essay
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Development Progress Sections */}

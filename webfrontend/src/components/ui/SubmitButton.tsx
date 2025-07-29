@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface SubmitButtonProps {
   isValid: boolean;
@@ -14,6 +14,30 @@ export const SubmitButton: React.FC<SubmitButtonProps> = ({
   className = ''
 }) => {
   const isDisabled = !isValid || isSubmitting;
+  const [currentMessage, setCurrentMessage] = useState(0);
+  
+  // Progressive loading messages
+  const loadingMessages = [
+    'Analyzing essay...',
+    'Processing with AI...',
+    'Evaluating content...',
+    'Generating feedback...',
+    'Almost done...'
+  ];
+  
+  // Cycle through loading messages every 3 seconds
+  useEffect(() => {
+    if (!isSubmitting) {
+      setCurrentMessage(0);
+      return;
+    }
+    
+    const interval = setInterval(() => {
+      setCurrentMessage(prev => (prev + 1) % loadingMessages.length);
+    }, 3000);
+    
+    return () => clearInterval(interval);
+  }, [isSubmitting, loadingMessages.length]);
 
   return (
     <button
@@ -27,11 +51,18 @@ export const SubmitButton: React.FC<SubmitButtonProps> = ({
         }
         ${className}
       `}
+      style={{
+        cursor: isDisabled ? 'not-allowed' : 'pointer'
+      }}
     >
       {isSubmitting ? (
-        <div className="flex items-center justify-center gap-2">
-          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-          <span>Grading Essay...</span>
+        <div className="flex items-center justify-center gap-3">
+          <div className="flex gap-1">
+            <div className="w-2 h-2 bg-white rounded-full animate-pulse" style={{ animationDelay: '0ms' }}></div>
+            <div className="w-2 h-2 bg-white rounded-full animate-pulse" style={{ animationDelay: '150ms' }}></div>
+            <div className="w-2 h-2 bg-white rounded-full animate-pulse" style={{ animationDelay: '300ms' }}></div>
+          </div>
+          <span>{loadingMessages[currentMessage]}</span>
         </div>
       ) : (
         'Grade Essay'
