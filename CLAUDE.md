@@ -15,7 +15,7 @@ APUSH Grader is designed for a small handful of teacher to use it. Anywhere from
 **Phase 2C COMPLETE**: Real API testing, documentation, and deployment guides
 **Phase 3 COMPLETE**: iOS frontend migration to Python backend API - APUSHGraderCore replaced
 **Phase 4 READY**: Production deployment and monitoring
-**Phase 5 IN PROGRESS**: ChatGPT-style web frontend development - Issue #29 complete (form validation), ready for Issue #30
+**Phase 5 IN PROGRESS**: ChatGPT-style web frontend development - Issue #30 complete (API integration), ready for Issue #32
 
 ## Repository Structure
 
@@ -51,15 +51,15 @@ APUSH Grader is designed for a small handful of teacher to use it. Anywhere from
 - **Views/** - SwiftUI interface using API responses
 - **Current**: Uses Python backend via HTTP API (localhost:8000)
 
-### **webfrontend/** - ChatGPT-Style Web Frontend (FORM VALIDATION COMPLETE)
+### **webfrontend/** - ChatGPT-Style Web Frontend (API INTEGRATION COMPLETE)
 - **src/components/** - Reusable React UI components with ChatGPT-inspired design
   - **input/EssayTypeSelector.tsx** - Clean 3-button interface (DBQ/LEQ/SAQ) with ChatGPT styling
   - **input/SAQTypeSelector.tsx** - Native dropdown for SAQ type differentiation (stimulus/non-stimulus/secondary comparison)
   - **input/SAQMultiPartInput.tsx** - Three-part SAQ input system with real-time validation
   - **input/ChatTextArea.tsx** - Auto-resizing textarea with component-scoped error handling
-  - **input/PromptInput.tsx** - Single-line input with type-specific placeholders and validation
+  - **input/PromptInput.tsx** - Auto-resizing textarea with type-specific placeholders and validation
   - **layout/** - ChatGPT-style layout components (Header, MainContent, ChatLayout)
-  - **ui/SubmitButton.tsx** - Dynamic submit button with enable/disable based on form validity
+  - **ui/SubmitButton.tsx** - Dynamic submit button with progressive loading messages and ChatGPT-style animations
   - **ui/ValidationFeedback.tsx** - Reusable error display component
 - **src/contexts/** - React Context for state management (grading, API, UI)
   - **GradingContext.tsx** - Complete form state management with real-time validation and field clearing
@@ -71,10 +71,10 @@ APUSH Grader is designed for a small handful of teacher to use it. Anywhere from
   - **api.ts** - All API request/response models (GradingRequest, GradingResponse, etc.)
   - **ui.ts** - UI-specific types for form validation and performance levels
   - **index.ts** - Centralized type exports
-- **src/pages/** - Page components with working API integration testing
+- **src/pages/** - Page components with complete API integration and basic results display
 - **package.json** - React + TypeScript + Tailwind CSS + esbuild dependencies
 - **src/input.css** - Tailwind CSS setup using clean CLI approach (no config file needed)
-- **Current**: Issue #29 complete (real-time form validation), ready for Issue #30 (API integration)
+- **Current**: Issue #30 complete (API integration with loading states), ready for Issue #32 (score visualization)
 
 ## Python Backend Commands
 
@@ -220,7 +220,9 @@ npm run dev
 # Issue #27 COMPLETE: SAQ multi-part input system with type differentiation
 # Issue #28 COMPLETE: ChatGPT-style text input components with auto-resize and unified design
 # Issue #29 COMPLETE: Real-time form validation with dynamic submit button
-# CURRENT: Ready for Issue #30 (Integrate Grading API with Loading States)
+# Issue #30 COMPLETE: API integration with progressive loading states and basic results
+# CURRENT: Ready for Issue #32 (Build Score Visualization Components)
+# Note: Issue #31 removed - conversation flow not appropriate for essay grading workflow
 
 # Create feature branch for current issue
 git checkout -b feature/web-issue-X-brief-description

@@ -23,12 +23,14 @@ As a teacher, I want to:
 - [x] SAQ type selection dropdown (stimulus, non-stimulus, secondary comparison)
 - [x] Multi-part SAQ input system with labeled sections (Part A, B, C)
 - [x] Essay text input field with auto-resize functionality
-- [x] Prompt/question input field with type-specific placeholders
-- [x] Grade button with integrated loading states and animations
+- [x] Prompt/question input field with auto-resize and type-specific placeholders
+- [x] Grade button with progressive loading messages and ChatGPT-style animations
 - [ ] Results display with expandable scoring breakdown
 - [x] Real-time form validation with dynamic button enablement
 - [x] Field clearing logic when essay type changes
 - [x] Error handling with user-friendly notifications
+- [x] Complete API integration with backend grading service
+- [x] Basic results display with success feedback
 - [ ] Responsive design optimized for desktop, tablet, and mobile
 
 ### ChatGPT-Inspired Design Features
@@ -325,19 +327,20 @@ interface ProcessedGradingResult extends GradingResponse {
 - ✅ SubmitButton with dynamic enable/disable based on form validity
 
 ### Phase 2B: API Integration & Results Display (1 week) 
-**Status: ⏳ Not Started**
-- [ ] Complete API integration with error handling and retry logic
-- [ ] ChatGPT-style conversation flow for submissions
-- [ ] Results display as "assistant responses" with expandable sections
+**Status: 🔄 In Progress (1/3 issues complete)**
+- [x] Complete API integration with error handling and retry logic
+- [ ] Enhanced results display with expandable sections (Issue #32)
 - [ ] Circular progress indicators with color-coded performance levels
-- [ ] Loading states with animated indicators (ChatGPT-style thinking dots)
+- [x] Loading states with animated indicators (ChatGPT-style thinking dots)
 - [ ] Icon-based insight categorization (strengths, improvements, warnings)
 
 **Deliverables:**
-- Functional grading workflow with ChatGPT-style user experience
-- All essay types working (DBQ, LEQ, SAQ) with proper differentiation
-- Complete API integration with comprehensive error handling
-- Results display with expandable details and visual score indicators
+- ✅ Functional grading workflow with ChatGPT-style user experience
+- ✅ All essay types working (DBQ, LEQ, SAQ) with proper differentiation
+- ✅ Complete API integration with comprehensive error handling
+- ✅ Progressive loading messages with animated dots
+- ✅ Basic results display (enhanced visualization in Issue #32)
+- [ ] Enhanced results display with visual score indicators and expandable details
 
 ### Phase 3: Advanced UI Features & Polish (1 week)
 **Status: ⏳ Not Started**
@@ -474,11 +477,12 @@ This project uses **individual GitHub issues** for each development task, allowi
 - **Issue #28**: [WEB] Phase 2A: Create ChatGPT-Style Text Input Components
 - **Issue #29**: [WEB] Phase 2A: Implement Real-Time Form Validation
 
-#### **Phase 2B: API Integration & Results (Issues #30-33)**
+#### **Phase 2B: API Integration & Results (Issues #30, #32-33)**
 - **Issue #30**: [WEB] Phase 2B: Integrate Grading API with Loading States
-- **Issue #31**: [WEB] Phase 2B: Create ConversationFlow & Results Display
 - **Issue #32**: [WEB] Phase 2B: Build Score Visualization Components
 - **Issue #33**: [WEB] Phase 2B: Add Expandable Results & Insight Categorization
+
+*Note: Issue #31 (ConversationFlow) was removed as conversation-style interface doesn't align with single-transaction essay grading workflow.*
 
 #### **Phase 3: Polish & Advanced Features (Issues #34-36)**
 - **Issue #34**: [WEB] Phase 3: Implement Animations & Micro-Interactions
@@ -519,13 +523,14 @@ This project uses **individual GitHub issues** for each development task, allowi
 - **Issue #26** ✅: [WEB] Phase 2A: Implement Essay Type Selection (PR #42 merged)
 - **Issue #27** ✅: [WEB] Phase 2A: Build SAQ Multi-Part Input System (PR #43 merged)
 - **Issue #28** ✅: [WEB] Phase 2A: Create ChatGPT-Style Text Input Components (PR #44 merged)
-- **Issue #29** ✅: [WEB] Phase 2A: Implement Real-Time Form Validation (Ready for PR)
+- **Issue #29** ✅: [WEB] Phase 2A: Implement Real-Time Form Validation (PR #45 merged)
+- **Issue #30** ✅: [WEB] Phase 2B: Integrate Grading API with Loading States (Ready for PR)
 
 #### **🔄 Current Task**
-**Issue #30**: [WEB] Phase 2B: Integrate Grading API with Loading States
+**Issue #32**: [WEB] Phase 2B: Build Score Visualization Components
 
 #### **📋 Next Up**
-**Issue #31**: [WEB] Phase 2B: Create ConversationFlow & Results Display
+**Issue #33**: [WEB] Phase 2B: Add Expandable Results & Insight Categorization
 
 #### **⚠️ Blockers/Dependencies**
 *None currently identified - Issue #29 ready to start*
@@ -580,10 +585,11 @@ This project uses **individual GitHub issues** for each development task, allowi
 - [x] Real-time form validation implemented (Issue #29) ✅
 
 **Phase 2B Results & API:**
-- [ ] Grading API integration with loading states (Issue #30)
-- [ ] ConversationFlow and results display created (Issue #31)
+- [x] Grading API integration with loading states (Issue #30) ✅
 - [ ] Score visualization components built (Issue #32)
 - [ ] Expandable results and insight categorization added (Issue #33)
+
+*Issue #31 removed - conversation flow not appropriate for essay grading workflow*
 
 **Phase 3 Polish & Features:**
 - [ ] Animations and micro-interactions implemented (Issue #34)
@@ -596,7 +602,7 @@ This project uses **individual GitHub issues** for each development task, allowi
 
 ---
 *Last Updated: January 2025*
-*Status: **Issue #29 Complete** - Ready for Issue #30: Integrate Grading API with Loading States*
+*Status: **Issue #30 Complete** - Ready for Issue #32: Build Score Visualization Components*
 
 ## Implementation Summary
 ✅ **GitHub Issues Created**: 16 focused issues created covering all development phases
