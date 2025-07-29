@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { EssayType, SAQType } from '../../types/api';
 
 interface PromptInputProps {
@@ -57,12 +57,43 @@ const PromptInput: React.FC<PromptInputProps> = ({
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Auto-resize functionality (similar to ChatTextArea)
+  const adjustHeight = () => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    // Reset height to calculate actual scrollHeight
+    textarea.style.height = 'auto';
+    
+    // Calculate the number of rows based on content
+    const lineHeight = parseInt(getComputedStyle(textarea).lineHeight);
+    const currentRows = Math.ceil(textarea.scrollHeight / lineHeight);
+    
+    // Constrain between 1 and 6 rows for prompts
+    const constrainedRows = Math.max(1, Math.min(6, currentRows));
+    
+    // Set the height based on constrained rows
+    textarea.style.height = `${constrainedRows * lineHeight}px`;
+  };
+
+  // Adjust height on value change
+  useEffect(() => {
+    adjustHeight();
+  }, [value]);
+
+  // Adjust height on component mount
+  useEffect(() => {
+    adjustHeight();
+  }, []);
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     onChange(e.target.value);
   };
 
   const baseClasses = `
-    w-full px-4 py-3 border rounded-lg shadow-sm
+    w-full px-4 py-3 border rounded-lg shadow-sm resize-none
     text-sm leading-relaxed font-medium
     transition-all duration-200 ease-in-out
     focus:outline-none focus:ring-2 focus:ring-offset-1
@@ -78,8 +109,8 @@ const PromptInput: React.FC<PromptInputProps> = ({
 
   return (
     <div className="space-y-2">
-      <input
-        type="text"
+      <textarea
+        ref={textareaRef}
         id={id}
         value={value}
         onChange={handleChange}
@@ -87,6 +118,11 @@ const PromptInput: React.FC<PromptInputProps> = ({
         disabled={disabled}
         className={combinedClasses}
         aria-describedby={ariaDescribedBy}
+        rows={1}
+        style={{
+          minHeight: '3rem',
+          maxHeight: '9rem'
+        }}
       />
       
       {error && (
