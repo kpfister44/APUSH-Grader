@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ChatLayout, Header, MainContent } from '../components/layout';
 import { EssayTypeSelector, SAQTypeSelector, SAQMultiPartInput, ChatTextArea, PromptInput } from '../components/input';
+import { SubmitButton } from '../components/ui';
 import { GradingProvider, useGrading } from '../contexts/GradingContext';
 import { apiService } from '../services/api';
 
@@ -83,10 +84,11 @@ const GradingPageContent: React.FC = () => {
                 disabled={state.isSubmitting}
               />
 
-              {/* Form validation feedback */}
+              {/* Essay type validation feedback */}
               {state.validationErrors.essayType && (
-                <div className="text-red-600 text-sm">
-                  {state.validationErrors.essayType}
+                <div className="text-red-600 text-sm flex items-center gap-2 mt-2">
+                  <span className="text-red-500">⚠</span>
+                  <span>{state.validationErrors.essayType}</span>
                 </div>
               )}
 
@@ -127,6 +129,13 @@ const GradingPageContent: React.FC = () => {
                     disabled={state.isSubmitting}
                     validationErrors={state.validationErrors}
                   />
+                  {/* Overall SAQ validation - only shows if no individual parts have content */}
+                  {state.validationErrors.saqParts && (
+                    <div className="text-red-600 text-sm flex items-center gap-2 mt-2">
+                      <span className="text-red-500">⚠</span>
+                      <span>{state.validationErrors.saqParts}</span>
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -149,6 +158,20 @@ const GradingPageContent: React.FC = () => {
                   />
                   <div id="essay-text-help" className="text-xs text-gray-500">
                     Paste the complete student essay response for grading
+                  </div>
+                </div>
+              )}
+
+              {/* Submit Button */}
+              {state.form.essayType && (
+                <div className="border-t pt-6">
+                  <SubmitButton
+                    isValid={state.isFormValid}
+                    isSubmitting={state.isSubmitting}
+                    onClick={() => console.log('Grade essay clicked - full implementation in Issue #30')}
+                  />
+                  <div className="text-xs text-gray-500 text-center mt-2">
+                    Submit button will be fully implemented in Issue #30
                   </div>
                 </div>
               )}
