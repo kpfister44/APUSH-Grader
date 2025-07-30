@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ChatLayout, Header, MainContent } from '../components/layout';
 import { EssayTypeSelector, SAQTypeSelector, SAQMultiPartInput, ChatTextArea, PromptInput } from '../components/input';
-import { SubmitButton } from '../components/ui';
+import { SubmitButton, ResultsDisplay } from '../components/ui';
 import { GradingProvider, useGrading } from '../contexts/GradingContext';
 import { apiService } from '../services/api';
 import { GradingRequest } from '../types/api';
@@ -222,8 +222,8 @@ const GradingPageContent: React.FC = () => {
                 </div>
               )}
 
-              {/* Submit Button */}
-              {state.form.essayType && (
+              {/* Submit Button - Hidden when results are displayed */}
+              {state.form.essayType && !state.lastResult && (
                 <div className="border-t pt-6">
                   <SubmitButton
                     isValid={state.isFormValid}
@@ -251,19 +251,13 @@ const GradingPageContent: React.FC = () => {
               )}
             </div>
             
-            {/* Basic Results Display - Issue #32 will enhance this */}
+            {/* Enhanced Results Display - Issue #32 Score Visualization */}
             {state.lastResult && (
-              <div className="bg-green-50 border border-green-200 rounded-lg p-4 mt-4">
-                <h3 className="font-semibold text-green-900 mb-2">✅ Grading Complete!</h3>
-                <p className="text-green-800 text-sm">
-                  Score: {state.lastResult.score}/{state.lastResult.max_score} ({state.lastResult.percentage}%) - {state.lastResult.letter_grade}
-                </p>
-                <button
-                  onClick={() => actions.setResult(null)}
-                  className="mt-2 text-xs text-green-700 hover:text-green-800 underline"
-                >
-                  Grade another essay
-                </button>
+              <div className="mt-6">
+                <ResultsDisplay 
+                  result={state.lastResult}
+                  onNewEssay={() => actions.setResult(null)}
+                />
               </div>
             )}
           </div>

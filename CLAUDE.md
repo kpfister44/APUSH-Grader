@@ -15,7 +15,7 @@ APUSH Grader is designed for a small handful of teacher to use it. Anywhere from
 **Phase 2C COMPLETE**: Real API testing, documentation, and deployment guides
 **Phase 3 COMPLETE**: iOS frontend migration to Python backend API - APUSHGraderCore replaced
 **Phase 4 READY**: Production deployment and monitoring
-**Phase 5 IN PROGRESS**: ChatGPT-style web frontend development - Issue #30 complete (API integration), ready for Issue #32
+**Phase 5 IN PROGRESS**: ChatGPT-style web frontend development - Issue #32 complete (score visualization), ready for Issue #33
 
 ## Repository Structure
 
@@ -51,7 +51,7 @@ APUSH Grader is designed for a small handful of teacher to use it. Anywhere from
 - **Views/** - SwiftUI interface using API responses
 - **Current**: Uses Python backend via HTTP API (localhost:8000)
 
-### **webfrontend/** - ChatGPT-Style Web Frontend (API INTEGRATION COMPLETE)
+### **webfrontend/** - ChatGPT-Style Web Frontend (SCORE VISUALIZATION COMPLETE)
 - **src/components/** - Reusable React UI components with ChatGPT-inspired design
   - **input/EssayTypeSelector.tsx** - Clean 3-button interface (DBQ/LEQ/SAQ) with ChatGPT styling
   - **input/SAQTypeSelector.tsx** - Native dropdown for SAQ type differentiation (stimulus/non-stimulus/secondary comparison)
@@ -61,6 +61,8 @@ APUSH Grader is designed for a small handful of teacher to use it. Anywhere from
   - **layout/** - ChatGPT-style layout components (Header, MainContent, ChatLayout)
   - **ui/SubmitButton.tsx** - Dynamic submit button with progressive loading messages and ChatGPT-style animations
   - **ui/ValidationFeedback.tsx** - Reusable error display component
+  - **ui/ScoreVisualizer.tsx** - Animated circular progress indicators with score-based color coding
+  - **ui/ResultsDisplay.tsx** - Comprehensive results interface with expandable sections
 - **src/contexts/** - React Context for state management (grading, API, UI)
   - **GradingContext.tsx** - Complete form state management with real-time validation and field clearing
 - **src/services/** - Complete API client service for Python backend integration
@@ -74,7 +76,7 @@ APUSH Grader is designed for a small handful of teacher to use it. Anywhere from
 - **src/pages/** - Page components with complete API integration and basic results display
 - **package.json** - React + TypeScript + Tailwind CSS + esbuild dependencies
 - **src/input.css** - Tailwind CSS setup using clean CLI approach (no config file needed)
-- **Current**: Issue #30 complete (API integration with loading states), ready for Issue #32 (score visualization)
+- **Current**: Issue #32 complete (score visualization with expandable results), ready for Issue #33 (insight categorization)
 
 ## Python Backend Commands
 
@@ -221,7 +223,8 @@ npm run dev
 # Issue #28 COMPLETE: ChatGPT-style text input components with auto-resize and unified design
 # Issue #29 COMPLETE: Real-time form validation with dynamic submit button
 # Issue #30 COMPLETE: API integration with progressive loading states and basic results
-# CURRENT: Ready for Issue #32 (Build Score Visualization Components)
+# Issue #32 COMPLETE: Score visualization with circular progress indicators and expandable results
+# CURRENT: Ready for Issue #33 (Add Expandable Results & Insight Categorization)
 # Note: Issue #31 removed - conversation flow not appropriate for essay grading workflow
 
 # Create feature branch for current issue
