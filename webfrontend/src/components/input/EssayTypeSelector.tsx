@@ -33,12 +33,14 @@ const EssayTypeSelector: React.FC<EssayTypeSelectorProps> = ({
               onClick={() => onTypeChange(type)}
               disabled={disabled}
               className={`
-                flex-1 px-4 py-3 rounded-lg border text-sm font-medium transition-all duration-200
+                flex-1 px-4 py-3 rounded-lg border text-sm font-medium 
+                transition-all duration-200 ease-out transform
                 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
                 disabled:opacity-50 disabled:cursor-not-allowed
+                hover:scale-[1.02] active:scale-[0.98]
                 ${isSelected
-                  ? 'bg-blue-50 border-blue-200 text-blue-700 shadow-sm'
-                  : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300 hover:shadow-sm'
+                  ? 'bg-blue-50 border-blue-200 text-blue-700 shadow-md scale-[1.01]'
+                  : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300 hover:shadow-md'
                 }
               `}
               aria-pressed={isSelected}

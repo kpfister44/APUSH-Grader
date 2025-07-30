@@ -31,7 +31,8 @@ const SAQTypeSelector: React.FC<SAQTypeSelectorProps> = ({
           bg-white text-gray-900 text-sm
           focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
           disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed
-          transition-colors duration-200
+          transition-all duration-200 ease-in-out transform
+          hover:border-gray-400 hover:shadow-md focus:shadow-lg focus:scale-[1.01]
         `}
         aria-describedby="saq-type-description"
       >

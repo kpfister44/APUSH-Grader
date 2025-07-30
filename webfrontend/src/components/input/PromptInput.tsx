@@ -95,15 +95,16 @@ const PromptInput: React.FC<PromptInputProps> = ({
   const baseClasses = `
     w-full px-4 py-3 border rounded-lg shadow-sm resize-none
     text-sm leading-relaxed font-medium
-    transition-all duration-200 ease-in-out
+    transition-all duration-200 ease-in-out transform
     focus:outline-none focus:ring-2 focus:ring-offset-1
     disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed
     placeholder:text-gray-400
+    hover:shadow-md focus:shadow-lg focus:scale-[1.01]
   `;
 
   const stateClasses = error
-    ? 'border-red-300 focus:ring-red-500 focus:border-red-500'
-    : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500 hover:border-gray-400';
+    ? 'border-red-300 focus:ring-red-500 focus:border-red-500 focus:shadow-red-100'
+    : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500 hover:border-gray-400 focus:shadow-blue-100';
 
   const combinedClasses = `${baseClasses} ${stateClasses} ${className}`;
 

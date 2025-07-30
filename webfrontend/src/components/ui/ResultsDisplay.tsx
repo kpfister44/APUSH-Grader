@@ -31,7 +31,7 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   const isExpanded = (sectionId: string) => expandedSections.has(sectionId);
   
   return (
-    <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+    <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden animate-in slide-in-from-bottom-4 fade-in duration-500 ease-out">
       {/* Header with score visualization */}
       <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
         <div className="flex items-center justify-between">
@@ -60,7 +60,7 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
           </div>
           <button
             onClick={onNewEssay}
-            className="px-4 py-2 bg-gray-600 text-white text-sm font-medium rounded-lg hover:bg-gray-700 transition-colors"
+            className="px-4 py-2 bg-gray-600 text-white text-sm font-medium rounded-lg hover:bg-gray-700 hover:scale-105 active:scale-95 transition-all duration-200 ease-out transform"
           >
             Grade Another Essay
           </button>
@@ -71,7 +71,7 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       <div className="p-6 space-y-4">
         {/* Overall feedback section */}
         {result.overall_feedback && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 animate-in fade-in slide-in-from-left-2 duration-300 delay-100 ease-out">
             <h4 className="font-medium text-blue-900 mb-2 flex items-center gap-2">
               <span className="text-blue-600">💬</span>
               Overall Feedback
@@ -83,22 +83,22 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         )}
         
         {/* Rubric breakdown section */}
-        <div className="space-y-3">
+        <div className="space-y-3 animate-in fade-in slide-in-from-left-2 duration-300 delay-200 ease-out">
           <button
             onClick={() => toggleSection('breakdown')}
-            className="w-full flex items-center justify-between p-4 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors"
+            className="w-full flex items-center justify-between p-4 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 hover:shadow-sm transition-all duration-200 ease-out"
           >
             <div className="flex items-center gap-2">
               <span className="text-gray-600">📊</span>
               <h4 className="font-medium text-gray-900">Detailed Score Breakdown</h4>
             </div>
-            <span className={`transform transition-transform ${isExpanded('breakdown') ? 'rotate-180' : ''}`}>
+            <span className={`transform transition-transform duration-300 ease-out ${isExpanded('breakdown') ? 'rotate-180' : ''}`}>
               ▼
             </span>
           </button>
           
           {isExpanded('breakdown') && (
-            <div className="border border-gray-200 rounded-lg p-4 space-y-3">
+            <div className="border border-gray-200 rounded-lg p-4 space-y-3 animate-in fade-in slide-in-from-top-2 duration-300 ease-out">
               {Object.entries(result.breakdown).map(([section, details]) => (
                 <div key={section} className="flex items-center justify-between p-3 bg-gray-50 rounded border">
                   <div className="flex-1">
@@ -128,16 +128,16 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         
         {/* Suggestions section */}
         {result.suggestions && result.suggestions.length > 0 && (
-          <div className="space-y-3">
+          <div className="space-y-3 animate-in fade-in slide-in-from-left-2 duration-300 delay-300 ease-out">
             <button
               onClick={() => toggleSection('suggestions')}
-              className="w-full flex items-center justify-between p-4 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors"
+              className="w-full flex items-center justify-between p-4 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 hover:shadow-sm transition-all duration-200 ease-out"
             >
               <div className="flex items-center gap-2">
                 <span className="text-gray-600">💡</span>
                 <h4 className="font-medium text-gray-900">Improvement Suggestions</h4>
               </div>
-              <span className={`transform transition-transform ${isExpanded('suggestions') ? 'rotate-180' : ''}`}>
+              <span className={`transform transition-transform duration-300 ease-out ${isExpanded('suggestions') ? 'rotate-180' : ''}`}>
                 ▼
               </span>
             </button>
@@ -159,16 +159,16 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         
         {/* Warnings section */}
         {result.warnings && result.warnings.length > 0 && (
-          <div className="space-y-3">
+          <div className="space-y-3 animate-in fade-in slide-in-from-left-2 duration-300 delay-400 ease-out">
             <button
               onClick={() => toggleSection('warnings')}
-              className="w-full flex items-center justify-between p-4 bg-yellow-50 border border-yellow-200 rounded-lg hover:bg-yellow-100 transition-colors"
+              className="w-full flex items-center justify-between p-4 bg-yellow-50 border border-yellow-200 rounded-lg hover:bg-yellow-100 hover:shadow-sm transition-all duration-200 ease-out"
             >
               <div className="flex items-center gap-2">
                 <span className="text-yellow-600">⚠️</span>
                 <h4 className="font-medium text-yellow-900">Processing Warnings</h4>
               </div>
-              <span className={`transform transition-transform ${isExpanded('warnings') ? 'rotate-180' : ''}`}>
+              <span className={`transform transition-transform duration-300 ease-out ${isExpanded('warnings') ? 'rotate-180' : ''}`}>
                 ▼
               </span>
             </button>
@@ -189,7 +189,7 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         )}
         
         {/* Essay statistics */}
-        <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 animate-in fade-in slide-in-from-left-2 duration-300 delay-500 ease-out">
           <h4 className="font-medium text-gray-900 mb-3 flex items-center gap-2">
             <span className="text-gray-600">📈</span>
             Essay Statistics

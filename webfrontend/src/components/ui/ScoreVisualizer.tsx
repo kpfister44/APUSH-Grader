@@ -142,7 +142,7 @@ export const ScoreVisualizer: React.FC<ScoreVisualizerProps> = ({
   const center = svg / 2;
   
   return (
-    <div className={`${dimensions.container} relative flex items-center justify-center`}>
+    <div className={`${dimensions.container} relative flex items-center justify-center transition-transform duration-200 ease-out hover:scale-105`}>
       {/* Background circle and progress circle */}
       <svg
         width={svg}

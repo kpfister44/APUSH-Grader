@@ -176,7 +176,7 @@ const GradingPageContent: React.FC = () => {
 
               {/* SAQ-specific components */}
               {state.form.essayType === 'SAQ' && (
-                <div className="border-t pt-6 space-y-6">
+                <div className="border-t pt-6 space-y-6 animate-in fade-in slide-in-from-top-2 duration-300 ease-out">
                   <SAQTypeSelector
                     selectedType={state.form.saqType}
                     onTypeChange={actions.setSaqType}
