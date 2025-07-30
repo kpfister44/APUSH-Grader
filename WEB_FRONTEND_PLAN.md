@@ -49,7 +49,7 @@ As a teacher, I want to:
 - [x] Circular progress indicators for score visualization
 - [x] Color-coded performance levels (score-based: perfect=green, 2/3=yellow, 1/3=orange, 0/3=red)
 - [x] Expandable/collapsible results sections with smooth animations
-- [ ] Icon integration for insight categorization (strengths, improvements, warnings)
+- [x] Icon integration for insight categorization (strengths, improvements, warnings)
 - [ ] Modal/toast notification system for error handling
 - [x] Dynamic form validation with real-time feedback
 
@@ -152,7 +152,7 @@ mkdir -p src/components src/pages src/contexts src/services src/types public
 - [ ] **ResultsMessage**: Assistant-style response bubble with grading results
 - [x] **ScoreVisualizer**: Circular progress indicator with color coding
 - [x] **ExpandableSection**: Collapsible details with smooth animations
-- [ ] **InsightCard**: Categorized insights with icons (strengths/improvements/warnings)
+- [x] **InsightCard**: Categorized insights with icons (strengths/improvements/warnings)
 - [ ] **LoadingIndicator**: Animated dots similar to ChatGPT thinking state
 
 #### **Utility Components**
@@ -327,22 +327,22 @@ interface ProcessedGradingResult extends GradingResponse {
 - ✅ SubmitButton with dynamic enable/disable based on form validity
 
 ### Phase 2B: API Integration & Results Display (1 week) 
-**Status: 🔄 In Progress (2/3 issues complete)**
+**Status: ✅ COMPLETE**
 - [x] Complete API integration with error handling and retry logic
 - [x] Enhanced results display with expandable sections (Issue #32) ✅
 - [x] Circular progress indicators with color-coded performance levels ✅
 - [x] Loading states with animated indicators (ChatGPT-style thinking dots)
 - [x] Score-based color coding system (3/3=green, 2/3=yellow, 1/3=orange, 0/3=red) ✅
 - [x] Grade Essay button workflow improvements (hidden when results displayed) ✅
-- [ ] Icon-based insight categorization (strengths, improvements, warnings)
+- [x] Icon-based insight categorization (strengths, improvements, warnings) ✅
 
-**Deliverables:**
+**Deliverables:** ✅ COMPLETE
 - ✅ Functional grading workflow with ChatGPT-style user experience
 - ✅ All essay types working (DBQ, LEQ, SAQ) with proper differentiation
 - ✅ Complete API integration with comprehensive error handling
 - ✅ Progressive loading messages with animated dots
-- ✅ Basic results display (enhanced visualization in Issue #32)
-- ✅ Enhanced results display with visual score indicators and expandable details ✅
+- ✅ Enhanced results display with visual score indicators and expandable details
+- ✅ Icon-based insight categorization with smooth expandable animations
 
 ### Phase 3: Advanced UI Features & Polish (1 week)
 **Status: ⏳ Not Started**
@@ -527,13 +527,14 @@ This project uses **individual GitHub issues** for each development task, allowi
 - **Issue #28** ✅: [WEB] Phase 2A: Create ChatGPT-Style Text Input Components (PR #44 merged)
 - **Issue #29** ✅: [WEB] Phase 2A: Implement Real-Time Form Validation (PR #45 merged)
 - **Issue #30** ✅: [WEB] Phase 2B: Integrate Grading API with Loading States (PR #46 merged)
-- **Issue #32** ✅: [WEB] Phase 2B: Build Score Visualization Components (Ready for PR)
+- **Issue #32** ✅: [WEB] Phase 2B: Build Score Visualization Components (PR #47 merged)
+- **Issue #33** ✅: [WEB] Phase 2B: Add Expandable Results & Insight Categorization (Closed - Complete)
 
 #### **🔄 Current Task**
-**Issue #33**: [WEB] Phase 2B: Add Expandable Results & Insight Categorization
+**Issue #34**: [WEB] Phase 3: Implement Animations & Micro-Interactions
 
 #### **📋 Next Up**
-**Issue #34**: [WEB] Phase 3: Implement Animations & Micro-Interactions
+**Issue #35**: [WEB] Phase 3: Add Modal/Toast Notification System
 
 #### **⚠️ Blockers/Dependencies**
 *None currently identified - Issue #29 ready to start*
@@ -590,7 +591,7 @@ This project uses **individual GitHub issues** for each development task, allowi
 **Phase 2B Results & API:**
 - [x] Grading API integration with loading states (Issue #30) ✅
 - [x] Score visualization components built (Issue #32) ✅
-- [ ] Expandable results and insight categorization added (Issue #33)
+- [x] Expandable results and insight categorization added (Issue #33) ✅
 
 *Issue #31 removed - conversation flow not appropriate for essay grading workflow*
 
@@ -605,7 +606,7 @@ This project uses **individual GitHub issues** for each development task, allowi
 
 ---
 *Last Updated: January 2025*
-*Status: **Issue #32 Complete** - Ready for Issue #33: Add Expandable Results & Insight Categorization*
+*Status: **Issue #33 Complete** - Ready for Issue #34: Implement Animations & Micro-Interactions*
 
 ## Implementation Summary
 ✅ **GitHub Issues Created**: 16 focused issues created covering all development phases
@@ -617,7 +618,7 @@ This project uses **individual GitHub issues** for each development task, allowi
 ✅ **Issue #23 Complete**: React + TypeScript + Tailwind foundation successfully implemented with visual confirmation
 
 ## Next Steps
-🎯 **Continue Development**: Begin with Issue #24 (Create ChatGPT-Style Base Components & Layout)
+🎯 **Continue Development**: Begin with Issue #34 (Implement Animations & Micro-Interactions)
 🔄 **Follow Workflow**: Use the established Claude Code session workflow for each issue
 📊 **Track Progress**: Update this plan after completing each issue
 🚀 **Stay Focused**: Each issue represents one focused coding session with clear deliverables
