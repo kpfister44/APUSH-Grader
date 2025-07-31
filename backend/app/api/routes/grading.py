@@ -38,13 +38,17 @@ def _combine_saq_parts(grading_request: GradingRequest) -> str:
         Combined essay text with parts labeled
     """
     if grading_request.saq_parts:
-        return f"""A) {grading_request.saq_parts.part_a}
-
-B) {grading_request.saq_parts.part_b}
-
-C) {grading_request.saq_parts.part_c}"""
+        parts = []
+        if grading_request.saq_parts.part_a and grading_request.saq_parts.part_a.strip():
+            parts.append(f"A) {grading_request.saq_parts.part_a.strip()}")
+        if grading_request.saq_parts.part_b and grading_request.saq_parts.part_b.strip():
+            parts.append(f"B) {grading_request.saq_parts.part_b.strip()}")
+        if grading_request.saq_parts.part_c and grading_request.saq_parts.part_c.strip():
+            parts.append(f"C) {grading_request.saq_parts.part_c.strip()}")
+        
+        return "\n\n".join(parts) if parts else ""
     else:
-        return grading_request.essay_text
+        return grading_request.essay_text or ""
 
 
 @router.post(

@@ -15,33 +15,30 @@ from app.models.core import GradeResponse
 class SAQParts(BaseModel):
     """Model for SAQ three-part structure."""
     
-    part_a: str = Field(
-        ...,
+    part_a: Optional[str] = Field(
+        None,
         description="Student response to SAQ Part A",
-        min_length=1,
         max_length=2000
     )
     
-    part_b: str = Field(
-        ...,
+    part_b: Optional[str] = Field(
+        None,
         description="Student response to SAQ Part B", 
-        min_length=1,
         max_length=2000
     )
     
-    part_c: str = Field(
-        ...,
+    part_c: Optional[str] = Field(
+        None,
         description="Student response to SAQ Part C",
-        min_length=1, 
         max_length=2000
     )
     
     @validator('part_a', 'part_b', 'part_c')
     def validate_parts(cls, v):
-        """Validate SAQ part text is not empty or just whitespace."""
-        if not v or not v.strip():
-            raise ValueError("SAQ part text cannot be empty or just whitespace")
-        return v.strip()
+        """Validate SAQ part text if provided."""
+        if v is not None and v.strip():
+            return v.strip()
+        return v  # Allow None or empty strings
 
 
 class GradingRequest(BaseModel):
