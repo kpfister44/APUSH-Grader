@@ -11,7 +11,7 @@ Designed for 2-12 teachers. Prioritize simplicity over complexity - functionalit
 ## Current Status
 - **Backend**: Production-ready Python FastAPI with Anthropic AI integration ✅
 - **iOS App**: Complete, using backend API ✅
-- **Web Frontend**: Issue #34 complete (animations), ready for Issue #36 (mobile responsiveness)
+- **Web Frontend**: Phase 4 cross-browser testing complete, ready for Issue #38 (production deployment)
 
 ## Repository Structure
 
@@ -31,10 +31,11 @@ Designed for 2-12 teachers. Prioritize simplicity over complexity - functionalit
 
 ### **webfrontend/** - ChatGPT-Style Web Frontend
 - **src/components/** - React UI components with ChatGPT-inspired design
+  - **pdf/** - PDF export functionality using @react-pdf/renderer
 - **src/contexts/** - React Context for state management  
 - **src/services/** - API client service for backend integration
 - **src/types/** - TypeScript interface definitions
-- Issue #34 complete (smooth animations & micro-interactions), Issue #35 skipped, ready for Issue #36
+- Phase 4 cross-browser testing complete, PDF export feature added, ready for Issue #38 (production deployment)
 
 ## Commands
 
@@ -69,11 +70,11 @@ npm run dev
 # Available at: http://127.0.0.1:8000
 
 # Feature Branch Workflow (REQUIRED for GitHub issues)
-git checkout -b feature/web-issue-36-mobile-responsive
+git checkout -b feature/web-issue-37-cross-browser-testing
 # Work on issue, then:
-git add . && git commit -m "[WEB] Issue #36: Description"
-git push -u origin feature/web-issue-36-mobile-responsive
-gh pr create --title "[WEB] Issue #36: Title" --body "Description"
+git add . && git commit -m "[WEB] Issue #37: Description"
+git push -u origin feature/web-issue-37-cross-browser-testing
+gh pr create --title "[WEB] Issue #37: Title" --body "Description"
 gh pr merge --squash --delete-branch
 git checkout main && git pull origin main
 ```
@@ -128,7 +129,7 @@ Follow sequential GitHub issues #23-38 for ChatGPT-style web interface:
 - **ALWAYS use feature branches** for each issue (see commands above)
 - Update WEB_FRONTEND_PLAN.md after completing each issue
 - Create PRs referencing issue numbers
-- Current: Issue #36 (Mobile Responsiveness & Accessibility)
+- Current: Issue #38 (Backend Integration & Production Deployment)
 
 ### **Git Authentication**
 If authentication issues occur:

@@ -39,11 +39,11 @@ async def grade_essay(essay_text: str, essay_type: EssayType, prompt: str, saq_t
         logger.debug("Step 1: Preprocessing essay")
         preprocessing_result = preprocess_essay(essay_text, essay_type)
         
-        # Basic validation - fail if essay is too short
-        if not preprocessing_result.is_valid():
-            critical_warnings = [w for w in preprocessing_result.warnings if "too short" in w]
-            if critical_warnings:
-                raise ValidationError(f"Essay validation failed: {critical_warnings[0]}")
+        # Log warnings but don't fail for short essays - let teachers test with short content
+        if preprocessing_result.warnings:
+            logger.warning(f"Essay warnings: {preprocessing_result.warnings}")
+            # Only fail for truly critical issues (empty essays are caught earlier)
+            # Length warnings are informational only
         
         # Step 2: Generate AI prompts
         logger.debug("Step 2: Generating AI prompts")

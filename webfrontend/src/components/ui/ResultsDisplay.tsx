@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { GradingResponse } from '../../types/api';
 import { ScoreVisualizer, PerformanceBadge } from './ScoreVisualizer';
+import { PDFExport } from '../pdf';
+import { useGrading } from '../../contexts/GradingContext';
 
 interface ResultsDisplayProps {
   result: GradingResponse;
@@ -15,6 +17,7 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   onNewEssay
 }) => {
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
+  const { state } = useGrading();
   
   const toggleSection = (sectionId: string) => {
     setExpandedSections(prev => {
@@ -58,12 +61,26 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
               />
             </div>
           </div>
-          <button
-            onClick={onNewEssay}
-            className="px-4 py-2 bg-gray-600 text-white text-sm font-medium rounded-lg hover:bg-gray-700 hover:scale-105 active:scale-95 transition-all duration-200 ease-out transform"
-          >
-            Grade Another Essay
-          </button>
+          <div className="flex flex-col gap-3">
+            <button
+              onClick={onNewEssay}
+              className="px-4 py-2 bg-gray-600 text-white text-sm font-medium rounded-lg hover:bg-gray-700 hover:scale-105 active:scale-95 transition-all duration-200 ease-out transform"
+            >
+              Grade Another Essay
+            </button>
+            
+            {/* PDF Export Button */}
+            {state.form.essayType && (
+              <PDFExport
+                result={result}
+                essayType={state.form.essayType}
+                prompt={state.form.prompt}
+                essayText={state.form.essayText}
+                saqParts={state.form.saqParts}
+                saqType={state.form.saqType}
+              />
+            )}
+          </div>
         </div>
       </div>
       

@@ -41,7 +41,7 @@ export interface EnvironmentConfig extends ApiConfig {
 }
 
 const DEVELOPMENT_CONFIG: EnvironmentConfig = {
-  baseUrl: 'http://127.0.0.1:8000',
+  baseUrl: 'http://localhost:8000',
   timeout: 30000,
   retryAttempts: 3,
   retryDelay: 1000,
@@ -67,7 +67,7 @@ const PRODUCTION_CONFIG: EnvironmentConfig = {
 };
 
 const TEST_CONFIG: EnvironmentConfig = {
-  baseUrl: 'http://127.0.0.1:8000',
+  baseUrl: 'http://localhost:8000',
   timeout: 10000, // Shorter timeout for tests
   retryAttempts: 1,
   retryDelay: 500,
