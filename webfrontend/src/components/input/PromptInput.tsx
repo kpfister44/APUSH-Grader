@@ -11,6 +11,7 @@ interface PromptInputProps {
   className?: string;
   id?: string;
   ariaDescribedBy?: string;
+  onSubmit?: () => void;
 }
 
 const PromptInput: React.FC<PromptInputProps> = ({
@@ -22,7 +23,8 @@ const PromptInput: React.FC<PromptInputProps> = ({
   error,
   className = '',
   id,
-  ariaDescribedBy
+  ariaDescribedBy,
+  onSubmit
 }) => {
   const getPlaceholder = (): string => {
     if (!essayType) {
@@ -92,6 +94,13 @@ const PromptInput: React.FC<PromptInputProps> = ({
     onChange(e.target.value);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+      e.preventDefault();
+      onSubmit?.();
+    }
+  };
+
   const baseClasses = `
     w-full px-4 py-3 border rounded-lg shadow-sm resize-none
     text-sm leading-relaxed font-medium
@@ -115,6 +124,7 @@ const PromptInput: React.FC<PromptInputProps> = ({
         id={id}
         value={value}
         onChange={handleChange}
+        onKeyDown={handleKeyDown}
         placeholder={getPlaceholder()}
         disabled={disabled}
         className={combinedClasses}

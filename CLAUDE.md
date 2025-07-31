@@ -11,7 +11,7 @@ Designed for 2-12 teachers. Prioritize simplicity over complexity - functionalit
 ## Current Status
 - **Backend**: Production-ready Python FastAPI with Anthropic AI integration ✅
 - **iOS App**: Complete, using backend API ✅
-- **Web Frontend**: Issue #34 complete (animations), ready for Issue #35 (modal/toast system)
+- **Web Frontend**: Issue #34 complete (animations), ready for Issue #36 (mobile responsiveness)
 
 ## Repository Structure
 
@@ -34,7 +34,7 @@ Designed for 2-12 teachers. Prioritize simplicity over complexity - functionalit
 - **src/contexts/** - React Context for state management  
 - **src/services/** - API client service for backend integration
 - **src/types/** - TypeScript interface definitions
-- Issue #34 complete (smooth animations & micro-interactions), ready for Issue #35
+- Issue #34 complete (smooth animations & micro-interactions), Issue #35 skipped, ready for Issue #36
 
 ## Commands
 
@@ -69,11 +69,11 @@ npm run dev
 # Available at: http://127.0.0.1:8000
 
 # Feature Branch Workflow (REQUIRED for GitHub issues)
-git checkout -b feature/web-issue-35-modal-notifications
+git checkout -b feature/web-issue-36-mobile-responsive
 # Work on issue, then:
-git add . && git commit -m "[WEB] Issue #35: Description"
-git push -u origin feature/web-issue-35-modal-notifications
-gh pr create --title "[WEB] Issue #35: Title" --body "Description"
+git add . && git commit -m "[WEB] Issue #36: Description"
+git push -u origin feature/web-issue-36-mobile-responsive
+gh pr create --title "[WEB] Issue #36: Title" --body "Description"
 gh pr merge --squash --delete-branch
 git checkout main && git pull origin main
 ```
@@ -128,7 +128,7 @@ Follow sequential GitHub issues #23-38 for ChatGPT-style web interface:
 - **ALWAYS use feature branches** for each issue (see commands above)
 - Update WEB_FRONTEND_PLAN.md after completing each issue
 - Create PRs referencing issue numbers
-- Current: Issue #35 (Modal/Toast Notification System)
+- Current: Issue #36 (Mobile Responsiveness & Accessibility)
 
 ### **Git Authentication**
 If authentication issues occur:

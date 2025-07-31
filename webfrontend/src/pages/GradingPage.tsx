@@ -167,6 +167,7 @@ const GradingPageContent: React.FC = () => {
                     disabled={state.isSubmitting}
                     error={state.validationErrors.prompt}
                     ariaDescribedBy="prompt-help"
+                    onSubmit={state.isFormValid && !state.isSubmitting ? handleGradingSubmit : undefined}
                   />
                   <div id="prompt-help" className="text-xs text-gray-500">
                     Enter the essay question or prompt that students are responding to
@@ -188,6 +189,7 @@ const GradingPageContent: React.FC = () => {
                     onPartChange={actions.setSaqPart}
                     disabled={state.isSubmitting}
                     validationErrors={state.validationErrors}
+                    onSubmit={state.isFormValid && !state.isSubmitting ? handleGradingSubmit : undefined}
                   />
                   {/* Overall SAQ validation - only shows if no individual parts have content */}
                   {state.validationErrors.saqParts && (
@@ -215,6 +217,7 @@ const GradingPageContent: React.FC = () => {
                     minRows={6}
                     maxRows={20}
                     ariaDescribedBy="essay-text-help"
+                    onSubmit={state.isFormValid && !state.isSubmitting ? handleGradingSubmit : undefined}
                   />
                   <div id="essay-text-help" className="text-xs text-gray-500">
                     Paste the complete student essay response for grading

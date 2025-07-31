@@ -11,6 +11,7 @@ interface ChatTextAreaProps {
   className?: string;
   id?: string;
   ariaDescribedBy?: string;
+  onSubmit?: () => void;
 }
 
 const ChatTextArea: React.FC<ChatTextAreaProps> = ({
@@ -23,7 +24,8 @@ const ChatTextArea: React.FC<ChatTextAreaProps> = ({
   maxRows = 20,
   className = '',
   id,
-  ariaDescribedBy
+  ariaDescribedBy,
+  onSubmit
 }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -60,6 +62,13 @@ const ChatTextArea: React.FC<ChatTextAreaProps> = ({
     onChange(e.target.value);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+      e.preventDefault();
+      onSubmit?.();
+    }
+  };
+
   const baseClasses = `
     w-full px-4 py-3 border rounded-lg shadow-sm resize-none
     text-sm leading-relaxed font-medium
@@ -83,6 +92,7 @@ const ChatTextArea: React.FC<ChatTextAreaProps> = ({
         id={id}
         value={value}
         onChange={handleChange}
+        onKeyDown={handleKeyDown}
         placeholder={placeholder}
         disabled={disabled}
         className={combinedClasses}

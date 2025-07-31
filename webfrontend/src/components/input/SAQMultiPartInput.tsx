@@ -12,13 +12,15 @@ interface SAQMultiPartInputProps {
   onPartChange: (part: keyof SAQParts, value: string) => void;
   disabled?: boolean;
   validationErrors?: Record<string, string>;
+  onSubmit?: () => void;
 }
 
 const SAQMultiPartInput: React.FC<SAQMultiPartInputProps> = ({
   saqParts,
   onPartChange,
   disabled = false,
-  validationErrors = {}
+  validationErrors = {},
+  onSubmit
 }) => {
   const parts = [
     {
@@ -62,6 +64,7 @@ const SAQMultiPartInput: React.FC<SAQMultiPartInputProps> = ({
             error={validationErrors[part.key]}
             minRows={3}
             maxRows={12}
+            onSubmit={onSubmit}
           />
         </div>
       ))}
