@@ -138,6 +138,15 @@ echo "your-github-token" | gh auth login --with-token
 gh repo set-default kpfister44/APUSH-Grader
 ```
 
+### **IDE Configuration (PyCharm)**
+For proper environment variable loading in PyCharm CE:
+1. **Run → Edit Configurations**
+2. Set **Working directory** to: `/Users/kyle.pfister/APUSH-Grader/backend`
+3. This ensures PyCharm finds the `.env` file and loads `AI_SERVICE_TYPE=anthropic`
+4. Without correct working directory, system defaults to mock AI service
+
+**Note**: Terminal execution automatically uses correct working directory, but IDEs may need manual configuration.
+
 ## Important Notes
 - **Feature Branch Workflow**: REQUIRED for all web frontend development
 - **Issue-Based Development**: Follow GitHub issues #23-38 sequentially

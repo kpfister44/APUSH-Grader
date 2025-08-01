@@ -7,6 +7,7 @@ import { Document } from '@react-pdf/renderer';
 import { GradingResponse, EssayType, SAQType } from '../../types/api';
 import { PDFResultsPage } from './PDFResultsPage';
 import { PDFEssayPage } from './PDFEssayPage';
+import { PDFCustomizationOptions } from './PDFCustomizationModal';
 
 interface PDFDocumentProps {
   result: GradingResponse;
@@ -19,6 +20,7 @@ interface PDFDocumentProps {
     part_c: string;
   };
   saqType?: SAQType;
+  customization?: PDFCustomizationOptions;
 }
 
 export const PDFDocument: React.FC<PDFDocumentProps> = ({
@@ -27,7 +29,8 @@ export const PDFDocument: React.FC<PDFDocumentProps> = ({
   prompt,
   essayText,
   saqParts,
-  saqType
+  saqType,
+  customization
 }) => {
   return (
     <Document
@@ -40,6 +43,7 @@ export const PDFDocument: React.FC<PDFDocumentProps> = ({
       <PDFResultsPage 
         result={result}
         essayType={essayType}
+        customization={customization}
       />
 
       {/* Page 2: Essay Content */}

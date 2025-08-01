@@ -81,13 +81,14 @@ export const pdfStyles = StyleSheet.create({
   // Table styles for rubric breakdown
   table: {
     display: 'table' as const,
-    width: 'auto',
+    width: '100%',
     marginBottom: 15,
+    maxWidth: '100%',
   },
 
   tableRow: {
-    margin: 'auto',
     flexDirection: 'row',
+    width: '100%',
   },
 
   tableHeader: {
@@ -104,25 +105,56 @@ export const pdfStyles = StyleSheet.create({
   },
 
   tableColWide: {
-    width: '50%',
+    width: '45%',
     borderStyle: 'solid',
     borderWidth: 1,
     borderColor: '#000000',
+    minHeight: 30,
   },
 
   tableColNarrow: {
-    width: '15%',
+    width: '10%',
     borderStyle: 'solid',
     borderWidth: 1,
     borderColor: '#000000',
+    textAlign: 'center',
+  },
+
+  // Specific table column styles for rubric breakdown (Section | Score | Feedback)
+  tableColSection: {
+    width: '25%',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderColor: '#000000',
+    minHeight: 30,
+  },
+
+  tableColScore: {
+    width: '12%',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderColor: '#000000',
+    textAlign: 'center',
+    minHeight: 30,
+  },
+
+  tableColFeedback: {
+    width: '63%',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderColor: '#000000',
+    minHeight: 30,
   },
 
   tableCell: {
-    margin: 'auto',
     marginTop: 5,
     marginBottom: 5,
+    marginLeft: 4,
+    marginRight: 4,
     fontSize: 9,
     padding: 4,
+    textAlign: 'left',
+    flexWrap: 'wrap',
   },
 
   // List styles

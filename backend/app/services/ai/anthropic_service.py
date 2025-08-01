@@ -92,7 +92,7 @@ class AnthropicService(AIService):
             # Extract response content
             response_content = message.content[0].text
             
-            logger.info(f"Anthropic API call successful ({api_duration_ms}ms, {len(response_content)} chars)")
+            logger.info(f"Anthropic API call successful ({api_duration_ms:.0f}ms, {len(response_content)} chars)")
             
             return response_content
             
