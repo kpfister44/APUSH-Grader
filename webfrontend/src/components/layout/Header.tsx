@@ -9,14 +9,7 @@ import React from 'react';
 const Header: React.FC = () => {
   return (
     <header className="mb-8">
-      <div className="text-center">
-        <h1 className="text-3xl font-semibold text-gray-900 mb-2">
-          APUSH Grader
-        </h1>
-        <p className="text-gray-600 text-lg">
-          AI-powered AP US History essay grading
-        </p>
-      </div>
+      {/* Header kept for spacing and structure */}
     </header>
   );
 };

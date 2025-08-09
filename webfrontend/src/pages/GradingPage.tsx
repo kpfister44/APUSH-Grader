@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChatLayout, Header, MainContent } from '../components/layout';
+import { ChatLayout, MainContent } from '../components/layout';
 import { EssayTypeSelector, SAQTypeSelector, SAQMultiPartInput, ChatTextArea, PromptInput } from '../components/input';
 import { SubmitButton, ResultsDisplay } from '../components/ui';
 import { GradingProvider, useGrading } from '../contexts/GradingContext';
@@ -122,7 +122,6 @@ const GradingPageContent: React.FC = () => {
 
   return (
     <ChatLayout>
-      <Header />
       <MainContent>
         <div className="space-y-6">
           {/* Main Grading Interface */}
@@ -265,80 +264,6 @@ const GradingPageContent: React.FC = () => {
             )}
           </div>
 
-          {/* Development Progress Sections */}
-          <div className="max-w-4xl mx-auto space-y-6">
-          <div className="bg-gray-50 rounded-lg p-6 text-left">
-            <h3 className="font-semibold text-gray-900 mb-3">
-              Issue #24 Components Complete:
-            </h3>
-            <ul className="space-y-2 text-gray-700">
-              <li className="flex items-center">
-                <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                ChatLayout with centered 768px max-width
-              </li>
-              <li className="flex items-center">
-                <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                Header component with app title
-              </li>
-              <li className="flex items-center">
-                <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                MainContent conversation area
-              </li>
-              <li className="flex items-center">
-                <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                React Router basic structure
-              </li>
-              <li className="flex items-center">
-                <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                ChatGPT-style typography & spacing
-              </li>
-            </ul>
-          </div>
-
-
-          {/* API Testing Section - Issue #25 */}
-          <div className="bg-blue-50 rounded-lg p-6 text-left">
-            <h3 className="font-semibold text-blue-900 mb-4">
-              🧪 Issue #25: API Service Layer Testing
-            </h3>
-            <p className="text-blue-700 mb-4">
-              Test the TypeScript API service integration with the Python backend:
-            </p>
-            
-            <div className="space-x-3 mb-4">
-              <button
-                onClick={testHealthCheck}
-                disabled={loading}
-                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
-              >
-                Test Health Check
-              </button>
-              <button
-                onClick={testUsageSummary}
-                disabled={loading}
-                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:opacity-50"
-              >
-                Test Usage Summary
-              </button>
-              <button
-                onClick={testGrading}
-                disabled={loading}
-                className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 disabled:opacity-50"
-              >
-                Test SAQ Grading
-              </button>
-            </div>
-
-            {testResults && (
-              <div className="bg-white border rounded p-4">
-                <h4 className="font-semibold text-gray-900 mb-2">Test Results:</h4>
-                <pre className="text-sm text-gray-700 whitespace-pre-wrap overflow-x-auto">
-                  {testResults}
-                </pre>
-              </div>
-            )}
-          </div>
-          </div>
         </div>
       </MainContent>
     </ChatLayout>
