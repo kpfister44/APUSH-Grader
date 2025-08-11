@@ -279,10 +279,30 @@ class GradingResponse(BaseModel):
         Returns:
             API-optimized grading response
         """
+        # Calculate the actual total score from breakdown to ensure consistency
+        # This fixes the bug where AI-provided total score doesn't match breakdown scores
+        calculated_score = grade_response.score  # Default to AI-provided score
+        calculated_max_score = grade_response.max_score  # Default to AI-provided max score
+        
+        if grade_response.breakdown:
+            # Sum up individual scores from breakdown for accuracy
+            breakdown_dict = grade_response.breakdown.model_dump()
+            calculated_score = sum(
+                section.get('score', 0) for section in breakdown_dict.values()
+                if isinstance(section, dict) and 'score' in section
+            )
+            calculated_max_score = sum(
+                section.get('max_score', 0) for section in breakdown_dict.values()
+                if isinstance(section, dict) and 'max_score' in section
+            )
+        
+        # Recalculate percentage based on corrected scores
+        calculated_percentage = (calculated_score / calculated_max_score * 100) if calculated_max_score > 0 else 0.0
+        
         return cls(
-            score=grade_response.score,
-            max_score=grade_response.max_score,
-            percentage=grade_response.percentage_score,
+            score=calculated_score,  # Use calculated score instead of AI-provided
+            max_score=calculated_max_score,  # Use calculated max score
+            percentage=calculated_percentage,  # Use recalculated percentage
             letter_grade=grade_response.letter_grade,
             performance_level=grade_response.performance_level,
             breakdown=grade_response.breakdown.model_dump() if grade_response.breakdown else {},
