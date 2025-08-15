@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import { Page, Text, View } from '@react-pdf/renderer';
-import { EssayType, SAQType } from '../../types/api';
+import { EssayType, SAQType, RubricType } from '../../types/api';
 import { pdfStyles } from './PDFStyles';
 
 interface PDFEssayPageProps {
@@ -17,6 +17,7 @@ interface PDFEssayPageProps {
     part_c: string;
   };
   saqType?: SAQType;
+  rubricType?: RubricType;      // For SAQ rubric type
 }
 
 export const PDFEssayPage: React.FC<PDFEssayPageProps> = ({
@@ -24,7 +25,8 @@ export const PDFEssayPage: React.FC<PDFEssayPageProps> = ({
   prompt,
   essayText,
   saqParts,
-  saqType
+  saqType,
+  rubricType = 'college_board'
 }) => {
   // Helper function to format SAQ type label
   const getSAQTypeLabel = (type?: SAQType): string => {

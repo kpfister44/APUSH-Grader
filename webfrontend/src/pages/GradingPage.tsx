@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ChatLayout, MainContent } from '../components/layout';
-import { EssayTypeSelector, SAQTypeSelector, SAQMultiPartInput, ChatTextArea, PromptInput } from '../components/input';
+import { EssayTypeSelector, SAQTypeSelector, RubricTypeSelector, SAQMultiPartInput, ChatTextArea, PromptInput } from '../components/input';
 import { SubmitButton, ResultsDisplay } from '../components/ui';
 import { GradingProvider, useGrading } from '../contexts/GradingContext';
 import { apiService } from '../services/api';
@@ -27,6 +27,7 @@ const GradingPageContent: React.FC = () => {
       if (state.form.saqType) {
         request.saq_type = state.form.saqType;
       }
+      request.rubric_type = state.form.rubricType;
     } else {
       // For DBQ/LEQ, use essay_text
       request.essay_text = state.form.essayText;
@@ -180,6 +181,12 @@ const GradingPageContent: React.FC = () => {
                   <SAQTypeSelector
                     selectedType={state.form.saqType}
                     onTypeChange={actions.setSaqType}
+                    disabled={state.isSubmitting}
+                  />
+                  
+                  <RubricTypeSelector
+                    selectedType={state.form.rubricType}
+                    onTypeChange={actions.setRubricType}
                     disabled={state.isSubmitting}
                   />
                   
