@@ -13,6 +13,39 @@ Designed for 2-12 teachers. Prioritize simplicity over complexity - functionalit
 - **iOS App**: Complete, using backend API ✅
 - **Web Frontend**: Phase 4 cross-browser testing complete, ready for Issue #38 (production deployment)
 
+## Tech Stack
+
+### **Backend (Python)**
+- **Framework**: FastAPI 0.104.1 - Modern, fast web framework with automatic API docs
+- **Server**: Uvicorn 0.24.0 - Lightning-fast ASGI server  
+- **Data Validation**: Pydantic 2.5.0 + Pydantic Settings 2.1.0 - Type-safe data models
+- **Environment**: Python-dotenv 1.0.0 - Environment variable management
+- **AI Integration**: Anthropic 0.57.1 - Claude API client
+- **Rate Limiting**: SlowAPI 0.1.9 - Request throttling and protection
+- **Language**: Python 3.12
+
+### **Web Frontend (React/TypeScript)**
+- **Framework**: React 19.1.0 + React DOM 19.1.0 - Modern component-based UI
+- **Routing**: React Router DOM 7.7.0 - Client-side navigation
+- **Styling**: Tailwind CSS 4.1.11 - Utility-first CSS framework
+- **Build Tool**: ESBuild 0.25.8 - Fast bundler and dev server
+- **Language**: TypeScript 5.8.3 - Type-safe JavaScript
+- **PDF Export**: @react-pdf/renderer 4.3.0 - Client-side PDF generation
+- **Dev Workflow**: Hot reloading, CSS watching, parallel builds
+
+### **iOS App (Swift/SwiftUI)**
+- **Framework**: SwiftUI - Declarative UI framework
+- **Language**: Swift - Native iOS development
+- **Architecture**: MVVM pattern with API integration
+- **Network**: URLSession-based HTTP client for backend API
+
+### **Development Tools**
+- **API Documentation**: FastAPI automatic OpenAPI/Swagger docs
+- **Testing**: Pytest (51 tests for backend)
+- **Version Control**: Git with feature branch workflow
+- **CI/CD**: GitHub Actions ready
+- **Environment**: Multi-platform (macOS, iOS, Web)
+
 ## Repository Structure
 
 ### **backend/** - Python FastAPI Backend (PRODUCTION READY)
@@ -121,6 +154,48 @@ ANTHROPIC_API_KEY=sk-ant-api03-your-key-here
 - **Multi-Platform**: Single backend serves both iOS and web frontends
 - **Cost Protected**: Appropriate daily limits prevent excessive API costs
 - **Easy Maintenance**: Clean, direct Python codebase structure
+
+## Code Documentation Guidelines
+
+### **Comment Philosophy**
+Documentation should capture **design decisions and intentions** at the time of creation, not just functionality. Comments should explain the "why" and "when," not just the "what."
+
+### **Good vs Poor Comments**
+
+**❌ Poor (describes functionality):**
+```python
+# This function splits the input data into two equally sized chunks, 
+# multiplies each chunk with Y and then adds it together
+def process_chunks(data, multiplier):
+```
+
+**✅ Good (explains design decision):**
+```python
+# The hardware X that this code runs on has a cache size of Y which 
+# makes this split necessary for optimal compute throughput
+def process_chunks(data, multiplier):
+```
+
+### **Three Types of Documentation (Airplane Metaphor)**
+1. **800-page manual** - Comprehensive but overwhelming ("Congratulations on purchasing your 747!")
+2. **10-page guide** - Practical how-to ("How to change the oil in the engine")  
+3. **5-item checklist** - Critical emergency procedures ("How to deal with a fire in the engine")
+
+**Use type 2 and 3 for code comments** - focus on practical understanding and critical design decisions.
+
+### **What to Document**
+- **Hardware constraints** that influenced implementation choices
+- **Performance considerations** that drove specific algorithms
+- **Historical context** for unusual patterns ("This works around API limitation X")
+- **Future considerations** ("When new hardware Y is available, consider Z approach")
+- **Critical failure modes** and why specific safeguards exist
+
+### **What NOT to Document**
+- Obvious functionality that code already expresses
+- Implementation details that are self-evident
+- Redundant descriptions of what the code does
+
+Remember: Future engineers need to understand **why** code exists in its current form to make informed decisions about changes.
 
 ## Development Workflow
 
