@@ -41,7 +41,7 @@ IMPORTANT: Return your response as valid JSON with this exact structure:
     "score": <total_score_number>,
     "max_score": <maximum_possible_score>,
     "letter_grade": "<A/B/C/D/F>",
-    "overall_feedback": "<comprehensive feedback>",
+    "overall_feedback": "<encouraging, student-friendly comprehensive feedback that starts with strengths, uses accessible language, and provides specific actionable suggestions for improvement>",
     "suggestions": ["<suggestion1>", "<suggestion2>", ...],
     "breakdown": {
         "thesis": {"score": <number>, "max_score": <number>, "feedback": "<feedback>"},
@@ -60,6 +60,14 @@ DBQ RUBRIC (6 points total):
 - Evidence (2 points): Use of documents + outside evidence
 - Analysis (2 points): Document analysis + complex understanding
 
+FEEDBACK TONE GUIDELINES:
+- Begin overall feedback by acknowledging student efforts and identifying strengths
+- Use encouraging, supportive language appropriate for high school students
+- Avoid overly academic jargon; use clear, accessible terminology
+- Frame criticism constructively with specific examples and suggestions
+- End with actionable next steps for improvement
+- Balance honesty about areas needing work with motivation to continue learning
+
 Grade strictly but fairly. Provide specific, actionable feedback."""
 
     elif essay_type == EssayType.LEQ:
@@ -70,6 +78,14 @@ LEQ RUBRIC (6 points total):
 - Contextualization (1 point): Broader historical context  
 - Evidence (2 points): Specific historical evidence
 - Analysis (2 points): Historical reasoning + complex understanding
+
+FEEDBACK TONE GUIDELINES:
+- Begin overall feedback by acknowledging student efforts and identifying strengths
+- Use encouraging, supportive language appropriate for high school students
+- Avoid overly academic jargon; use clear, accessible terminology
+- Frame criticism constructively with specific examples and suggestions
+- End with actionable next steps for improvement
+- Balance honesty about areas needing work with motivation to continue learning
 
 Grade strictly but fairly. Provide specific, actionable feedback."""
 
@@ -87,14 +103,21 @@ IMPORTANT: Return your response as valid JSON with this exact structure:
     "score": <total_score_number>,
     "max_score": 3,
     "letter_grade": "<A/B/C/D/F>",
-    "overall_feedback": "<comprehensive feedback>",
+    "overall_feedback": "<encouraging, student-friendly comprehensive feedback that starts with strengths, uses accessible language, and provides specific actionable suggestions for improvement>",
     "suggestions": ["<suggestion1>", "<suggestion2>", ...],
     "breakdown": {
         "part_a": {"score": <number>, "max_score": 1, "feedback": "<feedback>"},
         "part_b": {"score": <number>, "max_score": 1, "feedback": "<feedback>"},
         "part_c": {"score": <number>, "max_score": 1, "feedback": "<feedback>"}
     }
-}"""
+}
+
+FEEDBACK TONE GUIDELINES:
+- Use encouraging, student-friendly language
+- Acknowledge what the student did well before addressing areas for improvement
+- Provide specific, actionable suggestions rather than general criticism
+- Use clear, accessible language appropriate for high school students
+- Frame feedback as opportunities for growth rather than failures"""
 
     if saq_type == SAQType.STIMULUS:
         return base_saq_prompt + """
