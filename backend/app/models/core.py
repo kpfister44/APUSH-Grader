@@ -37,6 +37,32 @@ class EssayType(str, Enum):
         return scores[self.value]
 
 
+# Rubric Type for SAQ Essays
+class RubricType(str, Enum):
+    """Rubric type enumeration for SAQ essays"""
+    
+    COLLEGE_BOARD = "college_board"
+    EG = "eg"
+    
+    @property
+    def description(self) -> str:
+        """Get rubric type description"""
+        descriptions = {
+            "college_board": "College Board official rubric (3 points)",
+            "eg": "EG custom rubric (10 points with A/C/E criteria)"
+        }
+        return descriptions[self.value]
+    
+    @property
+    def max_score(self) -> int:
+        """Get maximum score for rubric type"""
+        scores = {
+            "college_board": 3,
+            "eg": 10
+        }
+        return scores[self.value]
+
+
 # SAQ Type Differentiation
 class SAQType(str, Enum):
     """SAQ type enumeration for different question formats"""
@@ -161,15 +187,23 @@ class DBQLeqBreakdown(BaseModel):
 
 
 class SAQBreakdown(BaseModel):
-    """Detailed rubric breakdown for SAQ essays (3-point rubric)"""
+    """Detailed rubric breakdown for SAQ essays (3-point College Board rubric)"""
     
     part_a: RubricItem
     part_b: RubricItem
     part_c: RubricItem
 
 
+class EGBreakdown(BaseModel):
+    """Detailed rubric breakdown for EG rubric SAQ essays (10-point A/C/E rubric)"""
+    
+    criterion_a: RubricItem  # 1 point - addresses prompt, complete sentences
+    criterion_c: RubricItem  # 3 points - cites specific evidence from time period
+    criterion_e: RubricItem  # 6 points - explains evidence thoroughly
+
+
 # Union type for essay breakdowns
-GradeBreakdown = Union[DBQLeqBreakdown, SAQBreakdown]
+GradeBreakdown = Union[DBQLeqBreakdown, SAQBreakdown, EGBreakdown]
 
 
 # Custom Exceptions
