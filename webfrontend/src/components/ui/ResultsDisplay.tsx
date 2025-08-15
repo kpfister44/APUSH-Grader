@@ -69,6 +69,24 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   
   const isExpanded = (sectionId: string) => expandedSections.has(sectionId);
   
+  // Helper function to format breakdown section names
+  const formatSectionName = (section: string): string => {
+    const sectionMap: Record<string, string> = {
+      'thesis': 'Thesis',
+      'contextualization': 'Contextualization', 
+      'evidence': 'Evidence',
+      'analysis': 'Analysis',
+      'part_a': 'Part A',
+      'part_b': 'Part B',
+      'part_c': 'Part C',
+      'criterion_a': 'Criterion A (Complete Sentences)',
+      'criterion_c': 'Criterion C (Evidence)',
+      'criterion_e': 'Criterion E (Explanation)'
+    };
+    
+    return sectionMap[section] || section.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+  };
+  
   return (
     <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden animate-in slide-in-from-bottom-4 fade-in duration-500 ease-out">
       {/* Header with score visualization */}
@@ -114,6 +132,7 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
                 essayText={state.form.essayText}
                 saqParts={state.form.saqParts}
                 saqType={state.form.saqType}
+                rubricType={state.form.rubricType}
               />
             )}
           </div>
@@ -177,8 +196,8 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
               {Object.entries(result.breakdown).map(([section, details]) => (
                 <div key={section} className="flex items-center justify-between p-3 bg-gray-50 rounded border">
                   <div className="flex-1">
-                    <h5 className="font-medium text-gray-900 capitalize mb-1">
-                      {section.replace(/_/g, ' ')}
+                    <h5 className="font-medium text-gray-900 mb-1">
+                      {formatSectionName(section)}
                     </h5>
                     <p className="text-sm text-gray-600 leading-relaxed">
                       {details.feedback}

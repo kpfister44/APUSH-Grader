@@ -4,7 +4,7 @@
  */
 import React, { useState } from 'react';
 import { pdf } from '@react-pdf/renderer';
-import { GradingResponse, EssayType, SAQType } from '../../types/api';
+import { GradingResponse, EssayType, SAQType, RubricType } from '../../types/api';
 import { PDFDocument } from './PDFDocument';
 import { PDFCustomizationModal, PDFCustomizationOptions } from './PDFCustomizationModal';
 
@@ -19,6 +19,7 @@ interface PDFExportProps {
     part_c: string;
   };
   saqType?: SAQType;
+  rubricType?: RubricType;      // For SAQ rubric type
 }
 
 export const PDFExport: React.FC<PDFExportProps> = ({
@@ -27,7 +28,8 @@ export const PDFExport: React.FC<PDFExportProps> = ({
   prompt,
   essayText,
   saqParts,
-  saqType
+  saqType,
+  rubricType = 'college_board'
 }) => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string>('');
@@ -56,6 +58,7 @@ export const PDFExport: React.FC<PDFExportProps> = ({
           essayText={essayText}
           saqParts={saqParts}
           saqType={saqType}
+          rubricType={rubricType}
           customization={options}
         />
       );

@@ -4,19 +4,21 @@
  */
 import React from 'react';
 import { Page, Text, View } from '@react-pdf/renderer';
-import { GradingResponse, EssayType } from '../../types/api';
+import { GradingResponse, EssayType, RubricType, RUBRIC_TYPES } from '../../types/api';
 import { pdfStyles, getScoreColor, formatSectionTitle } from './PDFStyles';
 import { PDFCustomizationOptions } from './PDFCustomizationModal';
 
 interface PDFResultsPageProps {
   result: GradingResponse;
   essayType: EssayType;
+  rubricType?: RubricType;
   customization?: PDFCustomizationOptions;
 }
 
 export const PDFResultsPage: React.FC<PDFResultsPageProps> = ({
   result,
   essayType,
+  rubricType = 'college_board',
   customization
 }) => {
   const isTeacherTemplate = customization?.feedbackType === 'teacher';
@@ -31,6 +33,13 @@ export const PDFResultsPage: React.FC<PDFResultsPageProps> = ({
       <Text style={pdfStyles.pageHeader}>
         {customization?.title || 'Essay Results'}
       </Text>
+      
+      {/* Rubric Type for SAQ */}
+      {essayType === 'SAQ' && rubricType && (
+        <Text style={pdfStyles.subtitle}>
+          Rubric: {RUBRIC_TYPES[rubricType].label} ({RUBRIC_TYPES[rubricType].maxScore} points)
+        </Text>
+      )}
 
       {/* Score Summary Section */}
       <View style={pdfStyles.scoreContainer}>

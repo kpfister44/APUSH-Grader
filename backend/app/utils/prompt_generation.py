@@ -4,13 +4,13 @@ Replaces complex service with direct functions.
 """
 
 import logging
-from app.models.core import EssayType, SAQType
+from app.models.core import EssayType, SAQType, RubricType
 from app.models.processing import PreprocessingResult
 
 logger = logging.getLogger(__name__)
 
 
-def generate_grading_prompt(essay_text: str, essay_type: EssayType, prompt: str, preprocessing_result: PreprocessingResult, saq_type: SAQType = None) -> tuple[str, str]:
+def generate_grading_prompt(essay_text: str, essay_type: EssayType, prompt: str, preprocessing_result: PreprocessingResult, saq_type: SAQType = None, rubric_type: RubricType = RubricType.COLLEGE_BOARD) -> tuple[str, str]:
     """
     Generate system prompt and user message for AI grading.
     
@@ -20,19 +20,21 @@ def generate_grading_prompt(essay_text: str, essay_type: EssayType, prompt: str,
         prompt: The original prompt/question
         preprocessing_result: Essay preprocessing results
         saq_type: SAQ subtype (only used when essay_type is SAQ)
+        rubric_type: Rubric type for SAQ essays (defaults to College Board)
     
     Returns:
         Tuple of (system_prompt, user_message)
     """
-    system_prompt = _get_system_prompt(essay_type, saq_type)
+    system_prompt = _get_system_prompt(essay_type, saq_type, rubric_type)
     user_message = _build_user_message(essay_text, essay_type, prompt, preprocessing_result)
     
-    logger.info(f"Generated prompts for {essay_type.value} grading" + (f" ({saq_type.value})" if saq_type else ""))
+    rubric_info = f" ({rubric_type.value})" if essay_type == EssayType.SAQ and rubric_type != RubricType.COLLEGE_BOARD else ""
+    logger.info(f"Generated prompts for {essay_type.value} grading" + (f" ({saq_type.value})" if saq_type else "") + rubric_info)
     return system_prompt, user_message
 
 
-def _get_system_prompt(essay_type: EssayType, saq_type: SAQType = None) -> str:
-    """Get system prompt for essay type and SAQ subtype"""
+def _get_system_prompt(essay_type: EssayType, saq_type: SAQType = None, rubric_type: RubricType = RubricType.COLLEGE_BOARD) -> str:
+    """Get system prompt for essay type, SAQ subtype, and rubric type"""
     
     base_prompt = """You are an expert AP US History teacher grading student essays. Provide detailed, constructive feedback following the official College Board rubrics.
 
@@ -90,11 +92,17 @@ FEEDBACK TONE GUIDELINES:
 Grade strictly but fairly. Provide specific, actionable feedback."""
 
     elif essay_type == EssayType.SAQ:
-        return _get_saq_system_prompt(saq_type)
+        return _get_saq_system_prompt(saq_type, rubric_type)
 
 
-def _get_saq_system_prompt(saq_type: SAQType = None) -> str:
-    """Get SAQ-specific system prompt based on SAQ type"""
+def _get_saq_system_prompt(saq_type: SAQType = None, rubric_type: RubricType = RubricType.COLLEGE_BOARD) -> str:
+    """Get SAQ-specific system prompt based on SAQ type and rubric type"""
+    
+    # Handle EG rubric first
+    if rubric_type == RubricType.EG:
+        return _get_eg_rubric_prompt()
+    
+    # Default to College Board rubric
     
     base_saq_prompt = """You are an expert AP US History teacher grading Short Answer Questions. 
 
@@ -175,6 +183,64 @@ SAQ RUBRIC (3 points total):
 - Part A (1 point): Accurately answers the question
 - Part B (1 point): Supports answer with specific evidence
 - Part C (1 point): Explains how evidence supports the answer
+
+Grade strictly but fairly. Provide specific, actionable feedback."""
+
+
+def _get_eg_rubric_prompt() -> str:
+    """Get EG rubric system prompt (10-point A/C/E criteria)"""
+    
+    return """You are an expert AP US History teacher grading Short Answer Questions using the EG Rubric.
+
+IMPORTANT: Return your response as valid JSON with this exact structure:
+{
+    "score": <total_score_number>,
+    "max_score": 10,
+    "letter_grade": "<A/B/C/D/F>",
+    "overall_feedback": "<encouraging, student-friendly comprehensive feedback that starts with strengths, uses accessible language, and provides specific actionable suggestions for improvement>",
+    "suggestions": ["<suggestion1>", "<suggestion2>", ...],
+    "breakdown": {
+        "criterion_a": {"score": <number>, "max_score": 1, "feedback": "<feedback>"},
+        "criterion_c": {"score": <number>, "max_score": 3, "feedback": "<feedback>"},
+        "criterion_e": {"score": <number>, "max_score": 6, "feedback": "<feedback>"}
+    }
+}
+
+FEEDBACK TONE GUIDELINES:
+- Use encouraging, student-friendly language
+- Acknowledge what the student did well before addressing areas for improvement
+- Provide specific, actionable suggestions rather than general criticism
+- Use clear, accessible language appropriate for high school students
+- Frame feedback as opportunities for growth rather than failures
+
+EG RUBRIC (10 points total):
+- **Criterion A: Addresses the prompt, Written in complete sentences** (1 point total)
+  - **CRITICAL REQUIREMENT:** Student gets this 1 point ONLY if ALL THREE parts (a, b, c) meet BOTH conditions:
+    1. Each part directly addresses what the prompt is asking
+    2. Each part is written in complete sentences
+  - If ANY part fails either condition, award 0 points for Criterion A
+  - This is an all-or-nothing criterion - partial credit not allowed
+
+- **Criterion C: Cites specific evidence** (3 points total)
+  - 1 point each for questions #1A, #1B, #1C
+  - **CRITICAL TIME PERIOD REQUIREMENT:** Evidence must be from the specific time period mentioned in the prompt
+  - If evidence is from outside the prompt's time period, award 0 points for that part, even if evidence is otherwise accurate and relevant
+  - Must provide specific historical facts, names, dates, events from the correct time period
+  - Evidence must be relevant and accurate within the designated timeframe
+
+- **Criterion E: Explains the evidence thoroughly, Proves you know history!** (6 points total)
+  - 1-2 points each for questions #1A, #1B, #1C
+  - Must thoroughly explain how evidence supports the answer
+  - Must demonstrate deep understanding of historical context
+  - Must show connections between evidence and historical significance
+
+GRADING FOCUS:
+- For Criterion A: Evaluate ALL THREE parts together - if any part fails, no A points
+- For Criterion C: Strictly enforce time period requirements - no points for out-of-period evidence
+- Evaluate depth of historical knowledge and explanation
+- Assess quality and specificity of evidence provided within correct timeframe
+- Look for thorough analysis that proves historical understanding
+- Reward clear writing and direct addressing of prompts
 
 Grade strictly but fairly. Provide specific, actionable feedback."""
 
