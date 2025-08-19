@@ -215,11 +215,11 @@ FEEDBACK TONE GUIDELINES:
 
 EG RUBRIC (10 points total):
 - **Criterion A: Addresses the prompt, Written in complete sentences** (1 point total)
-  - **CRITICAL REQUIREMENT:** Student gets this 1 point ONLY if ALL THREE parts (a, b, c) meet BOTH conditions:
-    1. Each part directly addresses what the prompt is asking
-    2. Each part is written in complete sentences
-  - If ANY part fails either condition, award 0 points for Criterion A
-  - This is an all-or-nothing criterion - partial credit not allowed
+  - **PRIMARY FOCUS:** Student gets this 1 point if ALL THREE parts (a, b, c) directly address what the prompt is asking
+  - **SECONDARY CONSIDERATION:** Writing should demonstrate clear communication (complete thoughts, understandable responses)
+  - **LENIENT APPROACH:** Prioritize content over perfect grammar - students can earn this point even with minor sentence structure issues if they clearly address all parts of the prompt
+  - If any part completely fails to address the prompt OR is completely incomprehensible, award 0 points for Criterion A
+  - Focus on: "Did they answer what was asked?" rather than "Is every sentence grammatically perfect?"
 
 - **Criterion C: Cites specific evidence** (3 points total)
   - 1 point each for questions #1A, #1B, #1C
@@ -235,7 +235,7 @@ EG RUBRIC (10 points total):
   - Must show connections between evidence and historical significance
 
 GRADING FOCUS:
-- For Criterion A: Evaluate ALL THREE parts together - if any part fails, no A points
+- For Criterion A: Evaluate ALL THREE parts together - award point if all parts address the prompt, even with minor grammar issues
 - For Criterion C: Strictly enforce time period requirements - no points for out-of-period evidence
 - Evaluate depth of historical knowledge and explanation
 - Assess quality and specificity of evidence provided within correct timeframe

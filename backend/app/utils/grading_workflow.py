@@ -61,7 +61,7 @@ async def grade_essay(essay_text: str, essay_type: EssayType, prompt: str, saq_t
         
         # Step 4: Process AI response
         logger.debug("Step 4: Processing AI response")
-        grade_response = process_ai_response(raw_ai_response, essay_type)
+        grade_response = process_ai_response(raw_ai_response, essay_type, rubric_type)
         
         # Add preprocessing warnings to response
         if preprocessing_result.warnings:

@@ -7,13 +7,13 @@ import json
 import logging
 from typing import Dict, Any
 
-from app.models.core import GradeResponse, RubricItem, DBQLeqBreakdown, SAQBreakdown, EssayType
+from app.models.core import GradeResponse, RubricItem, DBQLeqBreakdown, SAQBreakdown, EGBreakdown, EssayType, RubricType
 from app.exceptions import ProcessingError
 
 logger = logging.getLogger(__name__)
 
 
-def process_ai_response(raw_response: str, essay_type: EssayType) -> GradeResponse:
+def process_ai_response(raw_response: str, essay_type: EssayType, rubric_type: RubricType = RubricType.COLLEGE_BOARD) -> GradeResponse:
     """
     Process raw AI response into structured GradeResponse.
     Handles validation and error recovery.
@@ -23,10 +23,10 @@ def process_ai_response(raw_response: str, essay_type: EssayType) -> GradeRespon
         response_data = json.loads(raw_response.strip())
         
         # Validate required fields
-        _validate_response_structure(response_data, essay_type)
+        _validate_response_structure(response_data, essay_type, rubric_type)
         
         # Build GradeResponse
-        grade_response = _build_grade_response(response_data, essay_type)
+        grade_response = _build_grade_response(response_data, essay_type, rubric_type)
         
         logger.info(f"Successfully processed AI response: {grade_response.score}/{grade_response.max_score}")
         return grade_response
@@ -40,7 +40,7 @@ def process_ai_response(raw_response: str, essay_type: EssayType) -> GradeRespon
         raise ProcessingError(f"Failed to process AI response: {e}")
 
 
-def _validate_response_structure(data: Dict[str, Any], essay_type: EssayType) -> None:
+def _validate_response_structure(data: Dict[str, Any], essay_type: EssayType, rubric_type: RubricType = RubricType.COLLEGE_BOARD) -> None:
     """Validate that response has required structure"""
     required_fields = ["score", "max_score", "letter_grade", "overall_feedback", "suggestions", "breakdown"]
     
@@ -48,11 +48,14 @@ def _validate_response_structure(data: Dict[str, Any], essay_type: EssayType) ->
         if field not in data:
             raise ProcessingError(f"Missing required field: {field}")
     
-    # Validate breakdown structure based on essay type
+    # Validate breakdown structure based on essay type and rubric type
     breakdown = data["breakdown"]
     
     if essay_type == EssayType.SAQ:
-        required_breakdown_fields = ["part_a", "part_b", "part_c"]
+        if rubric_type == RubricType.EG:
+            required_breakdown_fields = ["criterion_a", "criterion_c", "criterion_e"]
+        else:  # College Board rubric
+            required_breakdown_fields = ["part_a", "part_b", "part_c"]
     else:  # DBQ and LEQ
         required_breakdown_fields = ["thesis", "contextualization", "evidence", "analysis"]
     
@@ -68,23 +71,35 @@ def _validate_response_structure(data: Dict[str, Any], essay_type: EssayType) ->
             raise ProcessingError(f"Invalid rubric item structure for {field}")
 
 
-def _build_grade_response(data: Dict[str, Any], essay_type: EssayType) -> GradeResponse:
+def _build_grade_response(data: Dict[str, Any], essay_type: EssayType, rubric_type: RubricType = RubricType.COLLEGE_BOARD) -> GradeResponse:
     """Build GradeResponse from validated data"""
     
     breakdown_data = data["breakdown"]
     
-    # Build appropriate breakdown based on essay type
+    # Build appropriate breakdown based on essay type and rubric type
     if essay_type == EssayType.SAQ:
-        # Build SAQ breakdown
-        part_a = _build_rubric_item(breakdown_data["part_a"])
-        part_b = _build_rubric_item(breakdown_data["part_b"])
-        part_c = _build_rubric_item(breakdown_data["part_c"])
-        
-        breakdown = SAQBreakdown(
-            part_a=part_a,
-            part_b=part_b,
-            part_c=part_c
-        )
+        if rubric_type == RubricType.EG:
+            # Build EG breakdown
+            criterion_a = _build_rubric_item(breakdown_data["criterion_a"])
+            criterion_c = _build_rubric_item(breakdown_data["criterion_c"])
+            criterion_e = _build_rubric_item(breakdown_data["criterion_e"])
+            
+            breakdown = EGBreakdown(
+                criterion_a=criterion_a,
+                criterion_c=criterion_c,
+                criterion_e=criterion_e
+            )
+        else:
+            # Build College Board SAQ breakdown
+            part_a = _build_rubric_item(breakdown_data["part_a"])
+            part_b = _build_rubric_item(breakdown_data["part_b"])
+            part_c = _build_rubric_item(breakdown_data["part_c"])
+            
+            breakdown = SAQBreakdown(
+                part_a=part_a,
+                part_b=part_b,
+                part_c=part_c
+            )
     else:
         # Build DBQ/LEQ breakdown
         thesis = _build_rubric_item(breakdown_data["thesis"])
