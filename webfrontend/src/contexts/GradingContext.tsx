@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useReducer, ReactNode } from 'react';
-import { EssayType, SAQType, GradingResponse } from '../types/api';
+import { EssayType, SAQType, RubricType, GradingResponse } from '../types/api';
 
 // ============================================================================
 // State Types
@@ -8,6 +8,7 @@ import { EssayType, SAQType, GradingResponse } from '../types/api';
 interface GradingFormState {
   essayType: EssayType | null;
   saqType: SAQType | null;
+  rubricType: RubricType;
   essayText: string;
   prompt: string;
   saqParts: {
@@ -37,6 +38,7 @@ interface GradingState {
 type GradingAction =
   | { type: 'SET_ESSAY_TYPE'; payload: EssayType | null }
   | { type: 'SET_SAQ_TYPE'; payload: SAQType | null }
+  | { type: 'SET_RUBRIC_TYPE'; payload: RubricType }
   | { type: 'SET_ESSAY_TEXT'; payload: string }
   | { type: 'SET_PROMPT'; payload: string }
   | { type: 'SET_SAQ_PART'; payload: { part: keyof GradingFormState['saqParts']; value: string } }
@@ -54,6 +56,7 @@ type GradingAction =
 const initialFormState: GradingFormState = {
   essayType: null,
   saqType: null,
+  rubricType: 'college_board', // Default to College Board for backward compatibility
   essayText: '',
   prompt: '',
   saqParts: {
@@ -155,6 +158,22 @@ const gradingReducer = (state: GradingState, action: GradingAction): GradingStat
       const newForm = {
         ...state.form,
         saqType: action.payload
+      };
+      
+      const validationErrors = validateForm(newForm);
+      
+      return {
+        ...state,
+        form: newForm,
+        validationErrors,
+        isFormValid: Object.keys(validationErrors).length === 0
+      };
+    }
+
+    case 'SET_RUBRIC_TYPE': {
+      const newForm = {
+        ...state.form,
+        rubricType: action.payload
       };
       
       const validationErrors = validateForm(newForm);
@@ -285,6 +304,7 @@ interface GradingContextType {
   actions: {
     setEssayType: (type: EssayType | null) => void;
     setSaqType: (type: SAQType | null) => void;
+    setRubricType: (type: RubricType) => void;
     setEssayText: (text: string) => void;
     setPrompt: (prompt: string) => void;
     setSaqPart: (part: keyof GradingFormState['saqParts'], value: string) => void;
@@ -316,6 +336,9 @@ export const GradingProvider: React.FC<GradingProviderProps> = ({ children }) =>
     
     setSaqType: (type: SAQType | null) => 
       dispatch({ type: 'SET_SAQ_TYPE', payload: type }),
+    
+    setRubricType: (type: RubricType) => 
+      dispatch({ type: 'SET_RUBRIC_TYPE', payload: type }),
     
     setEssayText: (text: string) => 
       dispatch({ type: 'SET_ESSAY_TEXT', payload: text }),

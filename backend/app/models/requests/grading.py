@@ -8,7 +8,7 @@ from typing import Optional, List, Dict, Any
 from pydantic import BaseModel, Field, validator, root_validator
 from enum import Enum
 
-from app.models.core import EssayType, SAQType
+from app.models.core import EssayType, SAQType, RubricType
 from app.models.core import GradeResponse
 
 
@@ -76,6 +76,11 @@ class GradingRequest(BaseModel):
         description="SAQ subtype (stimulus, non_stimulus, secondary_comparison) - used when essay_type is SAQ"
     )
     
+    rubric_type: Optional[RubricType] = Field(
+        RubricType.COLLEGE_BOARD,
+        description="Rubric type for SAQ essays (college_board, eg) - defaults to College Board for backward compatibility"
+    )
+    
     # Note: essay_text validation moved to root_validator to handle SAQ vs non-SAQ logic
     
     @validator('prompt')
@@ -115,6 +120,20 @@ class GradingRequest(BaseModel):
         
         return v
     
+    @validator('rubric_type')
+    def validate_rubric_type(cls, v, values):
+        """Validate rubric type is only used with SAQ essays."""
+        essay_type = values.get('essay_type')
+        
+        if essay_type == EssayType.SAQ:
+            # For SAQ, rubric_type is allowed and defaults to College Board
+            return v
+        elif v != RubricType.COLLEGE_BOARD:
+            # For non-SAQ essays, only allow default College Board rubric
+            raise ValueError("rubric_type can only be changed for SAQ essay type")
+        
+        return v
+    
     @root_validator(skip_on_failure=True)
     def validate_essay_content(cls, values):
         """Validate essay content requirements based on essay type."""
@@ -140,7 +159,8 @@ class GradingRequest(BaseModel):
     class Config:
         json_encoders = {
             EssayType: lambda v: v.value,
-            SAQType: lambda v: v.value
+            SAQType: lambda v: v.value,
+            RubricType: lambda v: v.value
         }
         
         schema_extra = {
@@ -156,15 +176,31 @@ class GradingRequest(BaseModel):
                 },
                 {
                     "summary": "SAQ Multi-Part Example",
-                    "description": "New SAQ format with separate parts",
+                    "description": "New SAQ format with separate parts using College Board rubric",
                     "value": {
                         "essay_type": "SAQ",
                         "prompt": "Use the image above to answer parts A, B, and C.",
                         "saq_type": "stimulus",
+                        "rubric_type": "college_board",
                         "saq_parts": {
                             "part_a": "The Second Great Awakening was a religious revival movement in the early 1800s that emphasized personal salvation.",
                             "part_b": "The Second Great Awakening led to increased participation in reform movements like abolition and temperance.",
                             "part_c": "The Second Great Awakening was significant because it democratized religion and promoted social reform."
+                        }
+                    }
+                },
+                {
+                    "summary": "SAQ EG Rubric Example",
+                    "description": "SAQ format using EG rubric (10-point A/C/E criteria)",
+                    "value": {
+                        "essay_type": "SAQ",
+                        "prompt": "Analyze the causes and effects of the Great Depression (1929-1939).",
+                        "saq_type": "non_stimulus",
+                        "rubric_type": "eg",
+                        "saq_parts": {
+                            "part_a": "The Stock Market Crash of 1929 was caused by speculation and buying on margin.",
+                            "part_b": "Bank failures during the Great Depression led to massive unemployment and poverty.",
+                            "part_c": "The Great Depression fundamentally changed the role of government in the economy through New Deal programs."
                         }
                     }
                 }

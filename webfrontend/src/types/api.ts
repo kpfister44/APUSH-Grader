@@ -17,6 +17,7 @@ export interface GradingRequest {
     part_c: string;
   };
   saq_type?: "stimulus" | "non_stimulus" | "secondary_comparison";
+  rubric_type?: "college_board" | "eg";  // Rubric type for SAQ essays
 }
 
 export interface HealthRequest {
@@ -33,7 +34,7 @@ export interface UsageSummaryRequest {
 
 export interface GradingResponse {
   score: number;                 // Achieved score
-  max_score: number;            // Maximum possible (6 for DBQ/LEQ, 3 for SAQ)
+  max_score: number;            // Maximum possible (6 for DBQ/LEQ, 3 for College Board SAQ, 10 for EG SAQ)
   percentage: number;           // Score as percentage (0-100)
   letter_grade: string;         // A, B, C, D, F (with +/- modifiers)
   performance_level: string;    // Advanced, Proficient, Developing, etc.
@@ -116,6 +117,7 @@ export interface RequestOptions {
 
 export type EssayType = "DBQ" | "LEQ" | "SAQ";
 export type SAQType = "stimulus" | "non_stimulus" | "secondary_comparison";
+export type RubricType = "college_board" | "eg";
 
 export const ESSAY_TYPES: Record<EssayType, { 
   label: string; 
@@ -134,7 +136,7 @@ export const ESSAY_TYPES: Record<EssayType, {
   },
   SAQ: {
     label: "Short Answer Question",
-    maxScore: 3,
+    maxScore: 3, // Note: actual max score depends on rubric type
     description: "Brief response question"
   }
 };
@@ -154,6 +156,23 @@ export const SAQ_TYPES: Record<SAQType, {
   secondary_comparison: {
     label: "Historical Comparison",
     description: "Compares contrasting historical interpretations"
+  }
+};
+
+export const RUBRIC_TYPES: Record<RubricType, {
+  label: string;
+  maxScore: number;
+  description: string;
+}> = {
+  college_board: {
+    label: "College Board Rubric",
+    maxScore: 3,
+    description: "Official 3-point rubric (Part A, B, C)"
+  },
+  eg: {
+    label: "EG Rubric", 
+    maxScore: 10,
+    description: "Custom 10-point A/C/E criteria rubric"
   }
 };
 

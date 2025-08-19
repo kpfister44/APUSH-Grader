@@ -73,7 +73,7 @@ def _combine_saq_parts(grading_request: GradingRequest) -> str:
     **Essay Types:**
     - **DBQ** (Document-Based Question): 6-point rubric
     - **LEQ** (Long Essay Question): 6-point rubric  
-    - **SAQ** (Short Answer Question): 3-point rubric
+    - **SAQ** (Short Answer Question): College Board (3-point) or EG (10-point A/C/E) rubric
     
     **Response includes:**
     - Overall score and letter grade
@@ -137,7 +137,8 @@ async def grade_essay(
             essay_text=essay_text,
             essay_type=grading_request.essay_type,
             prompt=grading_request.prompt,
-            saq_type=grading_request.saq_type
+            saq_type=grading_request.saq_type,
+            rubric_type=grading_request.rubric_type
         )
         
         # Calculate processing time

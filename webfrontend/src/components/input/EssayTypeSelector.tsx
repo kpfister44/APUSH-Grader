@@ -51,9 +51,6 @@ const EssayTypeSelector: React.FC<EssayTypeSelectorProps> = ({
                 <div className="text-xs mt-1 opacity-75">
                   {typeInfo.label}
                 </div>
-                <div className="text-xs mt-0.5 opacity-60">
-                  {typeInfo.maxScore} points
-                </div>
               </div>
             </button>
           );
