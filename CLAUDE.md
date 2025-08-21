@@ -9,9 +9,9 @@ APUSH Grader - Multi-platform AI essay grading system with **Python FastAPI back
 Designed for 2-12 teachers. Prioritize simplicity over complexity - functionality over comprehensiveness. Not meant for enterprise scale.
 
 ## Current Status
-- **Backend**: Production-ready Python FastAPI with Anthropic AI integration ✅
+- **Backend**: **PRODUCTION DEPLOYED** on Railway ✅
 - **iOS App**: Complete, using backend API ✅
-- **Web Frontend**: Complete with dual SAQ rubric support, ready for production deployment (Issue #54)
+- **Web Frontend**: Complete with dual SAQ rubric support, ready for Vercel deployment (Issue #54 Phase 2)
 
 ## Tech Stack
 
@@ -207,9 +207,15 @@ Remember: Future engineers need to understand **why** code exists in its current
 - **EG Rubric Features**: 10-point A/C/E criteria with content-focused Criterion A ✅
 - **Response Processing**: Fixed to handle both rubric breakdown structures ✅
 - **UI Improvements**: Removed point values from essay type selector ✅
+- **Issue #54 Phase 1**: Backend Railway deployment completed ✅
+
+### **Current Work**
+- **Issue #54 Phase 2**: Frontend Vercel deployment (in progress)
+- **Branch**: `feature/web-issue-54-frontend-deployment`
 
 ### **Next Steps**
-- **Issue #54**: Production deployment (Railway + Vercel) using ESBuild
+- Complete Vercel frontend deployment with Railway backend integration
+- End-to-end production testing of full stack
 - **ALWAYS use feature branches** for each issue (see commands above)
 - Create PRs referencing issue numbers
 
@@ -229,9 +235,53 @@ For proper environment variable loading in PyCharm CE:
 
 **Note**: Terminal execution automatically uses correct working directory, but IDEs may need manual configuration.
 
+## Production Configuration
+
+### **Backend Production (Railway)**
+- **Production URL**: https://apush-grader-production.up.railway.app
+- **API Documentation**: https://apush-grader-production.up.railway.app/docs
+- **Health Check**: https://apush-grader-production.up.railway.app/ (returns API info)
+- **Branch**: Deploys from `main` branch automatically
+- **Environment Variables Required**:
+  - `AI_SERVICE_TYPE=anthropic` 
+  - `ANTHROPIC_API_KEY=sk-ant-api03-your-key-here`
+
+### **Railway Deployment Notes**
+- **Python Version**: 3.12.0 (specified in `runtime.txt`)
+- **Start Command**: `python -m uvicorn app.main:app --host 0.0.0.0 --port $PORT` (in `Procfile`)
+- **Auto-Detection**: Railway automatically detects Python project from `requirements.txt`
+- **No Custom Config**: Removed `nixpacks.toml` - let Railway use defaults
+- **Port**: Railway sets `$PORT` environment variable (usually 8080)
+
+### **Frontend Production (Vercel) - In Progress**
+- **Configuration**: `vercel.json` with ESBuild settings
+- **Environment**: `.env.production` with Railway backend URL
+- **Build Command**: `npm run build && cp public/index.html dist/index.html`
+- **Backend Integration**: Uses `REACT_APP_API_BASE_URL` environment variable
+
+### **Development vs Production**
+```bash
+# Development Backend
+cd backend && uvicorn app.main:app --reload
+# Available at: http://localhost:8000
+
+# Production Backend  
+# Railway handles deployment automatically
+# Available at: https://apush-grader-production.up.railway.app
+
+# Development Frontend
+cd webfrontend && npm run dev
+# Available at: http://127.0.0.1:8001
+# Uses localhost:8000 backend
+
+# Production Frontend (Vercel) - Coming Soon
+# Will use Railway backend URL automatically
+```
+
 ## Important Notes
-- **Feature Branch Workflow**: REQUIRED for all web frontend development
-- **Issue-Based Development**: Follow GitHub issues #23-38 sequentially
-- **Backend Complete**: Production-ready with simplified architecture
-- **API Documentation**: Available at http://localhost:8000/docs
-- **See WEB_FRONTEND_PLAN.md**: Complete web frontend development plan and specifications
+- **Feature Branch Workflow**: REQUIRED for all development
+- **Issue-Based Development**: Follow GitHub issues sequentially
+- **Backend Production**: Fully deployed and operational ✅
+- **Frontend Production**: In deployment phase (Issue #54 Phase 2)
+- **API Documentation**: Available at production URL `/docs`
+- **CORS**: Configured for production Vercel domain
