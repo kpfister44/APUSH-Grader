@@ -11,7 +11,7 @@ Designed for 2-12 teachers. Prioritize simplicity over complexity - functionalit
 ## Current Status
 - **Backend**: Production-ready Python FastAPI with Anthropic AI integration ✅
 - **iOS App**: Complete, using backend API ✅
-- **Web Frontend**: Phase 4 cross-browser testing complete, ready for Issue #38 (production deployment)
+- **Web Frontend**: Complete with dual SAQ rubric support, ready for production deployment (Issue #54)
 
 ## Tech Stack
 
@@ -50,11 +50,13 @@ Designed for 2-12 teachers. Prioritize simplicity over complexity - functionalit
 
 ### **backend/** - Python FastAPI Backend (PRODUCTION READY)
 - **app/main.py** - FastAPI application entry point
-- **app/api/routes/** - API endpoints (grading.py, health.py)
-- **app/models/** - Pydantic data models (core.py, processing.py, requests/)  
-- **app/services/** - Business logic services (coordinator, essay processing, prompt generation)
+- **app/api/routes/** - API endpoints (grading.py with dual rubric support, health.py)
+- **app/models/core.py** - Pydantic data models with RubricType enum and EGBreakdown
+- **app/utils/prompt_generation.py** - Dual rubric prompts (College Board + EG)
+- **app/utils/response_processing.py** - Handles both rubric breakdown structures
+- **app/utils/grading_workflow.py** - Passes rubric_type through processing pipeline
 - **tests/** - 51 focused tests covering core functionality
-- **requirements.txt** - Core dependencies (FastAPI, Pydantic, uvicorn, anthropic, slowapi)
+- **Key Features**: Dual SAQ rubric support, content-focused EG grading
 
 ### **APUSHGrader/** - iOS App
 - **Models/** - API DTOs matching Python backend
@@ -64,11 +66,12 @@ Designed for 2-12 teachers. Prioritize simplicity over complexity - functionalit
 
 ### **webfrontend/** - ChatGPT-Style Web Frontend
 - **src/components/** - React UI components with ChatGPT-inspired design
+  - **input/RubricTypeSelector.tsx** - Dual rubric selection for SAQ essays
   - **pdf/** - PDF export functionality using @react-pdf/renderer
-- **src/contexts/** - React Context for state management  
+- **src/contexts/** - React Context for state management with rubric support
 - **src/services/** - API client service for backend integration
-- **src/types/** - TypeScript interface definitions
-- Phase 4 cross-browser testing complete, PDF export feature added, ready for Issue #38 (production deployment)
+- **src/types/** - TypeScript interface definitions with dual rubric types
+- **Key Features**: Dual SAQ rubric support, PDF export, mobile responsive
 
 ## Commands
 
@@ -120,10 +123,10 @@ git checkout main && git pull origin main
 ## Essay Types Supported
 - **DBQ** (Document-Based Question) - 6 points
 - **LEQ** (Long Essay Question) - 6 points  
-- **SAQ** (Short Answer Question) - 3 points with type differentiation:
-  - **Stimulus SAQ** - Uses primary/secondary source document
-  - **Non-Stimulus SAQ** - Pure text-based questions  
-  - **Secondary Comparison SAQ** - Compares historical interpretations
+- **SAQ** (Short Answer Question) - **DUAL RUBRIC SUPPORT**:
+  - **College Board Rubric** (3 points): Traditional part_a/b/c scoring
+  - **EG Rubric** (10 points): A/C/E criteria with content-focused approach
+  - **SAQ Types**: Stimulus, Non-Stimulus, Secondary Comparison
 
 ## AI Configuration
 
@@ -199,12 +202,16 @@ Remember: Future engineers need to understand **why** code exists in its current
 
 ## Development Workflow
 
-### **Web Frontend GitHub Issues**
-Follow sequential GitHub issues #23-38 for ChatGPT-style web interface:
+### **Recent Completed Work**
+- **Issue #52**: Dual SAQ rubric support (College Board vs EG rubric) ✅
+- **EG Rubric Features**: 10-point A/C/E criteria with content-focused Criterion A ✅
+- **Response Processing**: Fixed to handle both rubric breakdown structures ✅
+- **UI Improvements**: Removed point values from essay type selector ✅
+
+### **Next Steps**
+- **Issue #54**: Production deployment (Railway + Vercel) using ESBuild
 - **ALWAYS use feature branches** for each issue (see commands above)
-- Update WEB_FRONTEND_PLAN.md after completing each issue
 - Create PRs referencing issue numbers
-- Current: Issue #38 (Backend Integration & Production Deployment)
 
 ### **Git Authentication**
 If authentication issues occur:
