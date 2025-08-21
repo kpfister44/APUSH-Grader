@@ -23,10 +23,14 @@ class Settings(BaseSettings):
     openai_api_key: str = Field(default="")
     anthropic_api_key: str = Field(default="")
     
-    # CORS Configuration - Specific origins (wildcard + credentials not allowed)
+    # CORS Configuration - Development + Production origins
     allowed_origins: List[str] = Field(default=[
-        "http://localhost:8001", 
-        "http://127.0.0.1:8001"
+        "https://apush-grader.vercel.app",  # Production frontend
+        "http://localhost:3000",           # Development frontend
+        "http://127.0.0.1:3000",          # Development frontend  
+        "http://localhost:8000",           # Development (frontend dev server)
+        "http://localhost:8001",           # Legacy development
+        "http://127.0.0.1:8001"            # Legacy development
     ])
     
     class Config:
