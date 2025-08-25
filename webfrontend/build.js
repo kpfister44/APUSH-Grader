@@ -19,6 +19,9 @@ async function build() {
 
     console.log('Building JavaScript with ESBuild...');
     
+    const apiBaseUrl = process.env.REACT_APP_API_BASE_URL || 'https://apush-grader-production.up.railway.app';
+    console.log('Using API Base URL:', apiBaseUrl);
+
     // Build with esbuild
     await esbuild.build({
       entryPoints: ['src/index.tsx'],
@@ -29,7 +32,7 @@ async function build() {
       target: ['es2020'],
       define: {
         'process.env.NODE_ENV': '"production"',
-        'process.env.REACT_APP_API_BASE_URL': `"${process.env.REACT_APP_API_BASE_URL || 'https://apush-grader-production.up.railway.app'}"`
+        'process.env.REACT_APP_API_BASE_URL': `"${apiBaseUrl}"`
       },
       loader: {
         '.tsx': 'tsx',

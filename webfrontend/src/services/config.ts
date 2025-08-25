@@ -118,12 +118,7 @@ export class ConfigManager {
    * Apply runtime-specific configuration
    */
   private applyRuntimeConfiguration(): void {
-    // Set production base URL to current origin if in production
-    if (this.environment.isProduction && typeof window !== 'undefined') {
-      this.config.baseUrl = window.location.origin;
-    }
-
-    // Override with environment variables if available
+    // Override with environment variables if available (prioritize env vars)
     if (typeof process !== 'undefined' && process.env) {
       if (process.env.REACT_APP_API_BASE_URL) {
         this.config.baseUrl = process.env.REACT_APP_API_BASE_URL;
@@ -131,6 +126,11 @@ export class ConfigManager {
       if (process.env.REACT_APP_API_TIMEOUT) {
         this.config.timeout = parseInt(process.env.REACT_APP_API_TIMEOUT, 10) || this.config.timeout;
       }
+    }
+    
+    // Fallback: Set production base URL to current origin if in production and no env var
+    if (this.environment.isProduction && typeof window !== 'undefined' && !this.config.baseUrl) {
+      this.config.baseUrl = window.location.origin;
     }
 
     // Log configuration in development
