@@ -4,6 +4,11 @@ const path = require('path');
 
 async function build() {
   try {
+    // Log environment variables for debugging
+    console.log('Environment Variables:');
+    console.log('NODE_ENV:', process.env.NODE_ENV);
+    console.log('REACT_APP_API_BASE_URL:', process.env.REACT_APP_API_BASE_URL);
+    
     // Ensure dist directory exists
     if (!fs.existsSync('dist')) {
       fs.mkdirSync('dist', { recursive: true });
