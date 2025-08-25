@@ -54,7 +54,7 @@ const DEVELOPMENT_CONFIG: EnvironmentConfig = {
 };
 
 const PRODUCTION_CONFIG: EnvironmentConfig = {
-  baseUrl: '', // Will be set to window.location.origin
+  baseUrl: 'https://apush-grader-production.up.railway.app', // Hardcoded for reliability
   timeout: 45000, // Longer timeout for production
   retryAttempts: 2,
   retryDelay: 1500,
