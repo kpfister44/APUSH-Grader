@@ -33,9 +33,6 @@ async function build() {
       define: {
         'process.env.NODE_ENV': '"production"',
         'process.env.REACT_APP_API_BASE_URL': `"${apiBaseUrl}"`,
-        // Also define global constants that we can use directly
-        'PRODUCTION_API_URL': `"${apiBaseUrl}"`,
-        'typeof process.env': '"object"',
         'process.env': JSON.stringify({
           NODE_ENV: 'production',
           REACT_APP_API_BASE_URL: apiBaseUrl
