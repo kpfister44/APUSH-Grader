@@ -8,7 +8,7 @@
     "dev:js": "esbuild src/index.tsx --bundle --servedir=public --outdir=public/js --watch --serve=8001",
     "dev": "tailwindcss -i ./src/input.css -o ./public/output.css && npm run dev:css & npm run dev:js",
     "build:css": "tailwindcss -i ./src/input.css -o ./dist/output.css --minify",
-    "build:js": "esbuild src/index.tsx --bundle --minify --outdir=dist/js",
+    "build:js": "node build.js",
     "build": "npm run build:css && npm run build:js"
   },
   "keywords": [],
@@ -17,6 +17,7 @@
   "type": "commonjs",
   "dependencies": {
     "@react-pdf/renderer": "^4.3.0",
+    "esbuild": "^0.25.8",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.7.0"
@@ -25,7 +26,6 @@
     "@tailwindcss/cli": "^4.1.11",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
-    "esbuild": "^0.25.8",
     "tailwindcss": "^4.1.11",
     "typescript": "^5.8.3"
   }

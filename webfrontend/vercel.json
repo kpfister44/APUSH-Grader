@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npm run build && cp public/index.html dist/index.html",
+  "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "framework": null,
   "rewrites": [
