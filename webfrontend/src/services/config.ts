@@ -133,15 +133,15 @@ export class ConfigManager {
       this.config.baseUrl = window.location.origin;
     }
 
-    // Always log configuration in production for debugging
-    console.log('🔧 API Configuration:', {
-      environment: this.environment.name,
-      baseUrl: this.config.baseUrl,
-      timeout: this.config.timeout,
-      retryAttempts: this.config.retryAttempts,
-      processEnv: typeof process !== 'undefined' ? process.env : 'undefined',
-      envApiUrl: typeof process !== 'undefined' && process.env ? process.env.REACT_APP_API_BASE_URL : 'not available'
-    });
+    // Log configuration in development
+    if (this.config.enableLogging) {
+      console.log('🔧 API Configuration:', {
+        environment: this.environment.name,
+        baseUrl: this.config.baseUrl,
+        timeout: this.config.timeout,
+        retryAttempts: this.config.retryAttempts
+      });
+    }
   }
 
   /**
