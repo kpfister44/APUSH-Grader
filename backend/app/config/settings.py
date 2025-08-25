@@ -25,12 +25,13 @@ class Settings(BaseSettings):
     
     # CORS Configuration - Development + Production origins
     allowed_origins: List[str] = Field(default=[
-        "https://apush-grader.vercel.app",  # Production frontend
-        "http://localhost:3000",           # Development frontend
-        "http://127.0.0.1:3000",          # Development frontend  
-        "http://localhost:8000",           # Development (frontend dev server)
-        "http://localhost:8001",           # Legacy development
-        "http://127.0.0.1:8001"            # Legacy development
+        "https://apush-grader-delta.vercel.app",  # Production frontend (Vercel)
+        "https://apush-grader.vercel.app",        # Alternative production domain
+        "http://localhost:3000",                  # Development frontend
+        "http://127.0.0.1:3000",                 # Development frontend  
+        "http://localhost:8000",                  # Development (frontend dev server)
+        "http://localhost:8001",                  # Legacy development
+        "http://127.0.0.1:8001"                   # Legacy development
     ])
     
     class Config:
