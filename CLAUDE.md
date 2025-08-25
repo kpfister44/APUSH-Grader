@@ -11,7 +11,7 @@ Designed for 2-12 teachers. Prioritize simplicity over complexity - functionalit
 ## Current Status
 - **Backend**: **PRODUCTION DEPLOYED** on Railway ✅
 - **iOS App**: Complete, using backend API ✅
-- **Web Frontend**: Complete with dual SAQ rubric support, ready for Vercel deployment (Issue #54 Phase 2)
+- **Web Frontend**: **PRODUCTION DEPLOYED** on Vercel ✅
 
 ## Tech Stack
 
@@ -207,17 +207,18 @@ Remember: Future engineers need to understand **why** code exists in its current
 - **EG Rubric Features**: 10-point A/C/E criteria with content-focused Criterion A ✅
 - **Response Processing**: Fixed to handle both rubric breakdown structures ✅
 - **UI Improvements**: Removed point values from essay type selector ✅
-- **Issue #54 Phase 1**: Backend Railway deployment completed ✅
+- **Issue #54**: Full production deployment (Railway + Vercel) ✅
 
-### **Current Work**
-- **Issue #54 Phase 2**: Frontend Vercel deployment (in progress)
-- **Branch**: `feature/web-issue-54-frontend-deployment`
+### **Production Deployment Complete**
+- **Backend**: Railway production deployment with CORS configuration ✅
+- **Frontend**: Vercel deployment with ESBuild and hardcoded production URL ✅
+- **Domain**: Clean `apushgrader.vercel.app` domain configured ✅
+- **Integration**: End-to-end testing and functionality confirmed ✅
 
 ### **Next Steps**
-- Complete Vercel frontend deployment with Railway backend integration
-- End-to-end production testing of full stack
 - **ALWAYS use feature branches** for each issue (see commands above)
 - Create PRs referencing issue numbers
+- Consider improving environment variable injection for better maintainability
 
 ### **Git Authentication**
 If authentication issues occur:
@@ -253,11 +254,13 @@ For proper environment variable loading in PyCharm CE:
 - **No Custom Config**: Removed `nixpacks.toml` - let Railway use defaults
 - **Port**: Railway sets `$PORT` environment variable (usually 8080)
 
-### **Frontend Production (Vercel) - In Progress**
+### **Frontend Production (Vercel) - DEPLOYED**
+- **Production URL**: https://apushgrader.vercel.app
 - **Configuration**: `vercel.json` with ESBuild settings
-- **Environment**: `.env.production` with Railway backend URL
-- **Build Command**: `npm run build && cp public/index.html dist/index.html`
-- **Backend Integration**: Uses `REACT_APP_API_BASE_URL` environment variable
+- **Build Tool**: Custom Node.js ESBuild script (build.js)
+- **Backend Integration**: Hardcoded production URL for reliability
+- **Domain**: Clean `apushgrader.vercel.app` (no hyphens)
+- **CORS**: Configured in backend for new domain
 
 ### **Development vs Production**
 ```bash
@@ -274,14 +277,28 @@ cd webfrontend && npm run dev
 # Available at: http://127.0.0.1:8001
 # Uses localhost:8000 backend
 
-# Production Frontend (Vercel) - Coming Soon
-# Will use Railway backend URL automatically
+# Production Frontend
+# Vercel handles deployment automatically from main branch
+# Available at: https://apushgrader.vercel.app
+# Uses Railway backend URL (hardcoded)
 ```
 
 ## Important Notes
 - **Feature Branch Workflow**: REQUIRED for all development
 - **Issue-Based Development**: Follow GitHub issues sequentially
-- **Backend Production**: Fully deployed and operational ✅
-- **Frontend Production**: In deployment phase (Issue #54 Phase 2)
-- **API Documentation**: Available at production URL `/docs`
-- **CORS**: Configured for production Vercel domain
+- **Full Production Stack**: Backend (Railway) + Frontend (Vercel) fully operational ✅
+- **API Documentation**: Available at https://apush-grader-production.up.railway.app/docs
+- **CORS**: Configured for https://apushgrader.vercel.app domain
+- **Environment Variable Issue**: Frontend uses hardcoded production URL due to ESBuild injection issues
+
+## Production URLs
+- **🌐 Web App**: https://apushgrader.vercel.app
+- **🔧 Backend API**: https://apush-grader-production.up.railway.app
+- **📚 API Docs**: https://apush-grader-production.up.railway.app/docs
+
+## Deployment Architecture
+- **Frontend**: Vercel (ESBuild + React + Tailwind CSS)
+- **Backend**: Railway (FastAPI + Python 3.12 + Anthropic Claude)
+- **Database**: None (stateless API)
+- **AI Service**: Anthropic Claude 3.5 Sonnet
+- **Cost**: Free tier hosting, ~$0.02-0.03 per essay for AI
