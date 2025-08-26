@@ -44,12 +44,12 @@ export const SubmitButton: React.FC<SubmitButtonProps> = ({
       onClick={onClick}
       disabled={isDisabled}
       className={`
-        w-full py-3 px-6 rounded-lg font-medium 
+        w-full py-4 px-8 rounded-xl font-medium text-base
         transition-all duration-200 ease-out
         focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2
         ${isDisabled 
-          ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
-          : 'bg-orange-500 text-white hover:bg-orange-600 hover:shadow-lg'
+          ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
+          : 'bg-orange-500 text-white hover:bg-orange-600 shadow-sm hover:shadow-md'
         }
         ${className}
       `}
@@ -60,9 +60,9 @@ export const SubmitButton: React.FC<SubmitButtonProps> = ({
       {isSubmitting ? (
         <div className="flex items-center justify-center gap-3">
           <div className="flex gap-1">
-            <div className="w-2 h-2 bg-white/80 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-            <div className="w-2 h-2 bg-white/80 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-            <div className="w-2 h-2 bg-white/80 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+            <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+            <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+            <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
           </div>
           <span>{loadingMessages[currentMessage]}</span>
         </div>
