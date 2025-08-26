@@ -45,11 +45,11 @@ export const SubmitButton: React.FC<SubmitButtonProps> = ({
       disabled={isDisabled}
       className={`
         w-full py-3 px-6 rounded-lg font-medium 
-        transition-all duration-200 ease-out transform
-        focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2
+        transition-all duration-200 ease-out
+        focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2
         ${isDisabled 
-          ? 'bg-gray-300 text-gray-500 cursor-not-allowed scale-100' 
-          : 'bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 hover:scale-[1.01] active:scale-[0.99] hover:shadow-lg'
+          ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+          : 'bg-orange-500 text-white hover:bg-orange-600 hover:shadow-lg'
         }
         ${className}
       `}
@@ -60,14 +60,17 @@ export const SubmitButton: React.FC<SubmitButtonProps> = ({
       {isSubmitting ? (
         <div className="flex items-center justify-center gap-3">
           <div className="flex gap-1">
-            <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-            <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-            <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+            <div className="w-2 h-2 bg-white/80 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+            <div className="w-2 h-2 bg-white/80 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+            <div className="w-2 h-2 bg-white/80 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
           </div>
           <span>{loadingMessages[currentMessage]}</span>
         </div>
       ) : (
-        'Grade Essay'
+        <span className="flex items-center justify-center gap-2">
+          <span>✦</span>
+          <span>Grade Essay</span>
+        </span>
       )}
     </button>
   );

@@ -122,22 +122,27 @@ const GradingPageContent: React.FC = () => {
   };
 
   return (
-    <ChatLayout>
-      <MainContent>
-        <div className="space-y-6">
-          {/* Main Grading Interface */}
-          <div className="max-w-2xl mx-auto">
-            <div className="text-center mb-8">
-              <h2 className="text-2xl font-semibold text-gray-900">
-                APUSH Essay Grader
-              </h2>
-              <p className="text-gray-600 leading-relaxed mt-2">
-                Grade AP US History essays with AI assistance
-              </p>
+    <div className="min-h-screen bg-gray-50">
+      <div className="mx-auto max-w-3xl px-4 py-8">
+        {/* Claude-style centered header */}
+        <div className="text-center mb-8">
+          <div className="flex items-center justify-center gap-2 mb-3">
+            <div className="w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center">
+              <span className="text-white text-xs">✦</span>
             </div>
+            <h1 className="text-2xl font-semibold text-gray-800">
+              APUSH Essay Grader
+            </h1>
+          </div>
+          <p className="text-gray-600 max-w-md mx-auto">
+            Grade AP US History essays with AI assistance
+          </p>
+        </div>
 
-            {/* Essay Grading Form */}
-            <div className="bg-white rounded-lg border border-gray-200 p-6 space-y-6">
+        {/* Main content card */}
+        <div className="max-w-2xl mx-auto">
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+            <div className="p-6 space-y-6">
               <EssayTypeSelector
                 selectedType={state.form.essayType}
                 onTypeChange={actions.setEssayType}
@@ -154,7 +159,7 @@ const GradingPageContent: React.FC = () => {
 
               {/* SAQ-specific components */}
               {state.form.essayType === 'SAQ' && (
-                <div className="border-t pt-6 space-y-6 animate-in fade-in slide-in-from-top-2 duration-300 ease-out">
+                <div className="border-t border-gray-200 pt-6 space-y-6">
                   <SAQTypeSelector
                     selectedType={state.form.saqType}
                     onTypeChange={actions.setSaqType}
@@ -207,7 +212,7 @@ const GradingPageContent: React.FC = () => {
 
               {/* DBQ/LEQ essay text input */}
               {(state.form.essayType === 'DBQ' || state.form.essayType === 'LEQ') && (
-                <div className="border-t pt-6 space-y-6">
+                <div className="border-t border-gray-200 pt-6 space-y-6">
                   {/* Prompt input for DBQ/LEQ */}
                   <div className="space-y-3">
                     <label htmlFor="prompt-input" className="block text-sm font-medium text-gray-700">
@@ -254,7 +259,7 @@ const GradingPageContent: React.FC = () => {
 
               {/* Submit Button - Hidden when results are displayed */}
               {state.form.essayType && !state.lastResult && (
-                <div className="border-t pt-6">
+                <div className="border-t border-gray-200 pt-6">
                   <SubmitButton
                     isValid={state.isFormValid}
                     isSubmitting={state.isSubmitting}
@@ -280,21 +285,24 @@ const GradingPageContent: React.FC = () => {
                 </div>
               )}
             </div>
+          </div>
+        </div>
             
-            {/* Enhanced Results Display - Issue #32 Score Visualization */}
-            {state.lastResult && (
-              <div className="mt-6">
+        {/* Enhanced Results Display - Issue #32 Score Visualization */}
+        {state.lastResult && (
+          <div className="mt-6 max-w-2xl mx-auto">
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+              <div className="p-6">
                 <ResultsDisplay 
                   result={state.lastResult}
                   onNewEssay={() => actions.setResult(null)}
                 />
               </div>
-            )}
+            </div>
           </div>
-
-        </div>
-      </MainContent>
-    </ChatLayout>
+        )}
+      </div>
+    </div>
   );
 };
 
