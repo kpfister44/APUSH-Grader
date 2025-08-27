@@ -302,3 +302,54 @@ cd webfrontend && npm run dev
 - **Database**: None (stateless API)
 - **AI Service**: Anthropic Claude 3.5 Sonnet
 - **Cost**: Free tier hosting, ~$0.02-0.03 per essay for AI
+
+## Tailwind CSS v4.x Notes
+
+### **Important Styling Guidelines**
+Based on Issue #56 Claude UI redesign experience, follow these guidelines for consistent Tailwind usage:
+
+#### **✅ Working Classes (Verified)**
+```css
+/* Typography */
+text-4xl font-normal        /* Large headers, light weight */
+text-xl font-light          /* Subtitles */
+text-base font-medium       /* Buttons and labels */
+
+/* Spacing */
+py-16 px-6                  /* Page-level padding */
+p-10 space-y-8              /* Card internal spacing */
+mb-16 mt-8                  /* Section margins */
+
+/* Colors */
+bg-orange-500 hover:bg-orange-600    /* Primary buttons */
+bg-gray-50                           /* Page background */
+border-gray-100                      /* Subtle dividers */
+text-gray-800                        /* Headers */
+text-gray-600                        /* Body text */
+
+/* Modern Design */
+rounded-2xl                 /* Cards and major elements */
+rounded-xl                  /* Buttons and inputs */
+shadow-sm hover:shadow-md   /* Subtle shadows */
+max-w-4xl max-w-3xl        /* Container widths */
+```
+
+#### **❌ Avoid These (Don't Work in v4.x)**
+```css
+/* V4.x syntax that fails */
+bg-linear-to-r from-orange-500    /* Use bg-orange-500 instead */
+text-white/95                     /* Use text-white instead */  
+border-gray-100/80                /* Use border-gray-100 instead */
+shadow-gray-200/50               /* Use shadow-sm instead */
+```
+
+### **Claude UI Matching**
+For Claude-style interfaces, use these specific patterns:
+- **Headers**: `text-4xl font-normal` with generous `mb-16` spacing
+- **Cards**: `rounded-2xl shadow-sm border border-gray-200` with `p-10`
+- **Buttons**: `py-4 px-8 rounded-xl` with subtle hover states
+- **Spacing**: Use `space-y-8` and `pt-8` for section breaks
+- **Colors**: Orange accent (`bg-orange-500`) on gray-50 backgrounds
+
+### **Build Process**
+Always run `npm run build:css` after adding new Tailwind classes to ensure they're generated in the output CSS.

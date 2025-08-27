@@ -122,22 +122,27 @@ const GradingPageContent: React.FC = () => {
   };
 
   return (
-    <ChatLayout>
-      <MainContent>
-        <div className="space-y-6">
-          {/* Main Grading Interface */}
-          <div className="max-w-2xl mx-auto">
-            <div className="text-center mb-8">
-              <h2 className="text-2xl font-semibold text-gray-900">
-                APUSH Essay Grader
-              </h2>
-              <p className="text-gray-600 leading-relaxed mt-2">
-                Grade AP US History essays with AI assistance
-              </p>
+    <div className="min-h-screen bg-gray-50">
+      <div className="mx-auto max-w-4xl px-6 py-16">
+        {/* Claude-style centered header */}
+        <div className="text-center mb-16">
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <div className="w-7 h-7 bg-orange-500 rounded-full flex items-center justify-center">
+              <span className="text-white text-base">✦</span>
             </div>
+            <h1 className="text-4xl font-normal text-gray-800">
+              APUSH Essay Grader
+            </h1>
+          </div>
+          <p className="text-gray-600 text-xl font-light max-w-lg mx-auto">
+            Grade AP US History essays with AI assistance
+          </p>
+        </div>
 
-            {/* Essay Grading Form */}
-            <div className="bg-white rounded-lg border border-gray-200 p-6 space-y-6">
+        {/* Main content card */}
+        <div className="max-w-3xl mx-auto">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 transition-all duration-200">
+            <div className="p-10 space-y-8">
               <EssayTypeSelector
                 selectedType={state.form.essayType}
                 onTypeChange={actions.setEssayType}
@@ -154,7 +159,7 @@ const GradingPageContent: React.FC = () => {
 
               {/* SAQ-specific components */}
               {state.form.essayType === 'SAQ' && (
-                <div className="border-t pt-6 space-y-6 animate-in fade-in slide-in-from-top-2 duration-300 ease-out">
+                <div className="border-t border-gray-100 pt-8 space-y-8">
                   <SAQTypeSelector
                     selectedType={state.form.saqType}
                     onTypeChange={actions.setSaqType}
@@ -207,7 +212,7 @@ const GradingPageContent: React.FC = () => {
 
               {/* DBQ/LEQ essay text input */}
               {(state.form.essayType === 'DBQ' || state.form.essayType === 'LEQ') && (
-                <div className="border-t pt-6 space-y-6">
+                <div className="border-t border-gray-100 pt-8 space-y-8">
                   {/* Prompt input for DBQ/LEQ */}
                   <div className="space-y-3">
                     <label htmlFor="prompt-input" className="block text-sm font-medium text-gray-700">
@@ -254,7 +259,7 @@ const GradingPageContent: React.FC = () => {
 
               {/* Submit Button - Hidden when results are displayed */}
               {state.form.essayType && !state.lastResult && (
-                <div className="border-t pt-6">
+                <div className="border-t border-gray-100 pt-8">
                   <SubmitButton
                     isValid={state.isFormValid}
                     isSubmitting={state.isSubmitting}
@@ -263,7 +268,7 @@ const GradingPageContent: React.FC = () => {
                   
                   {/* Inline error display */}
                   {submitError && (
-                    <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                    <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-xl">
                       <div className="flex items-center gap-2 text-red-700">
                         <span className="text-red-500">⚠</span>
                         <span className="text-sm font-medium">Error</span>
@@ -280,21 +285,24 @@ const GradingPageContent: React.FC = () => {
                 </div>
               )}
             </div>
+          </div>
+        </div>
             
-            {/* Enhanced Results Display - Issue #32 Score Visualization */}
-            {state.lastResult && (
-              <div className="mt-6">
+        {/* Enhanced Results Display - Issue #32 Score Visualization */}
+        {state.lastResult && (
+          <div className="mt-8 max-w-3xl mx-auto">
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 transition-all duration-200">
+              <div className="p-10">
                 <ResultsDisplay 
                   result={state.lastResult}
                   onNewEssay={() => actions.setResult(null)}
                 />
               </div>
-            )}
+            </div>
           </div>
-
-        </div>
-      </MainContent>
-    </ChatLayout>
+        )}
+      </div>
+    </div>
   );
 };
 
