@@ -20,6 +20,7 @@ from app.exceptions import ValidationError, ProcessingError, APIError
 from app.middleware.rate_limiting import limiter
 from app.utils.simple_usage import get_simple_usage_tracker
 from app.utils.grading_workflow import grade_essay_with_validation
+from app.api.routes.auth import require_auth
 
 
 logger = logging.getLogger(__name__)
@@ -90,7 +91,8 @@ def _combine_saq_parts(grading_request: GradingRequest) -> str:
 @limiter.limit("50/hour")
 async def grade_essay(
     request: Request,
-    grading_request: GradingRequest
+    grading_request: GradingRequest,
+    _: bool = Depends(require_auth)
 ) -> GradingResponse:
     """
     Grade an essay using the complete grading workflow.
@@ -203,7 +205,7 @@ async def grade_essay(
     summary="Get grading service status",
     description="Check if the grading service is available and operational."
 )
-async def get_grading_status() -> Dict[str, Any]:
+async def get_grading_status(_: bool = Depends(require_auth)) -> Dict[str, Any]:
     """
     Get the current status of the grading service.
     
