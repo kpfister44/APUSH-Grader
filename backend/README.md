@@ -5,20 +5,22 @@ Python FastAPI backend for the APUSH Grader application. This backend provides A
 ## Features
 
 - **Complete Essay Grading**: Supports DBQ, LEQ, and SAQ essays with College Board rubrics
+- **Dual SAQ Rubric Support**: College Board (3-point) and EG (10-point A/C/E criteria) rubrics
 - **SAQ Type Differentiation**: Specialized grading for stimulus, non-stimulus, and secondary comparison SAQs
+- **Teacher Authentication**: Password-protected access for authorized educators
 - **Real AI Integration**: Anthropic Claude 3.5 Sonnet with configurable mock AI for development
-- **Production Ready**: Rate limiting, usage tracking, health monitoring
+- **Production Ready**: Rate limiting, usage tracking, health monitoring, CORS configuration
 - **Manual Testing Tools**: Comprehensive script for testing real essays
-- **iOS Integration**: Complete API for iOS frontend with structured responses
+- **Multi-Platform Integration**: Complete API for iOS and web frontends with structured responses
 
 ## Essay Types Supported
 
 - **DBQ** (Document-Based Question) - 6 points
 - **LEQ** (Long Essay Question) - 6 points  
-- **SAQ** (Short Answer Question) - 3 points with type differentiation:
-  - **Stimulus SAQ** - Source analysis questions
-  - **Non-Stimulus SAQ** - Content knowledge questions
-  - **Secondary Comparison SAQ** - Historiographical comparison questions
+- **SAQ** (Short Answer Question) - **Dual rubric support**:
+  - **College Board Rubric** (3 points): Traditional part_a/b/c scoring
+  - **EG Rubric** (10 points): A/C/E criteria with content-focused approach
+  - **SAQ Types**: Stimulus, Non-Stimulus, Secondary Comparison
 
 ## Project Structure
 
@@ -34,7 +36,8 @@ backend/
 │   │   └── requests/               # API request/response models
 │   ├── api/
 │   │   └── routes/
-│   │       ├── grading.py          # POST /api/v1/grade endpoint
+│   │       ├── grading.py          # POST /api/v1/grade endpoint (protected)
+│   │       ├── auth.py             # Authentication endpoints
 │   │       └── health.py           # Health check endpoints
 │   ├── services/
 │   │   └── ai/                     # AI service integration
@@ -80,11 +83,14 @@ backend/
    pip install -r requirements-dev.txt
    ```
 
-3. **Set up environment variables (optional)**:
+3. **Set up environment variables**:
    ```bash
    # For real AI grading (optional - defaults to mock AI)
    export ANTHROPIC_API_KEY='sk-ant-api03-your-key-here'
    export AI_SERVICE_TYPE='anthropic'
+   
+   # For authentication (required in production)
+   export AUTH_PASSWORD='your-secure-password'
    ```
 
 ### Running the Application
@@ -139,20 +145,35 @@ pytest tests/test_utils.py -v
 
 ## API Endpoints
 
-### Grading
+### Authentication
+- **POST** `/auth/login` - Teacher login (rate limited: 10/min)
+- **POST** `/auth/logout` - Logout and invalidate session
+- **GET** `/auth/verify` - Verify session token validity
+
+### Grading (Protected - Requires Authentication)
 - **POST** `/api/v1/grade` - Grade an essay (rate limited: 20/min, 50/hour)
+- **GET** `/api/v1/grade/status` - Grading service status
 
 ### Health & Monitoring
 - **GET** `/health` - Application health status
 - **GET** `/usage/summary` - Daily usage summary
 - **GET** `/` - Root endpoint
 
+### Example Authentication Request
+
+```json
+{
+  "password": "your-teacher-password"
+}
+```
+
 ### Example Grading Request
 
 ```json
 {
   "essay_type": "SAQ",
-  "saq_type": "stimulus",
+  "saq_type": "stimulus", 
+  "rubric_type": "college_board",
   "prompt": "Use the excerpt below to answer all parts...",
   "saq_parts": {
     "part_a": "Student response to part A",
@@ -206,6 +227,7 @@ ANTHROPIC_API_KEY=sk-ant-api03-your-key-here
 
 - `AI_SERVICE_TYPE` - AI service type (`mock` or `anthropic`)
 - `ANTHROPIC_API_KEY` - Anthropic API key (required for real AI)
+- `AUTH_PASSWORD` - Teacher authentication password (required for production)
 - `DEBUG` - Enable debug mode (default: `false`)
 - `ALLOWED_ORIGINS` - CORS allowed origins
 - `CORS_CREDENTIALS` - CORS credentials (default: `true`)
@@ -226,16 +248,40 @@ ANTHROPIC_API_KEY=sk-ant-api03-your-key-here
 - Consolidated models (3 files vs original 12)
 - 87% complexity reduction from enterprise patterns
 
+## Production Deployment
+
+**✅ LIVE IN PRODUCTION**
+
+### Production URLs
+- **🌐 Web App**: https://apushgrader.vercel.app (requires teacher authentication)
+- **🔧 Backend API**: https://apush-grader-production.up.railway.app
+- **📚 API Docs**: https://apush-grader-production.up.railway.app/docs
+
+### Screenshots
+<!-- TODO: Add web app screenshots here -->
+<!-- Example:
+![APUSH Grader Login Screen](screenshots/login-screen.png)
+![APUSH Grader Interface](screenshots/grading-interface.png)
+-->
+
+### Deployment Status
+- ✅ **Backend**: Railway production deployment with authentication
+- ✅ **Frontend**: Vercel deployment with login screen
+- ✅ **Authentication**: Password-protected teacher access
+- ✅ **Multi-Platform**: iOS app and web frontend integration
+
 ## Development Status
 
-**✅ PRODUCTION READY** - Backend Simplification Complete
+**✅ PRODUCTION READY** - Complete Implementation
 
 - ✅ Complete FastAPI backend with simplified architecture
+- ✅ Teacher authentication system with session management
+- ✅ Dual SAQ rubric support (College Board + EG rubrics)
 - ✅ SAQ type differentiation for improved grading accuracy
 - ✅ Real Anthropic Claude 3.5 Sonnet integration
 - ✅ Rate limiting, usage tracking, health monitoring
 - ✅ Manual essay testing system
-- ✅ iOS frontend integration complete
+- ✅ Multi-platform integration (iOS + Web)
 - ✅ Comprehensive test suite (51 tests)
 - ✅ Cost protection and usage safeguards
 
