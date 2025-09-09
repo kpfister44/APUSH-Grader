@@ -23,6 +23,9 @@ class Settings(BaseSettings):
     openai_api_key: str = Field(default="")
     anthropic_api_key: str = Field(default="")
     
+    # Authentication Configuration
+    auth_password: str = Field(default="eghsAPUSH")
+    
     # CORS Configuration - Development + Production origins
     allowed_origins: List[str] = Field(default=[
         "https://apushgrader.vercel.app",         # Production frontend (Vercel - new domain)
