@@ -3,7 +3,8 @@ import { ChatLayout, MainContent } from '../components/layout';
 import { EssayTypeSelector, SAQTypeSelector, RubricTypeSelector, SAQMultiPartInput, ChatTextArea, PromptInput } from '../components/input';
 import { SubmitButton, ResultsDisplay } from '../components/ui';
 import { GradingProvider, useGrading } from '../contexts/GradingContext';
-import { apiService } from '../services/api';
+import { useAuth } from '../contexts/AuthContext';
+import { authenticatedApiService } from '../services/authApi';
 import { GradingRequest } from '../types/api';
 
 /**
@@ -11,6 +12,7 @@ import { GradingRequest } from '../types/api';
  */
 const GradingPageContent: React.FC = () => {
   const { state, actions } = useGrading();
+  const { logout } = useAuth();
   const [testResults, setTestResults] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [submitError, setSubmitError] = useState<string>('');
@@ -43,9 +45,15 @@ const GradingPageContent: React.FC = () => {
     
     try {
       const request = buildGradingRequest();
-      const result = await apiService.gradeEssay(request);
+      const result = await authenticatedApiService.gradeEssay(request);
       actions.setResult(result);
     } catch (error: any) {
+      // Handle authentication errors specifically
+      if (error.message.includes('Session expired') || error.message.includes('Authentication required')) {
+        logout();
+        return;
+      }
+      
       // Handle different error types with teacher-friendly messages
       let errorMessage = 'An error occurred while grading the essay.';
       
@@ -78,7 +86,7 @@ const GradingPageContent: React.FC = () => {
     setLoading(true);
     setTestResults('Testing health check...');
     try {
-      const result = await apiService.checkHealth();
+      const result = await authenticatedApiService.checkHealth();
       setTestResults(`✅ Health Check Success:\n${JSON.stringify(result, null, 2)}`);
     } catch (error: any) {
       setTestResults(`❌ Health Check Failed:\n${error.message}\nType: ${error.type}\nStatus: ${error.status}`);
@@ -90,7 +98,7 @@ const GradingPageContent: React.FC = () => {
     setLoading(true);
     setTestResults('Testing usage summary...');
     try {
-      const result = await apiService.getUsageSummary();
+      const result = await authenticatedApiService.getUsageSummary();
       setTestResults(`✅ Usage Summary Success:\n${JSON.stringify(result, null, 2)}`);
     } catch (error: any) {
       setTestResults(`❌ Usage Summary Failed:\n${error.message}\nType: ${error.type}\nStatus: ${error.status}`);
@@ -113,7 +121,7 @@ const GradingPageContent: React.FC = () => {
         saq_type: 'non_stimulus' as const
       };
 
-      const result = await apiService.gradeEssay(sampleRequest);
+      const result = await authenticatedApiService.gradeEssay(sampleRequest);
       setTestResults(`✅ Grading Success:\nScore: ${result.score}/${result.max_score} (${result.percentage}%)\nGrade: ${result.letter_grade}\nPerformance: ${result.performance_level}\n\nFull Response:\n${JSON.stringify(result, null, 2)}`);
     } catch (error: any) {
       setTestResults(`❌ Grading Failed:\n${error.message}\nType: ${error.type}\nStatus: ${error.status}`);
@@ -124,19 +132,29 @@ const GradingPageContent: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="mx-auto max-w-4xl px-6 py-16">
-        {/* Claude-style centered header */}
-        <div className="text-center mb-16">
-          <div className="flex items-center justify-center gap-3 mb-6">
-            <div className="w-7 h-7 bg-orange-500 rounded-full flex items-center justify-center">
-              <span className="text-white text-base">✦</span>
+        {/* Claude-style centered header with logout */}
+        <div className="relative mb-16">
+          <div className="text-center">
+            <div className="flex items-center justify-center gap-3 mb-6">
+              <div className="w-7 h-7 bg-orange-500 rounded-full flex items-center justify-center">
+                <span className="text-white text-base">✦</span>
+              </div>
+              <h1 className="text-4xl font-normal text-gray-800">
+                APUSH Essay Grader
+              </h1>
             </div>
-            <h1 className="text-4xl font-normal text-gray-800">
-              APUSH Essay Grader
-            </h1>
+            <p className="text-gray-600 text-xl font-light max-w-lg mx-auto">
+              Grade AP US History essays with AI assistance
+            </p>
           </div>
-          <p className="text-gray-600 text-xl font-light max-w-lg mx-auto">
-            Grade AP US History essays with AI assistance
-          </p>
+          
+          {/* Logout button - positioned absolute top right */}
+          <button
+            onClick={logout}
+            className="absolute top-0 right-0 px-3 py-1.5 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-100 border border-gray-200 hover:border-gray-300 rounded-lg transition-all duration-200"
+          >
+            Sign Out
+          </button>
         </div>
 
         {/* Main content card */}
