@@ -11,7 +11,7 @@ Designed for 2-12 teachers. Prioritize simplicity over complexity - functionalit
 ## Current Status
 - **Backend**: **PRODUCTION DEPLOYED** on Railway ✅
 - **iOS App**: Complete, using backend API ✅
-- **Web Frontend**: **PRODUCTION DEPLOYED** on Vercel ✅
+- **Web Frontend**: **PRODUCTION DEPLOYED** on Vercel with Authentication ✅
 
 ## Tech Stack
 
@@ -128,6 +128,26 @@ git checkout main && git pull origin main
   - **EG Rubric** (10 points): A/C/E criteria with content-focused approach
   - **SAQ Types**: Stimulus, Non-Stimulus, Secondary Comparison
 
+## Authentication & Access Control
+
+### **Teacher Authentication (PRODUCTION ACTIVE)**
+- **Access Control**: Password-protected access for authorized teachers only
+- **Shared Password**: `eghsAPUSH` (configured as `AUTH_PASSWORD` environment variable)
+- **Session Management**: Token-based authentication that expires when browser closes
+- **User Experience**: Clean login screen → main grading interface → logout button
+
+### **Authentication Flow**
+1. Visit **https://apushgrader.vercel.app**
+2. Enter teacher password: `eghsAPUSH`
+3. Click "Sign In" to access grading interface
+4. Use "Sign Out" button in top-right corner to logout
+
+### **Security Features**
+- **Rate Limited**: Login attempts limited to 10/minute
+- **Session Expiry**: Tokens automatically expire on browser close
+- **Protected API**: All grading endpoints require valid authentication
+- **Environment Variables**: Password stored securely in Railway backend
+
 ## AI Configuration
 
 ### **Environment Setup**
@@ -139,6 +159,7 @@ AI_SERVICE_TYPE=mock
 # Production (requires API key)
 AI_SERVICE_TYPE=anthropic
 ANTHROPIC_API_KEY=sk-ant-api03-your-key-here
+AUTH_PASSWORD=eghsAPUSH
 ```
 
 ### **AI Service Features**
@@ -208,12 +229,14 @@ Remember: Future engineers need to understand **why** code exists in its current
 - **Response Processing**: Fixed to handle both rubric breakdown structures ✅
 - **UI Improvements**: Removed point values from essay type selector ✅
 - **Issue #54**: Full production deployment (Railway + Vercel) ✅
+- **Issue #58**: Teacher authentication system with password gate ✅
 
 ### **Production Deployment Complete**
-- **Backend**: Railway production deployment with CORS configuration ✅
-- **Frontend**: Vercel deployment with ESBuild and hardcoded production URL ✅
+- **Backend**: Railway production deployment with CORS and authentication ✅
+- **Frontend**: Vercel deployment with login screen and auth integration ✅
+- **Authentication**: Password-protected access for authorized teachers ✅
 - **Domain**: Clean `apushgrader.vercel.app` domain configured ✅
-- **Integration**: End-to-end testing and functionality confirmed ✅
+- **Integration**: End-to-end authentication and grading functionality confirmed ✅
 
 ### **Next Steps**
 - **ALWAYS use feature branches** for each issue (see commands above)
@@ -292,7 +315,7 @@ cd webfrontend && npm run dev
 - **Environment Variable Issue**: Frontend uses hardcoded production URL due to ESBuild injection issues
 
 ## Production URLs
-- **🌐 Web App**: https://apushgrader.vercel.app
+- **🌐 Web App**: https://apushgrader.vercel.app *(requires teacher password: `eghsAPUSH`)*
 - **🔧 Backend API**: https://apush-grader-production.up.railway.app
 - **📚 API Docs**: https://apush-grader-production.up.railway.app/docs
 
