@@ -3,7 +3,7 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview
-APUSH Grader - Multi-platform AI essay grading system with **Python FastAPI backend + iOS SwiftUI + ChatGPT-style web frontend**. Uses Anthropic Claude to grade AP US History essays (DBQ/LEQ/SAQ) based on College Board rubrics.
+APUSH Grader - Multi-platform AI essay grading system with **Python FastAPI backend + iOS SwiftUI + ChatGPT-style web frontend**. Uses Anthropic Claude Sonnet 4 to grade AP US History essays (DBQ/LEQ/SAQ) based on College Board rubrics.
 
 ## Target Audience and Scope
 Designed for 2-12 teachers. Prioritize simplicity over complexity - functionality over comprehensiveness. Not meant for enterprise scale.
@@ -323,7 +323,7 @@ cd webfrontend && npm run dev
 - **Frontend**: Vercel (ESBuild + React + Tailwind CSS)
 - **Backend**: Railway (FastAPI + Python 3.12 + Anthropic Claude)
 - **Database**: None (stateless API)
-- **AI Service**: Anthropic Claude 3.5 Sonnet
+- **AI Service**: Anthropic Claude Sonnet 4
 - **Cost**: Free tier hosting, ~$0.02-0.03 per essay for AI
 
 ## Tailwind CSS v4.x Notes

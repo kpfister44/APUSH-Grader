@@ -1,6 +1,6 @@
 # APUSH Grader Backend
 
-Python FastAPI backend for the APUSH Grader application. This backend provides AI-powered grading for AP US History essays using Anthropic Claude 3.5 Sonnet with simplified architecture designed for 2-12 teachers.
+Python FastAPI backend for the APUSH Grader application. This backend provides AI-powered grading for AP US History essays using Anthropic Claude Sonnet 4 with simplified architecture designed for 2-12 teachers.
 
 ## Features
 
@@ -8,7 +8,7 @@ Python FastAPI backend for the APUSH Grader application. This backend provides A
 - **Dual SAQ Rubric Support**: College Board (3-point) and EG (10-point A/C/E criteria) rubrics
 - **SAQ Type Differentiation**: Specialized grading for stimulus, non-stimulus, and secondary comparison SAQs
 - **Teacher Authentication**: Password-protected access for authorized educators
-- **Real AI Integration**: Anthropic Claude 3.5 Sonnet with configurable mock AI for development
+- **Real AI Integration**: Anthropic Claude Sonnet 4 with configurable mock AI for development
 - **Production Ready**: Rate limiting, usage tracking, health monitoring, CORS configuration
 - **Manual Testing Tools**: Comprehensive script for testing real essays
 - **Multi-Platform Integration**: Complete API for iOS and web frontends with structured responses
@@ -218,7 +218,7 @@ AI_SERVICE_TYPE=mock
 
 **Real Anthropic AI**:
 ```bash
-# Requires API key - uses Claude 3.5 Sonnet
+# Requires API key - uses Claude Sonnet 4
 AI_SERVICE_TYPE=anthropic
 ANTHROPIC_API_KEY=sk-ant-api03-your-key-here
 ```
@@ -278,7 +278,7 @@ ANTHROPIC_API_KEY=sk-ant-api03-your-key-here
 - ✅ Teacher authentication system with session management
 - ✅ Dual SAQ rubric support (College Board + EG rubrics)
 - ✅ SAQ type differentiation for improved grading accuracy
-- ✅ Real Anthropic Claude 3.5 Sonnet integration
+- ✅ Real Anthropic Claude Sonnet 4 integration
 - ✅ Rate limiting, usage tracking, health monitoring
 - ✅ Manual essay testing system
 - ✅ Multi-platform integration (iOS + Web)
@@ -287,7 +287,7 @@ ANTHROPIC_API_KEY=sk-ant-api03-your-key-here
 
 ## Cost Information
 
-- **Anthropic Claude 3.5 Sonnet**: ~$0.02-0.03 per essay
+- **Anthropic Claude Sonnet 4**: ~$0.02-0.03 per essay
 - **Daily limits prevent excessive costs**: 50 essays/day maximum
 - **Rate limiting**: Prevents abuse and manages costs
 - **Mock AI available**: No cost for development and testing
