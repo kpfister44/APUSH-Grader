@@ -1,5 +1,5 @@
 """
-Anthropic AI service for real Claude 3.5 Sonnet integration.
+Anthropic AI service for real Claude Sonnet 4 integration.
 
 Provides real AI grading responses using Anthropic's Claude API.
 """
@@ -20,7 +20,7 @@ class AnthropicService(AIService):
     """
     Anthropic Claude AI service for real essay grading.
     
-    Uses Claude 3.5 Sonnet model to provide actual AI grading responses.
+    Uses Claude Sonnet 4 model to provide actual AI grading responses.
     """
     
     def __init__(self, settings=None):
@@ -72,9 +72,9 @@ class AnthropicService(AIService):
             
             start_time = time.time()
             
-            # Call Claude 3.5 Sonnet with system prompt and user message
+            # Call Claude Sonnet 4 with system prompt and user message
             message = self.client.messages.create(
-                model="claude-3-5-sonnet-20241022",
+                model="claude-sonnet-4-20250514",
                 max_tokens=1500,
                 temperature=0.3,
                 system=system_prompt,
@@ -89,11 +89,16 @@ class AnthropicService(AIService):
             # Calculate API call duration
             api_duration_ms = (time.time() - start_time) * 1000
             
+            # Check for refusal stop reason (new in Claude 4)
+            if message.stop_reason == "refusal":
+                logger.warning("Claude 4 refused to generate content for safety reasons")
+                raise ProcessingError("AI model declined to generate content for safety reasons")
+
             # Extract response content
             response_content = message.content[0].text
-            
+
             logger.info(f"Anthropic API call successful ({api_duration_ms:.0f}ms, {len(response_content)} chars)")
-            
+
             return response_content
             
         except Exception as e:

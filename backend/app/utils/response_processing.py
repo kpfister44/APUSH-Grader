@@ -13,15 +13,45 @@ from app.exceptions import ProcessingError
 logger = logging.getLogger(__name__)
 
 
+def _extract_json_from_response(raw_response: str) -> str:
+    """
+    Extract JSON from AI response, handling Claude Sonnet 4 markdown format.
+
+    Claude Sonnet 4 wraps JSON in markdown code blocks like:
+    ```json
+    { "key": "value" }
+    ```
+
+    This function strips the markdown and returns clean JSON.
+    """
+    response = raw_response.strip()
+
+    # Check if response is wrapped in markdown code blocks
+    if response.startswith('```json\n') and response.endswith('\n```'):
+        # Extract JSON content between markdown markers
+        json_content = response[8:-4]  # Remove ```json\n at start and \n``` at end
+        logger.debug("Extracted JSON from markdown code blocks")
+        return json_content.strip()
+    elif response.startswith('```\n') and response.endswith('\n```'):
+        # Handle generic code blocks
+        json_content = response[4:-4]  # Remove ```\n at start and \n``` at end
+        logger.debug("Extracted JSON from generic code blocks")
+        return json_content.strip()
+    else:
+        # Return as-is (for Claude 3.5 Sonnet compatibility)
+        return response
+
+
 def process_ai_response(raw_response: str, essay_type: EssayType, rubric_type: RubricType = RubricType.COLLEGE_BOARD) -> GradeResponse:
     """
     Process raw AI response into structured GradeResponse.
     Handles validation and error recovery.
     """
     try:
-        # Parse JSON response
-        response_data = json.loads(raw_response.strip())
-        
+        # Clean and parse JSON response (handle Claude Sonnet 4 markdown format)
+        cleaned_response = _extract_json_from_response(raw_response)
+        response_data = json.loads(cleaned_response)
+
         # Validate required fields
         _validate_response_structure(response_data, essay_type, rubric_type)
         

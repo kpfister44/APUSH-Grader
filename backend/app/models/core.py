@@ -105,7 +105,7 @@ class Model(str, Enum):
     
     GPT4O = "gpt-4o"
     GPT4O_MINI = "gpt-4o-mini"
-    CLAUDE35_SONNET = "claude-3-5-sonnet-20241022"
+    CLAUDE4_SONNET = "claude-sonnet-4-20250514"
     CLAUDE3_HAIKU = "claude-3-haiku-20240307"
     
     @property
