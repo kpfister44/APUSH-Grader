@@ -1,15 +1,75 @@
 """
 API request and response models for essay grading endpoints.
 
-Defines the contract for the /api/v1/grade endpoint used by the iOS frontend.
+Defines the contract for the /api/v1/grade endpoint used by the web frontend.
 """
 
 from typing import Optional, List, Dict, Any
 from pydantic import BaseModel, Field, validator, root_validator
 from enum import Enum
+from datetime import datetime
 
 from app.models.core import EssayType, SAQType, RubricType
 from app.models.core import GradeResponse
+
+
+class DocumentMetadata(BaseModel):
+    """Metadata for a single DBQ document."""
+
+    doc_num: int = Field(
+        ...,
+        description="Document number (1-7)",
+        ge=1,
+        le=7
+    )
+
+    base64: str = Field(
+        ...,
+        description="Base64-encoded JPEG image"
+    )
+
+    size_bytes: int = Field(
+        ...,
+        description="File size in bytes",
+        ge=0
+    )
+
+
+class DocumentUploadResponse(BaseModel):
+    """Response model for document upload endpoint."""
+
+    document_set_id: str = Field(
+        ...,
+        description="Unique identifier for this document set"
+    )
+
+    document_count: int = Field(
+        ...,
+        description="Number of documents uploaded",
+        ge=1,
+        le=7
+    )
+
+    total_size_mb: float = Field(
+        ...,
+        description="Total size of all documents in megabytes",
+        ge=0
+    )
+
+    expires_at: datetime = Field(
+        ...,
+        description="When these documents will expire from cache"
+    )
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "document_set_id": "550e8400-e29b-41d4-a716-446655440000",
+                "document_count": 7,
+                "total_size_mb": 12.5,
+                "expires_at": "2025-10-14T14:30:00"
+            }
+        }
 
 
 class SAQParts(BaseModel):
@@ -80,7 +140,12 @@ class GradingRequest(BaseModel):
         RubricType.COLLEGE_BOARD,
         description="Rubric type for SAQ essays (college_board, eg) - defaults to College Board for backward compatibility"
     )
-    
+
+    document_set_id: Optional[str] = Field(
+        None,
+        description="Document set ID for DBQ essays with uploaded documents"
+    )
+
     # Note: essay_text validation moved to root_validator to handle SAQ vs non-SAQ logic
     
     @validator('prompt')
@@ -124,14 +189,24 @@ class GradingRequest(BaseModel):
     def validate_rubric_type(cls, v, values):
         """Validate rubric type is only used with SAQ essays."""
         essay_type = values.get('essay_type')
-        
+
         if essay_type == EssayType.SAQ:
             # For SAQ, rubric_type is allowed and defaults to College Board
             return v
         elif v != RubricType.COLLEGE_BOARD:
             # For non-SAQ essays, only allow default College Board rubric
             raise ValueError("rubric_type can only be changed for SAQ essay type")
-        
+
+        return v
+
+    @validator('document_set_id')
+    def validate_document_set_id(cls, v, values):
+        """Validate document_set_id is only used with DBQ essays."""
+        essay_type = values.get('essay_type')
+
+        if v is not None and essay_type != EssayType.DBQ:
+            raise ValueError("document_set_id can only be used with DBQ essay type")
+
         return v
     
     @root_validator(skip_on_failure=True)

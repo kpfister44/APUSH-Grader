@@ -6,7 +6,7 @@ Provides real AI grading responses using Anthropic's Claude API.
 
 import logging
 import time
-from typing import Dict, Any
+from typing import Dict, Any, List
 
 from anthropic import Anthropic
 
@@ -106,9 +106,106 @@ class AnthropicService(AIService):
             api_duration_ms = (time.time() - start_time) * 1000 if 'start_time' in locals() else 0
             
             logger.error(f"Anthropic API call failed ({api_duration_ms}ms): {str(e)}")
-            
+
             raise ProcessingError(f"Anthropic AI service failed: {str(e)}")
-    
+
+    async def generate_response_with_vision(
+        self,
+        system_prompt: str,
+        user_message: str,
+        documents: List[Dict],
+        essay_type: EssayType
+    ) -> str:
+        """
+        Generate AI response with vision support for document images.
+
+        Args:
+            system_prompt: System prompt with grading instructions
+            user_message: User message with essay content
+            documents: List of document metadata (doc_num, base64, size_bytes)
+            essay_type: Type of essay being graded
+
+        Returns:
+            AI response as JSON string
+
+        Raises:
+            ProcessingError: If the AI service fails
+            ValidationError: If configuration is invalid
+        """
+        if not self.client:
+            raise ValidationError("Anthropic client not initialized - check API key configuration")
+
+        try:
+            logger.info(f"Starting Anthropic Vision API call for {essay_type.value} with {len(documents)} documents")
+
+            start_time = time.time()
+
+            # Build content array with images and text
+            content = []
+
+            # Add all documents with labels
+            for doc in documents:
+                content.extend([
+                    {
+                        "type": "text",
+                        "text": f"Document {doc['doc_num']}:"
+                    },
+                    {
+                        "type": "image",
+                        "source": {
+                            "type": "base64",
+                            "media_type": "image/jpeg",
+                            "data": doc["base64"]
+                        }
+                    }
+                ])
+
+            # Add the user message with prompt and essay
+            content.append({
+                "type": "text",
+                "text": user_message
+            })
+
+            # Call Claude Sonnet 4 with vision
+            message = self.client.messages.create(
+                model="claude-sonnet-4-20250514",
+                max_tokens=1500,
+                temperature=0.3,
+                system=system_prompt,
+                messages=[
+                    {
+                        "role": "user",
+                        "content": content
+                    }
+                ]
+            )
+
+            # Calculate API call duration
+            api_duration_ms = (time.time() - start_time) * 1000
+
+            # Check for refusal stop reason
+            if message.stop_reason == "refusal":
+                logger.warning("Claude 4 refused to generate content for safety reasons")
+                raise ProcessingError("AI model declined to generate content for safety reasons")
+
+            # Extract response content
+            response_content = message.content[0].text
+
+            logger.info(
+                f"Anthropic Vision API call successful "
+                f"({api_duration_ms:.0f}ms, {len(documents)} images, {len(response_content)} chars)"
+            )
+
+            return response_content
+
+        except Exception as e:
+            # Calculate duration for failed call
+            api_duration_ms = (time.time() - start_time) * 1000 if 'start_time' in locals() else 0
+
+            logger.error(f"Anthropic Vision API call failed ({api_duration_ms}ms): {str(e)}")
+
+            raise ProcessingError(f"Anthropic Vision AI service failed: {str(e)}")
+
     def _validate_configuration(self) -> None:
         """Validate Anthropic service configuration."""
         if not self.settings.anthropic_api_key:

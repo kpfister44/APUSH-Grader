@@ -7,7 +7,7 @@ Provides realistic mock responses for all essay types without external API calls
 import json
 import logging
 import asyncio
-from typing import Dict, Any
+from typing import Dict, Any, List
 
 from app.models.core import EssayType
 from app.services.ai.base import AIService
@@ -164,7 +164,35 @@ class MockAIService(AIService):
                 "Connect to larger historical themes"
             ]
         }
-    
+
+    async def generate_response_with_vision(
+        self,
+        system_prompt: str,
+        user_message: str,
+        documents: List[Dict],
+        essay_type: EssayType
+    ) -> str:
+        """
+        Generate mock AI response with vision support (for testing).
+
+        Args:
+            system_prompt: System prompt with grading instructions (not used in mock)
+            user_message: User message with essay content (not used in mock)
+            documents: List of document metadata (not used in mock)
+            essay_type: Type of essay being graded
+
+        Returns:
+            Mock AI response as JSON string
+
+        Raises:
+            ProcessingError: If unknown essay type
+        """
+        logger.debug(f"Generating mock vision AI response for {essay_type.value} with {len(documents)} documents")
+
+        # For mock, just return the same response as non-vision
+        # In a real implementation, this would analyze the images
+        return await self.generate_response(system_prompt, user_message, essay_type)
+
     def _validate_configuration(self) -> None:
         """Validate mock AI service configuration (no validation needed)."""
         logger.debug("MockAIService configuration validated successfully")

@@ -1,7 +1,7 @@
 """
 Grading API endpoints for essay grading functionality.
 
-Provides the main /api/v1/grade endpoint for iOS frontend integration.
+Provides the main /api/v1/grade endpoint for web frontend integration.
 """
 
 import time
@@ -140,7 +140,8 @@ async def grade_essay(
             essay_type=grading_request.essay_type,
             prompt=grading_request.prompt,
             saq_type=grading_request.saq_type,
-            rubric_type=grading_request.rubric_type
+            rubric_type=grading_request.rubric_type,
+            document_set_id=grading_request.document_set_id
         )
         
         # Calculate processing time
