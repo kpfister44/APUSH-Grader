@@ -105,6 +105,71 @@ class AuthenticatedApiService extends ApiService {
 
     return response.json();
   }
+
+  /**
+   * Upload DBQ documents (protected endpoint)
+   */
+  public async uploadDocuments(documents: File[]): Promise<any> {
+    const token = this.getSessionToken();
+    if (!token) {
+      throw new Error('Authentication required');
+    }
+
+    // Validate on client side
+    const REQUIRED_COUNT = 7;
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+    const ALLOWED_TYPES = ['image/png'];
+
+    if (documents.length !== REQUIRED_COUNT) {
+      throw new Error(`Exactly ${REQUIRED_COUNT} documents required. You selected ${documents.length}.`);
+    }
+
+    for (let i = 0; i < documents.length; i++) {
+      const file = documents[i];
+      const docNum = i + 1;
+
+      if (!ALLOWED_TYPES.includes(file.type)) {
+        throw new Error(`Document ${docNum} must be PNG format. Got: ${file.type || 'unknown'}`);
+      }
+
+      if (file.size > MAX_FILE_SIZE) {
+        const sizeMB = (file.size / 1024 / 1024).toFixed(2);
+        throw new Error(`Document ${docNum} exceeds 5MB limit. Size: ${sizeMB}MB`);
+      }
+
+      if (file.size === 0) {
+        throw new Error(`Document ${docNum} is empty`);
+      }
+    }
+
+    // Create FormData
+    const formData = new FormData();
+    documents.forEach((file) => {
+      formData.append('documents', file);
+    });
+
+    const config = getConfig();
+    const response = await fetch(`${config.baseUrl}/api/v1/dbq/documents`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`
+        // Don't set Content-Type for FormData - browser sets it with boundary
+      },
+      body: formData,
+    });
+
+    if (response.status === 401) {
+      sessionStorage.removeItem('session_token');
+      throw new Error('Session expired. Please log in again.');
+    }
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.detail || 'Failed to upload documents');
+    }
+
+    return response.json();
+  }
 }
 
 // Create authenticated instance

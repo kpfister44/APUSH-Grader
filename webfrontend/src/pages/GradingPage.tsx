@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { ChatLayout, MainContent } from '../components/layout';
 import { EssayTypeSelector, SAQTypeSelector, RubricTypeSelector, SAQMultiPartInput, ChatTextArea, PromptInput } from '../components/input';
+import DocumentUpload from '../components/input/DocumentUpload';
 import { SubmitButton, ResultsDisplay } from '../components/ui';
 import { GradingProvider, useGrading } from '../contexts/GradingContext';
 import { useAuth } from '../contexts/AuthContext';
 import { authenticatedApiService } from '../services/authApi';
-import { GradingRequest } from '../types/api';
+import { GradingRequest, DocumentUploadResponse } from '../types/api';
 
 /**
  * Inner component that uses the grading context
@@ -16,14 +17,27 @@ const GradingPageContent: React.FC = () => {
   const [testResults, setTestResults] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [submitError, setSubmitError] = useState<string>('');
-  
+  const [uploadSuccess, setUploadSuccess] = useState<string>('');
+
+  // Document upload handlers
+  const handleDocumentUploadSuccess = (response: DocumentUploadResponse) => {
+    actions.setDocuments(response.document_set_id, response.expires_at);
+    setUploadSuccess(`Documents uploaded successfully! ${response.document_count} documents ready for grading. Expires at ${new Date(response.expires_at).toLocaleTimeString()}`);
+    setSubmitError('');
+  };
+
+  const handleDocumentUploadError = (error: string) => {
+    setSubmitError(error);
+    setUploadSuccess('');
+  };
+
   // Helper function to build GradingRequest from form state
   const buildGradingRequest = (): GradingRequest => {
     const request: GradingRequest = {
       essay_type: state.form.essayType!,
       prompt: state.form.prompt
     };
-    
+
     if (state.form.essayType === 'SAQ') {
       request.saq_parts = state.form.saqParts;
       if (state.form.saqType) {
@@ -33,8 +47,13 @@ const GradingPageContent: React.FC = () => {
     } else {
       // For DBQ/LEQ, use essay_text
       request.essay_text = state.form.essayText;
+
+      // For DBQ with documents, include document_set_id
+      if (state.form.essayType === 'DBQ' && state.form.documentSetId) {
+        request.document_set_id = state.form.documentSetId;
+      }
     }
-    
+
     return request;
   };
   
@@ -251,6 +270,52 @@ const GradingPageContent: React.FC = () => {
                       Enter the essay question or prompt that students are responding to
                     </div>
                   </div>
+
+                  {/* DBQ document upload (optional but recommended) */}
+                  {state.form.essayType === 'DBQ' && (
+                    <div className="space-y-3">
+                      {!state.form.documentSetId ? (
+                        <DocumentUpload
+                          onUploadSuccess={handleDocumentUploadSuccess}
+                          onUploadError={handleDocumentUploadError}
+                          disabled={state.isSubmitting}
+                        />
+                      ) : (
+                        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2 text-green-700">
+                              <span className="text-green-500">✓</span>
+                              <span className="text-sm font-medium">Documents Uploaded</span>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                actions.clearDocuments();
+                                setUploadSuccess('');
+                              }}
+                              disabled={state.isSubmitting}
+                              className="text-xs text-green-600 hover:text-green-700 underline disabled:opacity-50"
+                            >
+                              Clear & Re-upload
+                            </button>
+                          </div>
+                          {state.form.documentExpiresAt && (
+                            <p className="text-xs text-green-600 mt-1">
+                              Expires: {new Date(state.form.documentExpiresAt).toLocaleString()}
+                            </p>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Success message */}
+                      {uploadSuccess && (
+                        <div className="text-green-600 text-sm flex items-center gap-2">
+                          <span className="text-green-500">✓</span>
+                          <span>{uploadSuccess}</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                   <div className="space-y-3">
                     <label htmlFor="essay-text-input" className="block text-sm font-medium text-gray-700">

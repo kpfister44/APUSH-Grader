@@ -13,11 +13,12 @@ export interface GradingRequest {
   prompt: string;                // Essay question/prompt
   saq_parts?: {                  // For multi-part SAQ format
     part_a: string;
-    part_b: string; 
+    part_b: string;
     part_c: string;
   };
   saq_type?: "stimulus" | "non_stimulus" | "secondary_comparison";
   rubric_type?: "college_board" | "eg";  // Rubric type for SAQ essays
+  document_set_id?: string;      // Document set ID for DBQ with uploaded documents
 }
 
 export interface HealthRequest {
@@ -65,6 +66,13 @@ export interface UsageSummaryResponse {
   daily_limit: number;
   essays_remaining: number;
   reset_time: string;
+}
+
+export interface DocumentUploadResponse {
+  document_set_id: string;     // Unique ID for this document set
+  document_count: number;      // Number of documents uploaded (should be 7)
+  total_size_mb: number;       // Total size in megabytes
+  expires_at: string;          // ISO timestamp when documents expire (2 hours)
 }
 
 export interface ErrorResponse {

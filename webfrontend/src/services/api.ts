@@ -8,6 +8,7 @@ import {
   GradingResponse,
   HealthResponse,
   UsageSummaryResponse,
+  DocumentUploadResponse,
   ApiConfig,
   RequestOptions,
   ApiSuccessResponse,
@@ -226,13 +227,32 @@ class HttpClient {
    * POST request
    */
   public async post<T>(
-    endpoint: string, 
-    data?: any, 
+    endpoint: string,
+    data?: any,
     options?: RequestOptions
   ): Promise<ApiSuccessResponse<T>> {
     return this.makeRequest<T>(endpoint, {
       method: 'POST',
       body: data ? JSON.stringify(data) : undefined,
+      ...options
+    });
+  }
+
+  /**
+   * POST request with FormData (for file uploads)
+   */
+  public async postFormData<T>(
+    endpoint: string,
+    formData: FormData,
+    options?: RequestOptions
+  ): Promise<ApiSuccessResponse<T>> {
+    const formDataHeaders = { ...options?.headers };
+    delete formDataHeaders['Content-Type'];
+
+    return this.makeRequest<T>(endpoint, {
+      method: 'POST',
+      body: formData,
+      headers: formDataHeaders,
       ...options
     });
   }
@@ -274,6 +294,91 @@ export class ApiService {
         throw error;
       }
       throw new ApiError('Failed to grade essay', ApiErrorType.UNKNOWN_ERROR);
+    }
+  }
+
+  /**
+   * Upload DBQ documents for vision-based grading
+   * Endpoint: POST /api/v1/dbq/documents
+   */
+  public async uploadDocuments(documents: File[]): Promise<DocumentUploadResponse> {
+    const REQUIRED_COUNT = 7;
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+    const ALLOWED_TYPES = ['image/png'];
+
+    try {
+      // Validate document count
+      if (documents.length !== REQUIRED_COUNT) {
+        throw new ApiError(
+          `Exactly ${REQUIRED_COUNT} documents required. You selected ${documents.length}.`,
+          ApiErrorType.VALIDATION_ERROR,
+          400
+        );
+      }
+
+      // Validate each document
+      for (let i = 0; i < documents.length; i++) {
+        const file = documents[i];
+        const docNum = i + 1;
+
+        // Validate PNG format
+        if (!ALLOWED_TYPES.includes(file.type)) {
+          throw new ApiError(
+            `Document ${docNum} must be PNG format. Got: ${file.type || 'unknown'}`,
+            ApiErrorType.VALIDATION_ERROR,
+            400
+          );
+        }
+
+        // Validate file size
+        if (file.size > MAX_FILE_SIZE) {
+          const sizeMB = (file.size / 1024 / 1024).toFixed(2);
+          throw new ApiError(
+            `Document ${docNum} exceeds 5MB limit. Size: ${sizeMB}MB`,
+            ApiErrorType.VALIDATION_ERROR,
+            400
+          );
+        }
+
+        // Validate file is not empty
+        if (file.size === 0) {
+          throw new ApiError(
+            `Document ${docNum} is empty`,
+            ApiErrorType.VALIDATION_ERROR,
+            400
+          );
+        }
+      }
+
+      // Create FormData with all documents
+      const formData = new FormData();
+      documents.forEach((file) => {
+        formData.append('documents', file);
+      });
+
+      const response = await this.client.postFormData<DocumentUploadResponse>(
+        '/api/v1/dbq/documents',
+        formData,
+        {
+          timeout: 30000, // Extended timeout for file uploads
+          retryAttempts: 1 // Limited retries for large uploads
+        }
+      );
+
+      return response.data;
+    } catch (error) {
+      if (error instanceof ApiError) {
+        if (error.type === ApiErrorType.RATE_LIMIT_ERROR) {
+          throw new ApiError(
+            'Upload rate limit exceeded. Please wait before uploading again.',
+            error.type,
+            error.status,
+            error.details
+          );
+        }
+        throw error;
+      }
+      throw new ApiError('Failed to upload documents', ApiErrorType.UNKNOWN_ERROR);
     }
   }
 

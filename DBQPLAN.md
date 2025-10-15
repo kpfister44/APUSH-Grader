@@ -14,7 +14,7 @@
 - Teachers must type/paste document content
 
 ### Target State
-- Teachers upload 7 JPEG screenshots once per assignment
+- Teachers upload 7 PNG screenshots once per assignment
 - Documents cached for batch grading session (2 hours)
 - Claude Vision API reads charts, graphs, political cartoons, text
 - Reuse documents across 20+ student essays (major cost savings)
@@ -24,7 +24,7 @@
 ## Technical Requirements
 
 ### File Format
-- **JPEG only** (easiest screenshot workflow)
+- **PNG only** (native Mac screenshot format)
 - Always 7 documents (Document 1-7)
 - Max 5MB per image (Claude API limit)
 - Documents labeled by number (students reference "Document 1", "Document 2", etc.)
@@ -48,7 +48,7 @@
 **1. Upload Documents (Once per assignment)**
 ```
 POST /api/v1/dbq/documents
-Request: 7 JPEG files
+Request: 7 PNG files
 Response: {document_set_id, document_count, expires_at}
 ```
 
@@ -75,24 +75,24 @@ Response: Standard GradeResponse with scores/feedback
 **Goal:** Get document upload + vision API working end-to-end
 
 **Backend Tasks:**
-- [ ] Create new models in `backend/app/models/requests/grading.py`
+- [x] Create new models in `backend/app/models/requests/grading.py`
   - `DocumentUploadRequest`
   - `DocumentUploadResponse`
   - Update `GradeRequest` to include `document_set_id`
-- [ ] Create new route `backend/app/api/routes/dbq.py`
+- [x] Create new route `backend/app/api/routes/dbq.py`
   - `POST /api/v1/dbq/documents` endpoint
-  - Validate 7 JPEGs, < 5MB each
+  - Validate 7 PNGs, < 5MB each
   - Convert to base64
   - Store in session cache (like auth tokens)
-- [ ] Update `backend/app/utils/grading_workflow.py`
+- [x] Update `backend/app/utils/grading_workflow.py`
   - Add `document_set_id` parameter
   - Retrieve documents from cache
   - Pass to AI service
-- [ ] Update `backend/app/services/ai/anthropic_service.py`
+- [x] Update `backend/app/services/ai/anthropic_service.py`
   - New method: `grade_dbq_with_documents()`
   - Build multi-part content array (images + text)
   - Use Claude Vision API format
-- [ ] Test with sample DBQ essay
+- [x] Test with sample DBQ essay
 
 **Estimated effort:** 4-6 hours
 
@@ -141,7 +141,7 @@ Response: Standard GradeResponse with scores/feedback
 - [ ] Image compression/resizing (if needed for cost control)
 - [ ] Better error messages:
   - File too large
-  - Wrong format (not JPEG)
+  - Wrong format (not PNG)
   - Not exactly 7 files
   - Document set expired
 - [ ] Add document expiration warnings (e.g., "Documents expire in 30 minutes")
@@ -162,7 +162,7 @@ Response: Standard GradeResponse with scores/feedback
 
 class DocumentUploadRequest(BaseModel):
     """Upload 7 DBQ document images"""
-    documents: List[UploadFile]  # Exactly 7 JPEGs
+    documents: List[UploadFile]  # Exactly 7 PNGs
     assignment_name: Optional[str] = None
 
 class DocumentUploadResponse(BaseModel):
@@ -213,7 +213,7 @@ for doc in documents:
             "type": "image",
             "source": {
                 "type": "base64",
-                "media_type": "image/jpeg",
+                "media_type": "image/png",
                 "data": doc['base64']
             }
         }
@@ -245,7 +245,7 @@ for doc in documents:
             "type": "image",
             "source": {
                 "type": "base64",
-                "media_type": "image/jpeg",
+                "media_type": "image/png",
                 "data": doc['base64']
             }
         }
@@ -336,7 +336,7 @@ async def test_invalid_document_count():
 ## Success Criteria
 
 ### Phase 1 Complete When:
-- [x] Teacher can upload 7 JPEGs via API
+- [x] Teacher can upload 7 PNGs via API
 - [x] Documents stored in session cache
 - [x] Claude Vision API successfully reads documents
 - [x] Grading returns accurate scores/feedback
@@ -349,16 +349,16 @@ async def test_invalid_document_count():
 - [x] Clear error messages for invalid uploads
 
 ### Phase 3 Complete When:
-- [x] Prompt caching reduces costs by 80%+
-- [x] Cache hit rate tracked in metrics
-- [x] No quality degradation from caching
+- [ ] Prompt caching reduces costs by 80%+
+- [ ] Cache hit rate tracked in metrics
+- [ ] No quality degradation from caching
 
 ### Production Ready When:
-- [x] All 4 phases complete
-- [x] Integration tests passing
-- [x] Deployed to Railway + Vercel
-- [x] Tested with real DBQ documents
-- [x] Documentation updated
+- [ ] All 4 phases complete
+- [ ] Integration tests passing
+- [ ] Deployed to Railway + Vercel
+- [ ] Tested with real DBQ documents
+- [ ] Documentation updated
 
 ---
 
@@ -373,7 +373,7 @@ async def test_invalid_document_count():
 
 ## Questions/Decisions
 
-- [x] JPEG vs PDF? → **JPEG** (easier screenshot workflow)
+- [x] PNG vs JPEG vs PDF? → **PNG** (native Mac screenshot format)
 - [x] Claude Vision vs OCR? → **Claude Vision** (preserves visual context)
 - [x] Storage approach? → **Session-based** (2-hour expiration, perfect for batch grading)
 - [x] Always 7 documents? → **Yes** (standard DBQ format)
@@ -381,5 +381,5 @@ async def test_invalid_document_count():
 
 ---
 
-**Last Updated:** 2025-10-14
-**Status:** Phase 1 - In Progress
+**Last Updated:** 2025-10-15
+**Status:** Phase 1 - Complete ✅ | Phase 2 - Complete ✅ | Phase 3 - Ready to Start

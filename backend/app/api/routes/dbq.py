@@ -72,7 +72,7 @@ def get_document_set(document_set_id: str) -> Dict:
     Upload 7 DBQ document images for vision-based grading.
 
     **Requirements:**
-    - Exactly 7 JPEG files
+    - Exactly 7 PNG files
     - Each file must be < 5MB
     - Files will be labeled as Document 1-7 in order of upload
     - Documents expire after 2 hours
@@ -90,7 +90,7 @@ def get_document_set(document_set_id: str) -> Dict:
 @limiter.limit("10/hour")
 async def upload_documents(
     request: Request,
-    documents: List[UploadFile] = File(..., description="7 JPEG document images"),
+    documents: List[UploadFile] = File(..., description="7 PNG document images"),
     _: bool = Depends(require_auth)
 ) -> DocumentUploadResponse:
     """
@@ -98,7 +98,7 @@ async def upload_documents(
 
     Args:
         request: FastAPI request object for rate limiting
-        documents: List of 7 JPEG files
+        documents: List of 7 PNG files
 
     Returns:
         Document set metadata including document_set_id
@@ -119,11 +119,11 @@ async def upload_documents(
         total_size_bytes = 0
 
         for idx, file in enumerate(documents, start=1):
-            # Validate JPEG format
-            if file.content_type not in ["image/jpeg", "image/jpg"]:
+            # Validate PNG format
+            if file.content_type not in ["image/png"]:
                 raise HTTPException(
                     status_code=400,
-                    detail=f"Document {idx} must be JPEG format. Received: {file.content_type}"
+                    detail=f"Document {idx} must be PNG format. Received: {file.content_type}"
                 )
 
             # Read file content

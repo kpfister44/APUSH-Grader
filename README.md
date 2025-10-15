@@ -1,18 +1,18 @@
 # APUSH Grader
 
-A modern AI-powered essay grading system for AP US History, featuring a **Python FastAPI backend** with **iOS SwiftUI frontend**. Uses Anthropic Claude 3.5 Sonnet to grade essays based on official College Board rubrics.
+A modern AI-powered essay grading system for AP US History, featuring a **Python FastAPI backend** with **ChatGPT-style web frontend**. Uses Anthropic Claude Sonnet 4 to grade essays based on official College Board rubrics.
 
 ## 🏗️ Architecture
 
-**Current Architecture (Phase 3 Complete):**
+**Current Architecture (Production):**
 ```
-iOS App (SwiftUI) → HTTP API → Python Backend (FastAPI) → Anthropic Claude 3.5 Sonnet
+Web Frontend (React/TypeScript) → HTTP API → Python Backend (FastAPI) → Anthropic Claude Sonnet 4
 ```
 
-- **iOS Frontend**: Clean SwiftUI interface for essay input and results display
+- **Web Frontend**: ChatGPT-inspired interface for essay input and results display
 - **Python Backend**: Production-ready FastAPI service with comprehensive business logic
-- **AI Integration**: Real Anthropic Claude 3.5 Sonnet API for accurate essay grading
-- **Production Features**: Rate limiting, structured logging, usage safeguards, health monitoring
+- **AI Integration**: Real Anthropic Claude Sonnet 4 API for accurate essay grading
+- **Production Features**: Rate limiting, structured logging, usage safeguards, health monitoring, authentication
 
 ## ✨ Features
 
@@ -24,11 +24,12 @@ iOS App (SwiftUI) → HTTP API → Python Backend (FastAPI) → Anthropic Claude
 - **Real-time Grading**: Powered by Anthropic Claude 3.5 Sonnet
 
 ### User Experience
-- **Clean SwiftUI Interface**: Optimized for iPhone and iPad
-- **Responsive Design**: Works seamlessly across all iOS devices
+- **ChatGPT-Style Interface**: Clean, modern web interface
+- **Responsive Design**: Works seamlessly across all devices (desktop, tablet, mobile)
 - **Loading States**: Visual feedback during grading process
 - **Error Handling**: User-friendly messages for network issues
-- **SwiftUI Previews**: Real-time testing with actual backend
+- **PDF Export**: Generate PDF reports of graded essays
+- **Authentication**: Password-protected access for teachers
 
 ### Production Ready
 - **Rate Limiting**: 20 requests/minute, 50 essays/hour
@@ -40,8 +41,8 @@ iOS App (SwiftUI) → HTTP API → Python Backend (FastAPI) → Anthropic Claude
 ## 🚀 Quick Start
 
 ### Prerequisites
-- **iOS Development**: Xcode 15.0+, iOS 17.0+, Swift 5.0+
-- **Python Backend**: Python 3.10+, FastAPI, Anthropic API key
+- **Web Frontend**: Node.js 18+, npm
+- **Python Backend**: Python 3.12+, FastAPI, Anthropic API key
 - **Target Audience**: 2-12 teachers (hobby project scale)
 
 ### 1. Setup Python Backend
@@ -61,28 +62,34 @@ pip install -r requirements-dev.txt
 # Configure environment (create .env file)
 echo "AI_SERVICE_TYPE=anthropic" > .env
 echo "ANTHROPIC_API_KEY=your-api-key-here" >> .env
+echo "AUTH_PASSWORD=eghsAPUSH" >> .env
 
 # Run the server
 uvicorn app.main:app --reload
 ```
 
-### 2. Setup iOS App
+### 2. Setup Web Frontend
 
 ```bash
-# Open Xcode project
-open APUSHGrader.xcodeproj
+# Navigate to frontend directory
+cd webfrontend
 
-# Build and run in Xcode (⌘+R)
-# Ensure backend is running on localhost:8000
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
 ```
 
 ### 3. Test Integration
 
 1. **Start Python backend** (see step 1)
-2. **Open iOS app** in Xcode or simulator
-3. **Enter test essay** and prompt
-4. **Tap "Grade Essay"** to test end-to-end integration
-5. **View results** with real AI feedback
+2. **Start web frontend** (see step 2)
+3. **Open browser** to http://127.0.0.1:8001
+4. **Login** with teacher password (eghsAPUSH)
+5. **Enter test essay** and prompt
+6. **Click "Grade Essay"** to test end-to-end integration
+7. **View results** with real AI feedback
 
 ## 📊 API Documentation
 
@@ -127,23 +134,23 @@ pytest tests/services/processing/ -v   # Processing services
 pytest tests/services/ai/ -v           # AI integration tests
 ```
 
-### iOS App
-- **Xcode Testing**: ⌘+U for unit tests
-- **SwiftUI Previews**: Real-time testing with actual backend
-- **Manual Testing**: Build and run in simulator
+### Web Frontend
+- **Component Testing**: React component development and testing
+- **Integration Testing**: End-to-end testing with backend API
+- **Manual Testing**: Browser-based testing across devices
 
 ## 🌐 Deployment
 
 ### Development (Local)
-- **Backend**: `uvicorn app.main:app --reload`
-- **Frontend**: Xcode build and run
+- **Backend**: `uvicorn app.main:app --reload` (http://localhost:8000)
+- **Frontend**: `npm run dev` (http://127.0.0.1:8001)
 - **API Base URL**: `http://localhost:8000`
 
-### Production Options
-- **Railway**: Recommended ($5-10/month)
-- **Heroku**: Alternative cloud hosting
-- **Docker**: Container deployment
-- **Self-hosted**: VPS with PM2/systemd
+### Production
+- **Backend**: Railway at https://apush-grader-production.up.railway.app
+- **Frontend**: Vercel at https://apushgrader.vercel.app
+- **Authentication**: Teacher password protection enabled
+- **Auto-Deploy**: Pushes to `main` branch automatically deploy
 
 See [backend/README.md](backend/README.md) for detailed deployment guides.
 
@@ -166,11 +173,12 @@ See [backend/COST_GUIDE.md](backend/COST_GUIDE.md) for detailed cost analysis.
 
 ```
 APUSH-Grader/
-├── APUSHGrader/                 # iOS SwiftUI App
-│   ├── Models/                  # API response DTOs
-│   ├── Services/                # NetworkService for HTTP
-│   ├── Views/                   # SwiftUI interface
-│   └── Resources/               # Assets and configs
+├── webfrontend/                 # React/TypeScript Web Frontend
+│   ├── src/components/          # React UI components
+│   ├── src/contexts/            # State management
+│   ├── src/services/            # API client
+│   ├── src/types/               # TypeScript definitions
+│   └── build.js                 # ESBuild configuration
 ├── backend/                     # Python FastAPI Backend
 │   ├── app/                     # Application code
 │   │   ├── api/routes/          # REST endpoints
@@ -204,19 +212,22 @@ cd backend && source venv/bin/activate
 uvicorn app.main:app --reload        # Start server
 pytest tests/ -v                     # Run tests
 
-# iOS development  
-open APUSHGrader.xcodeproj           # Open in Xcode
-# ⌘+B to build, ⌘+R to run
+# Web frontend development
+cd webfrontend
+npm install                          # Install dependencies
+npm run dev                          # Start dev server
+npm run build                        # Build for production
 ```
 
-## 📈 Migration History
+## 📈 Project Evolution
 
-✅ **Phase 1**: Python FastAPI backend foundation  
-✅ **Phase 2**: Production readiness + real AI integration  
-✅ **Phase 3**: iOS frontend migration to API (APUSHGraderCore removed)  
-🔄 **Phase 4**: Production deployment (in progress)
+✅ **Phase 1**: Python FastAPI backend foundation
+✅ **Phase 2**: Production readiness + real AI integration
+✅ **Phase 3**: ChatGPT-style web frontend with React/TypeScript
+✅ **Phase 4**: Production deployment (Railway + Vercel)
+✅ **Phase 5**: Teacher authentication system
 
-**Key Achievement**: Successfully migrated from monolithic iOS app to clean client-server architecture, removing 3,146 lines of complex Swift business logic while preserving excellent UI.
+**Key Achievement**: Clean, modern web-based grading system with professional UI, dual rubric support, and secure teacher access.
 
 ## 🎯 Target Audience
 
