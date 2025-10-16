@@ -7,7 +7,7 @@ Provides realistic mock responses for all essay types without external API calls
 import json
 import logging
 import asyncio
-from typing import Dict, Any
+from typing import Dict, Any, List
 
 from app.models.core import EssayType
 from app.services.ai.base import AIService
@@ -164,7 +164,46 @@ class MockAIService(AIService):
                 "Connect to larger historical themes"
             ]
         }
-    
+
+    async def generate_response_with_vision(
+        self,
+        system_prompt: str,
+        user_message: str,
+        documents: List[Dict],
+        essay_type: EssayType,
+        enable_caching: bool = True
+    ) -> tuple[str, Dict[str, Any]]:
+        """
+        Generate mock AI response with vision support (for testing).
+
+        Args:
+            system_prompt: System prompt with grading instructions (not used in mock)
+            user_message: User message with essay content (not used in mock)
+            documents: List of document metadata (not used in mock)
+            essay_type: Type of essay being graded
+            enable_caching: Whether to enable prompt caching (not used in mock)
+
+        Returns:
+            Tuple of (Mock AI response as JSON string, mock cache metrics dict)
+
+        Raises:
+            ProcessingError: If unknown essay type
+        """
+        logger.debug(f"Generating mock vision AI response for {essay_type.value} with {len(documents)} documents (caching: {enable_caching})")
+
+        # For mock, return the same response as non-vision plus mock cache metrics
+        response = await self.generate_response(system_prompt, user_message, essay_type)
+
+        # Mock cache metrics (simulates cache miss on first call, hit on subsequent)
+        mock_cache_metrics = {
+            "input_tokens": 5000,
+            "cache_creation_tokens": 4500 if enable_caching else 0,
+            "cache_read_tokens": 0,  # First call is always cache miss
+            "output_tokens": 500,
+        }
+
+        return response, mock_cache_metrics
+
     def _validate_configuration(self) -> None:
         """Validate mock AI service configuration (no validation needed)."""
         logger.debug("MockAIService configuration validated successfully")

@@ -4,7 +4,7 @@ import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config.settings import get_settings
-from app.api.routes import health_router, grading_router, auth_router
+from app.api.routes import health_router, grading_router, auth_router, dbq_router
 from app.middleware.rate_limiting import limiter, custom_rate_limit_handler
 from slowapi.errors import RateLimitExceeded
 
@@ -43,6 +43,7 @@ app.add_middleware(
 app.include_router(health_router, tags=["health"])
 app.include_router(auth_router)
 app.include_router(grading_router)
+app.include_router(dbq_router)
 
 
 @app.get("/")

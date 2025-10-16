@@ -16,6 +16,9 @@ interface GradingFormState {
     part_b: string;
     part_c: string;
   };
+  // DBQ document upload state
+  documentSetId: string | null;
+  documentExpiresAt: string | null;
 }
 
 interface GradingState {
@@ -42,6 +45,8 @@ type GradingAction =
   | { type: 'SET_ESSAY_TEXT'; payload: string }
   | { type: 'SET_PROMPT'; payload: string }
   | { type: 'SET_SAQ_PART'; payload: { part: keyof GradingFormState['saqParts']; value: string } }
+  | { type: 'SET_DOCUMENTS'; payload: { documentSetId: string; expiresAt: string } }
+  | { type: 'CLEAR_DOCUMENTS' }
   | { type: 'CLEAR_FORM' }
   | { type: 'CLEAR_FIELDS_ON_TYPE_CHANGE' }
   | { type: 'SET_SUBMITTING'; payload: boolean }
@@ -53,6 +58,32 @@ type GradingAction =
 // Initial State
 // ============================================================================
 
+// Load persisted document state from localStorage if available
+const loadPersistedDocuments = (): { documentSetId: string | null; documentExpiresAt: string | null } => {
+  try {
+    const documentSetId = localStorage.getItem('dbq_document_set_id');
+    const expiresAt = localStorage.getItem('dbq_document_expires_at');
+
+    if (documentSetId && expiresAt) {
+      const expiryDate = new Date(expiresAt);
+      const now = new Date();
+
+      if (expiryDate > now) {
+        return { documentSetId, documentExpiresAt: expiresAt };
+      } else {
+        localStorage.removeItem('dbq_document_set_id');
+        localStorage.removeItem('dbq_document_expires_at');
+      }
+    }
+  } catch (error) {
+    console.error('Failed to load persisted documents:', error);
+  }
+
+  return { documentSetId: null, documentExpiresAt: null };
+};
+
+const persistedDocuments = loadPersistedDocuments();
+
 const initialFormState: GradingFormState = {
   essayType: null,
   saqType: null,
@@ -63,7 +94,9 @@ const initialFormState: GradingFormState = {
     part_a: '',
     part_b: '',
     part_c: ''
-  }
+  },
+  documentSetId: persistedDocuments.documentSetId,
+  documentExpiresAt: persistedDocuments.documentExpiresAt
 };
 
 const initialState: GradingState = {
@@ -226,14 +259,54 @@ const gradingReducer = (state: GradingState, action: GradingAction): GradingStat
           [action.payload.part]: action.payload.value
         }
       };
-      
+
       const validationErrors = validateForm(newForm);
-      
+
       return {
         ...state,
         form: newForm,
         validationErrors,
         isFormValid: Object.keys(validationErrors).length === 0
+      };
+    }
+
+    case 'SET_DOCUMENTS': {
+      try {
+        localStorage.setItem('dbq_document_set_id', action.payload.documentSetId);
+        localStorage.setItem('dbq_document_expires_at', action.payload.expiresAt);
+      } catch (error) {
+        console.error('Failed to persist documents to localStorage:', error);
+      }
+
+      const newForm = {
+        ...state.form,
+        documentSetId: action.payload.documentSetId,
+        documentExpiresAt: action.payload.expiresAt
+      };
+
+      return {
+        ...state,
+        form: newForm
+      };
+    }
+
+    case 'CLEAR_DOCUMENTS': {
+      try {
+        localStorage.removeItem('dbq_document_set_id');
+        localStorage.removeItem('dbq_document_expires_at');
+      } catch (error) {
+        console.error('Failed to clear documents from localStorage:', error);
+      }
+
+      const newForm = {
+        ...state.form,
+        documentSetId: null,
+        documentExpiresAt: null
+      };
+
+      return {
+        ...state,
+        form: newForm
       };
     }
 
@@ -308,6 +381,8 @@ interface GradingContextType {
     setEssayText: (text: string) => void;
     setPrompt: (prompt: string) => void;
     setSaqPart: (part: keyof GradingFormState['saqParts'], value: string) => void;
+    setDocuments: (documentSetId: string, expiresAt: string) => void;
+    clearDocuments: () => void;
     clearForm: () => void;
     clearFieldsOnTypeChange: () => void;
     setSubmitting: (submitting: boolean) => void;
@@ -331,40 +406,46 @@ export const GradingProvider: React.FC<GradingProviderProps> = ({ children }) =>
   const [state, dispatch] = useReducer(gradingReducer, initialState);
 
   const actions = {
-    setEssayType: (type: EssayType | null) => 
+    setEssayType: (type: EssayType | null) =>
       dispatch({ type: 'SET_ESSAY_TYPE', payload: type }),
-    
-    setSaqType: (type: SAQType | null) => 
+
+    setSaqType: (type: SAQType | null) =>
       dispatch({ type: 'SET_SAQ_TYPE', payload: type }),
-    
-    setRubricType: (type: RubricType) => 
+
+    setRubricType: (type: RubricType) =>
       dispatch({ type: 'SET_RUBRIC_TYPE', payload: type }),
-    
-    setEssayText: (text: string) => 
+
+    setEssayText: (text: string) =>
       dispatch({ type: 'SET_ESSAY_TEXT', payload: text }),
-    
-    setPrompt: (prompt: string) => 
+
+    setPrompt: (prompt: string) =>
       dispatch({ type: 'SET_PROMPT', payload: prompt }),
-    
-    setSaqPart: (part: keyof GradingFormState['saqParts'], value: string) => 
+
+    setSaqPart: (part: keyof GradingFormState['saqParts'], value: string) =>
       dispatch({ type: 'SET_SAQ_PART', payload: { part, value } }),
-    
-    clearForm: () => 
+
+    setDocuments: (documentSetId: string, expiresAt: string) =>
+      dispatch({ type: 'SET_DOCUMENTS', payload: { documentSetId, expiresAt } }),
+
+    clearDocuments: () =>
+      dispatch({ type: 'CLEAR_DOCUMENTS' }),
+
+    clearForm: () =>
       dispatch({ type: 'CLEAR_FORM' }),
-    
-    clearFieldsOnTypeChange: () => 
+
+    clearFieldsOnTypeChange: () =>
       dispatch({ type: 'CLEAR_FIELDS_ON_TYPE_CHANGE' }),
-    
-    setSubmitting: (submitting: boolean) => 
+
+    setSubmitting: (submitting: boolean) =>
       dispatch({ type: 'SET_SUBMITTING', payload: submitting }),
-    
-    setResult: (result: GradingResponse | null) => 
+
+    setResult: (result: GradingResponse | null) =>
       dispatch({ type: 'SET_RESULT', payload: result }),
-    
-    setValidationErrors: (errors: Record<string, string>) => 
+
+    setValidationErrors: (errors: Record<string, string>) =>
       dispatch({ type: 'SET_VALIDATION_ERRORS', payload: errors }),
-    
-    validateForm: () => 
+
+    validateForm: () =>
       dispatch({ type: 'VALIDATE_FORM' })
   };
 
