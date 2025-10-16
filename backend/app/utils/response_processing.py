@@ -54,17 +54,22 @@ def process_ai_response(raw_response: str, essay_type: EssayType, rubric_type: R
 
         # Validate required fields
         _validate_response_structure(response_data, essay_type, rubric_type)
-        
+
         # Build GradeResponse
         grade_response = _build_grade_response(response_data, essay_type, rubric_type)
-        
+
         logger.info(f"Successfully processed AI response: {grade_response.score}/{grade_response.max_score}")
         return grade_response
-        
+
     except json.JSONDecodeError as e:
         logger.error(f"Failed to parse AI response as JSON: {e}")
-        raise ProcessingError(f"Invalid JSON response from AI service: {e}")
-    
+        logger.error(f"Raw response (first 500 chars): {raw_response[:500]}")
+        logger.error(f"Cleaned response (first 500 chars): {cleaned_response[:500] if 'cleaned_response' in locals() else 'N/A'}")
+
+        # Provide more helpful error message
+        error_msg = f"Claude generated invalid JSON. This is a temporary AI issue - please try grading again. (Error: {str(e)})"
+        raise ProcessingError(error_msg)
+
     except Exception as e:
         logger.error(f"Error processing AI response: {e}")
         raise ProcessingError(f"Failed to process AI response: {e}")

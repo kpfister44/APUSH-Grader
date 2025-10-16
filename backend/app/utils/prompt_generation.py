@@ -38,7 +38,14 @@ def _get_system_prompt(essay_type: EssayType, saq_type: SAQType = None, rubric_t
     
     base_prompt = """You are an expert AP US History teacher grading student essays. Provide detailed, constructive feedback following the official College Board rubrics.
 
-IMPORTANT: Return your response as valid JSON with this exact structure:
+CRITICAL JSON FORMATTING INSTRUCTIONS:
+- Return ONLY valid, parseable JSON - no markdown code blocks, no extra text
+- Ensure all strings are properly escaped (escape quotes, newlines, etc.)
+- DO NOT use trailing commas after the last item in arrays or objects
+- Ensure proper comma placement between all object properties and array elements
+- Double-check JSON syntax before responding - missing commas are a common error
+
+Return your response as valid JSON with this exact structure:
 {
     "score": <total_score_number>,
     "max_score": <maximum_possible_score>,
@@ -104,9 +111,16 @@ def _get_saq_system_prompt(saq_type: SAQType = None, rubric_type: RubricType = R
     
     # Default to College Board rubric
     
-    base_saq_prompt = """You are an expert AP US History teacher grading Short Answer Questions. 
+    base_saq_prompt = """You are an expert AP US History teacher grading Short Answer Questions.
 
-IMPORTANT: Return your response as valid JSON with this exact structure:
+CRITICAL JSON FORMATTING INSTRUCTIONS:
+- Return ONLY valid, parseable JSON - no markdown code blocks, no extra text
+- Ensure all strings are properly escaped (escape quotes, newlines, etc.)
+- DO NOT use trailing commas after the last item in arrays or objects
+- Ensure proper comma placement between all object properties and array elements
+- Double-check JSON syntax before responding - missing commas are a common error
+
+Return your response as valid JSON with this exact structure:
 {
     "score": <total_score_number>,
     "max_score": 3,
@@ -192,7 +206,14 @@ def _get_eg_rubric_prompt() -> str:
     
     return """You are an expert AP US History teacher grading Short Answer Questions using the EG Rubric.
 
-IMPORTANT: Return your response as valid JSON with this exact structure:
+CRITICAL JSON FORMATTING INSTRUCTIONS:
+- Return ONLY valid, parseable JSON - no markdown code blocks, no extra text
+- Ensure all strings are properly escaped (escape quotes, newlines, etc.)
+- DO NOT use trailing commas after the last item in arrays or objects
+- Ensure proper comma placement between all object properties and array elements
+- Double-check JSON syntax before responding - missing commas are a common error
+
+Return your response as valid JSON with this exact structure:
 {
     "score": <total_score_number>,
     "max_score": 10,
