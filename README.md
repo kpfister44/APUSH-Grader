@@ -31,6 +31,16 @@ Web Frontend (React/TypeScript) → HTTP API → Python Backend (FastAPI) → An
 - **PDF Export**: Generate PDF reports of graded essays
 - **Authentication**: Password-protected access for teachers
 
+### DBQ Document Upload (Vision API)
+- **Image Upload**: Upload 7 DBQ document images (PNG format) for vision-based grading
+- **Claude Vision API**: AI reads charts, graphs, political cartoons, and text from images
+- **Prompt Caching**: 90% cost reduction when grading multiple essays with same documents
+- **Session Storage**: Documents cached for 2 hours (perfect for batch grading)
+- **⚠️ Important**: Documents stored in-memory - **re-upload required after server restarts**
+  - Server restarts occur during: deployments, crashes, or Railway maintenance
+  - Best practice: Complete batch grading in one session or re-upload documents as needed
+  - At 2-12 teacher scale, this trade-off simplifies infrastructure (no database required)
+
 ### Production Ready
 - **Rate Limiting**: 20 requests/minute, 50 essays/hour
 - **Usage Safeguards**: 100 essays/day, 50,000 words/day limits

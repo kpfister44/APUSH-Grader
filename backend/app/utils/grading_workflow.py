@@ -49,10 +49,16 @@ async def grade_essay(
         documents = None
         if document_set_id:
             logger.info(f"Retrieving document set: {document_set_id}")
-            from app.api.routes.dbq import get_document_set
-            doc_set = get_document_set(document_set_id)
-            documents = doc_set["documents"]
-            logger.info(f"Retrieved {len(documents)} documents for vision grading")
+            try:
+                from app.api.routes.dbq import get_document_set
+                doc_set = get_document_set(document_set_id)
+                documents = doc_set["documents"]
+                logger.info(f"Retrieved {len(documents)} documents for vision grading")
+            except KeyError:
+                raise ValidationError(
+                    "Document set not found. Documents may have expired (2-hour limit) or "
+                    "the server restarted. Please re-upload your 7 DBQ document images."
+                )
 
         # Step 1: Preprocess and validate essay
         logger.debug("Step 1: Preprocessing essay")
