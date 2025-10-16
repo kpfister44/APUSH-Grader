@@ -74,12 +74,21 @@ async def grade_essay(
         logger.debug("Step 3: Calling AI grading service")
         ai_service = create_ai_service()
 
+        # Track cache metrics for vision-enabled grading
+        cache_metrics = None
+
         # Use vision-enabled grading for DBQ with documents
         if documents and essay_type == EssayType.DBQ:
-            logger.info("Using vision-enabled grading for DBQ")
-            raw_ai_response = await ai_service.generate_response_with_vision(
+            logger.info("Using vision-enabled grading for DBQ with prompt caching")
+            raw_ai_response, cache_metrics = await ai_service.generate_response_with_vision(
                 system_prompt, user_message, documents, essay_type
             )
+
+            # Record cache metrics for monitoring
+            if cache_metrics:
+                from app.utils.simple_usage import get_simple_usage_tracker
+                usage_tracker = get_simple_usage_tracker()
+                usage_tracker.record_cache_metrics(cache_metrics)
         else:
             raw_ai_response = await ai_service.generate_response(
                 system_prompt, user_message, essay_type

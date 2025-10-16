@@ -10,12 +10,22 @@ from collections import defaultdict
 
 class SimpleUsageTracker:
     """Basic daily usage counter for hobby project"""
-    
+
     def __init__(self):
         # Simple in-memory counter: {date: count}
         self._daily_counts: Dict[str, int] = defaultdict(int)
         self._last_cleanup = datetime.now().date()
-        
+
+        # Cache metrics tracking (for prompt caching cost monitoring)
+        self._cache_metrics = {
+            "total_input_tokens": 0,
+            "total_cache_creation_tokens": 0,
+            "total_cache_read_tokens": 0,
+            "total_output_tokens": 0,
+            "cache_hits": 0,
+            "cache_misses": 0,
+        }
+
         # Conservative limits for hobby project
         self.daily_limit = 50  # 50 essays per day total (not per IP)
         self.max_words = 10000  # Reject extremely long essays
@@ -41,16 +51,55 @@ class SimpleUsageTracker:
         """Record that an essay was processed"""
         today = datetime.now().strftime("%Y-%m-%d")
         self._daily_counts[today] += 1
-    
+
+    def record_cache_metrics(self, metrics: Dict[str, int]):
+        """
+        Record prompt caching metrics for cost monitoring.
+
+        Prompt caching saves costs by reusing document images across grading requests.
+        Cache hits indicate successful reuse, reducing API costs by ~90%.
+
+        Args:
+            metrics: Dict with keys: input_tokens, cache_creation_tokens,
+                     cache_read_tokens, output_tokens
+        """
+        self._cache_metrics["total_input_tokens"] += metrics.get("input_tokens", 0)
+        self._cache_metrics["total_cache_creation_tokens"] += metrics.get("cache_creation_tokens", 0)
+        self._cache_metrics["total_cache_read_tokens"] += metrics.get("cache_read_tokens", 0)
+        self._cache_metrics["total_output_tokens"] += metrics.get("output_tokens", 0)
+
+        # Track cache hits/misses
+        if metrics.get("cache_read_tokens", 0) > 0:
+            self._cache_metrics["cache_hits"] += 1
+        elif metrics.get("cache_creation_tokens", 0) > 0:
+            self._cache_metrics["cache_misses"] += 1
+
     def get_usage_summary(self) -> Dict[str, any]:
-        """Get simple usage summary"""
+        """Get simple usage summary with cache metrics"""
         today = datetime.now().strftime("%Y-%m-%d")
         used = self._daily_counts[today]
-        
+
+        # Calculate cache efficiency
+        total_cache_requests = self._cache_metrics["cache_hits"] + self._cache_metrics["cache_misses"]
+        cache_hit_rate = (
+            (self._cache_metrics["cache_hits"] / total_cache_requests * 100)
+            if total_cache_requests > 0
+            else 0
+        )
+
         return {
             "essays_processed_today": used,
             "daily_limit": self.daily_limit,
-            "remaining": max(0, self.daily_limit - used)
+            "remaining": max(0, self.daily_limit - used),
+            "cache_metrics": {
+                "total_input_tokens": self._cache_metrics["total_input_tokens"],
+                "total_cache_creation_tokens": self._cache_metrics["total_cache_creation_tokens"],
+                "total_cache_read_tokens": self._cache_metrics["total_cache_read_tokens"],
+                "total_output_tokens": self._cache_metrics["total_output_tokens"],
+                "cache_hits": self._cache_metrics["cache_hits"],
+                "cache_misses": self._cache_metrics["cache_misses"],
+                "cache_hit_rate_percent": round(cache_hit_rate, 2),
+            }
         }
     
     def _cleanup_old_data(self):
