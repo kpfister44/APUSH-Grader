@@ -102,11 +102,12 @@ class Provider(str, Enum):
 
 class Model(str, Enum):
     """AI model enumeration with provider mapping"""
-    
+
     GPT4O = "gpt-4o"
     GPT4O_MINI = "gpt-4o-mini"
-    CLAUDE4_SONNET = "claude-sonnet-4-20250514"
-    CLAUDE3_HAIKU = "claude-3-haiku-20240307"
+    CLAUDE4_5_SONNET = "claude-sonnet-4-5-20250929"
+    CLAUDE4_5_HAIKU = "claude-haiku-4-5-20251001"
+    CLAUDE3_HAIKU = "claude-3-haiku-20240307"  # Legacy
     
     @property
     def name(self) -> str:

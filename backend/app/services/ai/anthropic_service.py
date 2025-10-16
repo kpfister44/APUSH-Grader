@@ -72,9 +72,9 @@ class AnthropicService(AIService):
             
             start_time = time.time()
             
-            # Call Claude Sonnet 4 with system prompt and user message
+            # Call Claude Sonnet 4.5 with system prompt and user message
             message = self.client.messages.create(
-                model="claude-sonnet-4-20250514",
+                model="claude-sonnet-4-5-20250929",
                 max_tokens=1500,
                 temperature=0.3,
                 system=system_prompt,
@@ -180,9 +180,9 @@ class AnthropicService(AIService):
                 "text": user_message
             })
 
-            # Call Claude Sonnet 4 with vision
+            # Call Claude Sonnet 4.5 with vision
             message = self.client.messages.create(
-                model="claude-sonnet-4-20250514",
+                model="claude-sonnet-4-5-20250929",
                 max_tokens=1500,
                 temperature=0.3,
                 system=system_prompt,

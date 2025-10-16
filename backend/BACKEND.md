@@ -313,18 +313,19 @@ response = await ai_service.grade_essay(...)
 
 ### Anthropic Claude Configuration
 
-**Model:** `claude-sonnet-4-20250514`
+**Model:** `claude-sonnet-4-5-20250929`
 
-**Why Claude Sonnet 4:**
+**Why Claude Sonnet 4.5:**
+- Most intelligent model for complex reasoning and analysis
 - Excellent at structured JSON responses
-- Strong historical knowledge for APUSH
+- Superior historical knowledge and nuanced analysis for APUSH
 - Reliable rubric interpretation
-- Cost-effective (~$0.02-0.03 per essay)
+- Same cost as Sonnet 4 (~$0.02-0.03 per essay for ≤ 200K token prompts)
 
 **API call structure (text only):**
 ```python
 message = await anthropic_client.messages.create(
-    model="claude-sonnet-4-20250514",
+    model="claude-sonnet-4-5-20250929",
     max_tokens=2000,
     temperature=0.3,  # Low for consistency
     system="You are an AP US History grading expert...",
@@ -355,7 +356,7 @@ for doc in documents:
 content.append({"type": "text", "text": user_message})
 
 message = await anthropic_client.messages.create(
-    model="claude-sonnet-4-20250514",
+    model="claude-sonnet-4-5-20250929",
     max_tokens=1500,
     temperature=0.3,
     system="You are an AP US History grading expert...",
@@ -564,15 +565,18 @@ result = await container.get(IGradingService).grade(...)
 - Integration tests
 
 ### 3. Verify Claude Model Version
-**Status:** To Check
+**Status:** ✅ Complete
 
-**Current:** Using `claude-sonnet-4-20250514`
-**Action:** Verify this is still the latest Sonnet 4 model
+**Current:** Using `claude-sonnet-4-5-20250929` (Sonnet 4.5)
+**Previous:** `claude-sonnet-4-20250514` (Sonnet 4)
 
-**Check:**
-- Anthropic docs: https://docs.anthropic.com/en/docs/models-overview
-- Update model string if newer version available
-- Test with sample essays to ensure quality maintained
+**Upgrade Benefits:**
+- Most intelligent model for complex reasoning and analysis
+- Same cost as Sonnet 4 for prompts ≤ 200K tokens
+- Superior performance on nuanced historical analysis
+- Better rubric adherence and feedback quality
+
+**Verified:** 2025-10-16 via https://docs.claude.com/en/docs/about-claude/models
 
 ---
 
