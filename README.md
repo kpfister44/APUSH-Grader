@@ -5,7 +5,7 @@ An AI-powered essay grading system for AP US History teachers, providing instant
 **Live Application:** https://apushgrader.vercel.app
 
 ![APUSH Grader - Main Interface](./docs/screenshots/main-interface.png)
-*Screenshot: ChatGPT-style interface for essay input and grading*
+*Screenshot: Claude style interface for essay input and grading*
 
 ---
 
@@ -70,12 +70,15 @@ Grade all AP US History essay formats with appropriate rubrics:
 
 ---
 
-### 2. ChatGPT-Style Web Interface
+### 2. Claude Style Web Interface
 
 Modern, intuitive interface designed for teacher workflow:
 
-![Grading Interface](./docs/screenshots/grading-interface.png)
-*Screenshot: Essay type selection and input interface*
+![Grading Interface](./docs/screenshots/saq-interface.png)
+*Screenshot: Essay type selection and input interface for SAQ*
+
+![Grading Interface](./docs/screenshots/leq-interface.png)
+*Screenshot: Essay type selection and input interface for LEQ*
 
 **User Experience:**
 - Clean, distraction-free design
@@ -97,7 +100,7 @@ Modern, intuitive interface designed for teacher workflow:
 
 Upload DBQ document images for AI-powered visual analysis:
 
-![DBQ Document Upload](./docs/screenshots/dbq-upload.png)
+![DBQ Document Upload](./docs/screenshots/dbq-interface.png)
 *Screenshot: DBQ document upload interface (7 images)*
 
 **Capabilities:**
@@ -124,7 +127,10 @@ Upload DBQ document images for AI-powered visual analysis:
 
 Powered by Anthropic Claude Sonnet 4.5 for superior historical analysis:
 
-![Grading Results](./docs/screenshots/results-display.png)
+![Grading Results](./docs/screenshots/main-grading-interface.png)
+*Screenshot: The main grading interface*
+
+![Grading Results](./docs/screenshots/detailed-score-breakdown.png)
 *Screenshot: Detailed grading results with rubric breakdown*
 
 **AI Features:**
@@ -182,7 +188,7 @@ Built for reliable classroom use with cost protection:
 
 ### 6. Teacher Authentication System
 
-Password-protected access with session management:
+Basic password-protected access with session management:
 
 ![Login Screen](./docs/screenshots/login-screen.png)
 *Screenshot: Teacher login interface*
@@ -555,14 +561,11 @@ For development, backend is automatically detected at `http://localhost:8000`.
 | **Typical essay** | **~$0.02-0.03** | **Standard DBQ/LEQ** |
 | DBQ with images | ~$0.02-0.04 | Vision API included |
 | 40-essay class | ~$0.80-1.20 | One grading session |
-| **Monthly (5 classes)** | **~$4-6** | **Typical teacher usage** |
 
 **Cost Protection:**
 - Daily limits: 100 essays/day, 50,000 words/day
 - Rate limiting: 20 requests/minute, 50 essays/hour
 - Usage tracking via `/usage/summary` endpoint
-
-**Teacher Budget:** ~$10-30/month for typical classroom use (150-300 essays/month)
 
 ---
 
@@ -720,55 +723,13 @@ Comprehensive technical documentation is available in the project:
 - [x] DBQ vision API for document image analysis (Phase 1 complete)
 - [ ] Anthropic Prompt Caching for 90% cost reduction on batch grading
 - [ ] Custom LEQ rubrics with teacher-defined criteria
-- [ ] Grading history and student progress tracking
-- [ ] Multi-teacher collaboration features
-- [ ] Export grades to CSV for gradebook import
 
 ### Technical Improvements
 - [ ] Redis caching for session tokens at scale
 - [ ] PostgreSQL database for persistent grading history
 - [ ] Batch grading API for processing multiple essays in one request
 - [ ] Real-time grading progress updates via WebSockets
-- [ ] Advanced analytics dashboard for teacher insights
 - [ ] CI/CD pipeline with automated testing
-
----
-
-## Key Concepts
-
-### Essay Type Differentiation
-
-**Why separate types:** Each essay format has unique rubric criteria and evaluation patterns.
-
-- **DBQ:** Requires document analysis, sourcing, and contextualization
-- **LEQ:** Focuses on argument development and historical reasoning
-- **SAQ:** Short-form responses with specific answer requirements
-
-### Dual SAQ Rubrics
-
-**College Board (3-point):** Official AP exam rubric for standardized grading
-- Part A, B, C (1 point each)
-- Used for AP exam preparation
-
-**EG Custom (10-point A/C/E):** More granular feedback for classroom use
-- Criterion A: Content accuracy (factual correctness)
-- Criterion C: Citation/evidence quality
-- Criterion E: Extension/analysis depth
-
-### Session-Based Authentication
-
-**Why simple sessions:** 2-12 teachers don't need Redis/JWT complexity.
-- In-memory token storage (expires on server restart)
-- 24-hour token expiration
-- localStorage persistence on frontend
-- No database required at hobby project scale
-
-### Mock AI Service
-
-**Why needed:** Development and testing without API costs.
-- Realistic JSON responses matching production structure
-- Deterministic grading for reproducible tests
-- Fast test execution without network latency
 
 ---
 
