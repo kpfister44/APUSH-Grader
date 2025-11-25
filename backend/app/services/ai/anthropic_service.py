@@ -9,6 +9,7 @@ import time
 from typing import Dict, Any, List
 
 from anthropic import Anthropic
+import anthropic
 from pydantic import BaseModel
 
 from app.models.core import EssayType, RubricType
@@ -16,6 +17,9 @@ from app.models.structured_outputs import get_output_schema_for_essay
 from app.services.ai.base import AIService
 from app.exceptions import ProcessingError, ValidationError
 logger = logging.getLogger(__name__)
+
+# DIAGNOSTIC: Log anthropic version at import
+logger.warning(f"🔍 DIAGNOSTIC: anthropic SDK version: {anthropic.__version__}")
 
 
 class AnthropicService(AIService):
@@ -33,14 +37,26 @@ class AnthropicService(AIService):
     def _initialize_client(self) -> None:
         """Initialize Anthropic client with API key."""
         logger.debug(f"Initializing Anthropic client with API key: {self.settings.anthropic_api_key[:20]}...")
-        
+
         if not self.settings.anthropic_api_key:
             logger.warning("Anthropic API key not configured")
             return
-        
+
         try:
             self.client = Anthropic(api_key=self.settings.anthropic_api_key)
             logger.debug(f"Anthropic client initialized successfully: {type(self.client)}")
+
+            # DIAGNOSTIC: Check if client has beta.messages.parse
+            has_beta = hasattr(self.client, 'beta')
+            logger.warning(f"🔍 DIAGNOSTIC: client.beta exists: {has_beta}")
+            if has_beta:
+                has_messages = hasattr(self.client.beta, 'messages')
+                logger.warning(f"🔍 DIAGNOSTIC: client.beta.messages exists: {has_messages}")
+                if has_messages:
+                    has_parse = hasattr(self.client.beta.messages, 'parse')
+                    logger.warning(f"🔍 DIAGNOSTIC: client.beta.messages.parse exists: {has_parse}")
+                    if not has_parse:
+                        logger.error(f"🔍 DIAGNOSTIC: Available methods: {dir(self.client.beta.messages)}")
         except Exception as e:
             logger.error(f"Failed to initialize Anthropic client: {e}")
             raise ValidationError(f"Anthropic client initialization failed: {e}")
