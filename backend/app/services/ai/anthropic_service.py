@@ -130,7 +130,7 @@ class AnthropicService(AIService):
                 raise ProcessingError("AI model declined to generate content for safety reasons")
 
             # Extract parsed response (already validated Pydantic model)
-            parsed_response = message.content
+            parsed_response = message.parsed_output
 
             # Log detailed metrics for Structured Outputs
             logger.info(
@@ -267,7 +267,7 @@ class AnthropicService(AIService):
                 raise ProcessingError("AI model declined to generate content for safety reasons")
 
             # Extract parsed response (already validated Pydantic model)
-            parsed_response = message.content
+            parsed_response = message.parsed_output
 
             # Extract cache usage metrics
             cache_metrics = self._extract_cache_metrics(message.usage)
