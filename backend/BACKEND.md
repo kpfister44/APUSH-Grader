@@ -381,7 +381,7 @@ message = await anthropic_client.messages.create(
 
 **Feature:** Anthropic Structured Outputs with constrained decoding
 **Status:** ✅ Enabled by default for all essay grading
-**SDK Version:** `anthropic==0.63.0`
+**SDK Version:** `anthropic==0.75.0` (minimum: 0.73.0 for `beta.messages.parse()` support)
 **API Header:** `anthropic-beta: structured-outputs-2025-11-13`
 
 **How It Works:**
@@ -389,9 +389,10 @@ message = await anthropic_client.messages.create(
 Structured Outputs guarantees 100% schema compliance by using constrained decoding during generation. No more JSON parsing errors or schema validation failures.
 
 1. **Schema Definition** - Pydantic models in `app/models/structured_outputs.py`
-2. **API Call** - `client.beta.messages.parse(response_format={"type": schema})`
-3. **Guaranteed Compliance** - Constrained decoding ensures exact schema adherence
-4. **Grammar Compilation** - First request ~3-5s (cached 24h), subsequent ~1-2s
+2. **API Call** - `client.beta.messages.parse(betas=["structured-outputs-2025-11-13"], output_format=schema)`
+3. **Response Parsing** - Access validated model via `message.parsed_output`
+4. **Guaranteed Compliance** - Constrained decoding ensures exact schema adherence
+5. **Grammar Compilation** - First request ~3-5s (cached 24h), subsequent ~1-2s
 
 **Architecture - Two-Schema Approach:**
 
@@ -421,15 +422,16 @@ output_schema = get_output_schema_for_essay("DBQ", "college_board")
 # Call Structured Outputs API
 message = client.beta.messages.parse(
     model="claude-sonnet-4-5-20250929",
+    betas=["structured-outputs-2025-11-13"],  # Required beta header
     max_tokens=1500,
     temperature=0.3,
     system=system_prompt,
     messages=[{"role": "user", "content": user_message}],
-    response_format={"type": output_schema}
+    output_format=output_schema  # Pass Pydantic model class directly
 )
 
-# Returns parsed Pydantic model (not JSON string!)
-parsed_response = message.content  # Already a DBQGradeOutput instance
+# Access parsed Pydantic model (not JSON string!)
+parsed_response = message.parsed_output  # Already a DBQGradeOutput instance
 ```
 
 **Benefits:**
