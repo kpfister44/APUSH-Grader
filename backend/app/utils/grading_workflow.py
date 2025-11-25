@@ -85,9 +85,9 @@ async def grade_essay(
 
         # Use vision-enabled grading for DBQ with documents
         if documents and essay_type == EssayType.DBQ:
-            logger.info("Using vision-enabled grading for DBQ with prompt caching")
-            raw_ai_response, cache_metrics = await ai_service.generate_response_with_vision(
-                system_prompt, user_message, documents, essay_type
+            logger.info("Using vision-enabled grading for DBQ with Structured Outputs + prompt caching")
+            structured_response, cache_metrics = await ai_service.generate_response_with_vision(
+                system_prompt, user_message, documents, essay_type, rubric_type
             )
 
             # Record cache metrics for monitoring
@@ -96,13 +96,14 @@ async def grade_essay(
                 usage_tracker = get_simple_usage_tracker()
                 usage_tracker.record_cache_metrics(cache_metrics)
         else:
-            raw_ai_response = await ai_service.generate_response(
-                system_prompt, user_message, essay_type
+            logger.info("Using Structured Outputs grading")
+            structured_response = await ai_service.generate_response(
+                system_prompt, user_message, essay_type, rubric_type
             )
 
-        # Step 4: Process AI response
-        logger.debug("Step 4: Processing AI response")
-        grade_response = process_ai_response(raw_ai_response, essay_type, rubric_type)
+        # Step 4: Convert Structured Output to GradeResponse
+        logger.debug("Step 4: Converting Structured Output to GradeResponse")
+        grade_response = process_ai_response(structured_response, essay_type, rubric_type)
 
         # Add preprocessing warnings to response
         if preprocessing_result.warnings:

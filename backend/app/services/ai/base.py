@@ -6,8 +6,10 @@ Defines the contract for AI services that can grade essays.
 
 from abc import ABC, abstractmethod
 import logging
-from typing import Optional, List, Dict
-from app.models.core import EssayType
+from typing import Optional, List, Dict, Any
+from pydantic import BaseModel
+
+from app.models.core import EssayType, RubricType
 from app.config.settings import Settings, get_settings
 
 
@@ -28,21 +30,23 @@ class AIService(ABC):
         self,
         system_prompt: str,
         user_message: str,
-        essay_type: EssayType
-    ) -> str:
+        essay_type: EssayType,
+        rubric_type: RubricType = RubricType.COLLEGE_BOARD
+    ) -> BaseModel:
         """
-        Generate AI response for essay grading.
+        Generate AI response for essay grading using Structured Outputs.
 
         Args:
             system_prompt: System prompt with grading instructions
             user_message: User message with essay content
             essay_type: Type of essay being graded
+            rubric_type: Rubric type (only used for SAQ essays)
 
         Returns:
-            AI response as JSON string
+            Parsed Pydantic model (DBQGradeOutput, LEQGradeOutput, etc.)
 
         Raises:
-            AIServiceError: If the AI service fails
+            ProcessingError: If the AI service fails
         """
         pass
 
@@ -51,22 +55,26 @@ class AIService(ABC):
         system_prompt: str,
         user_message: str,
         documents: List[Dict],
-        essay_type: EssayType
-    ) -> str:
+        essay_type: EssayType,
+        rubric_type: RubricType = RubricType.COLLEGE_BOARD,
+        enable_caching: bool = True
+    ) -> tuple[BaseModel, Dict[str, Any]]:
         """
-        Generate AI response with vision support for document images.
+        Generate AI response with vision support using Structured Outputs.
 
         Args:
             system_prompt: System prompt with grading instructions
             user_message: User message with essay content
             documents: List of document metadata (doc_num, base64, size_bytes)
             essay_type: Type of essay being graded
+            rubric_type: Rubric type (only used for SAQ essays)
+            enable_caching: Whether to enable prompt caching
 
         Returns:
-            AI response as JSON string
+            Tuple of (Parsed Pydantic model, cache usage metrics dict)
 
         Raises:
-            AIServiceError: If the AI service fails
+            ProcessingError: If the AI service fails
             NotImplementedError: If vision not supported by this service
         """
         # Default implementation raises NotImplementedError
