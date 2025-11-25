@@ -108,6 +108,7 @@ class AnthropicService(AIService):
             # First request compiles grammar (~2-3s), then cached 24h
             message = self.client.beta.messages.parse(
                 model="claude-sonnet-4-5-20250929",
+                betas=["structured-outputs-2025-11-13"],
                 max_tokens=1500,
                 temperature=0.3,
                 system=system_prompt,
@@ -117,7 +118,7 @@ class AnthropicService(AIService):
                         "content": user_message
                     }
                 ],
-                response_format={"type": output_schema}
+                output_format=output_schema
             )
 
             # Calculate API call duration
@@ -244,6 +245,7 @@ class AnthropicService(AIService):
             # First request compiles grammar (~2-3s), then cached 24h
             message = self.client.beta.messages.parse(
                 model="claude-sonnet-4-5-20250929",
+                betas=["structured-outputs-2025-11-13"],
                 max_tokens=1500,
                 temperature=0.3,
                 system=system_prompt,
@@ -253,7 +255,7 @@ class AnthropicService(AIService):
                         "content": content
                     }
                 ],
-                response_format={"type": output_schema}
+                output_format=output_schema
             )
 
             # Calculate API call duration
