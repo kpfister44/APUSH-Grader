@@ -91,45 +91,50 @@ class TestPromptGeneration:
 
 class TestResponseProcessing:
     """Test AI response processing utilities"""
-    
+
     def test_process_valid_ai_response(self):
-        """Test processing valid AI response"""
-        mock_response = '''
-        {
-            "score": 4,
-            "max_score": 6,
-            "letter_grade": "B",
-            "overall_feedback": "Good essay with solid analysis",
-            "suggestions": ["Add more evidence", "Strengthen thesis"],
-            "breakdown": {
-                "thesis": {"score": 1, "max_score": 1, "feedback": "Clear thesis"},
-                "contextualization": {"score": 1, "max_score": 1, "feedback": "Good context"},
-                "evidence": {"score": 1, "max_score": 2, "feedback": "Need more evidence"},
-                "analysis": {"score": 1, "max_score": 2, "feedback": "Basic analysis"}
-            }
-        }
-        '''
-        
-        grade_response = process_ai_response(mock_response, EssayType.DBQ)
-        
+        """Test processing valid AI response (Structured Output)"""
+        from app.models.structured_outputs import (
+            DBQGradeOutput, DBQLeqBreakdownOutput, RubricItemOutput
+        )
+
+        # Create Pydantic model (as returned by Structured Outputs)
+        mock_structured_response = DBQGradeOutput(
+            score=4,
+            max_score=6,
+            letter_grade="B",
+            overall_feedback="Good essay with solid analysis",
+            suggestions=["Add more evidence", "Strengthen thesis"],
+            breakdown=DBQLeqBreakdownOutput(
+                thesis=RubricItemOutput(score=1, max_score=1, feedback="Clear thesis"),
+                contextualization=RubricItemOutput(score=1, max_score=1, feedback="Good context"),
+                evidence=RubricItemOutput(score=1, max_score=2, feedback="Need more evidence"),
+                analysis=RubricItemOutput(score=1, max_score=2, feedback="Basic analysis")
+            )
+        )
+
+        grade_response = process_ai_response(mock_structured_response, EssayType.DBQ)
+
         assert grade_response.score == 4
         assert grade_response.max_score == 6
         assert grade_response.letter_grade == "B"
         assert "Good essay" in grade_response.overall_feedback
         assert len(grade_response.suggestions) == 2
         assert grade_response.breakdown.thesis.score == 1
-    
+
+    @pytest.mark.skip(reason="Structured Outputs doesn't require JSON parsing - validation handled by Anthropic API")
     def test_process_invalid_json_response(self):
-        """Test handling invalid JSON response"""
+        """Test handling invalid JSON response (SKIPPED - not applicable with Structured Outputs)"""
         from app.exceptions import ProcessingError
-        
+
         invalid_response = "This is not JSON"
-        
+
         with pytest.raises(ProcessingError, match="Invalid JSON response"):
             process_ai_response(invalid_response, EssayType.DBQ)
-    
+
+    @pytest.mark.skip(reason="Structured Outputs guarantees schema compliance - field variations not applicable")
     def test_process_response_with_field_variations(self):
-        """Test handling maxScore vs max_score field variations"""
+        """Test handling maxScore vs max_score field variations (SKIPPED - not applicable)"""
         mock_response = '''
         {
             "score": 3,
@@ -145,7 +150,7 @@ class TestResponseProcessing:
             }
         }
         '''
-        
+
         grade_response = process_ai_response(mock_response, EssayType.DBQ)
         assert grade_response.score == 3
         assert grade_response.breakdown.thesis.max_score == 1

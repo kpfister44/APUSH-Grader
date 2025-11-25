@@ -377,6 +377,83 @@ message = await anthropic_client.messages.create(
 - Log all API errors
 - User-friendly error messages
 
+### Structured Outputs (Beta)
+
+**Feature:** Anthropic Structured Outputs with constrained decoding
+**Status:** ✅ Enabled by default for all essay grading
+**SDK Version:** `anthropic==0.63.0`
+**API Header:** `anthropic-beta: structured-outputs-2025-11-13`
+
+**How It Works:**
+
+Structured Outputs guarantees 100% schema compliance by using constrained decoding during generation. No more JSON parsing errors or schema validation failures.
+
+1. **Schema Definition** - Pydantic models in `app/models/structured_outputs.py`
+2. **API Call** - `client.beta.messages.parse(response_format={"type": schema})`
+3. **Guaranteed Compliance** - Constrained decoding ensures exact schema adherence
+4. **Grammar Compilation** - First request ~3-5s (cached 24h), subsequent ~1-2s
+
+**Architecture - Two-Schema Approach:**
+
+We maintain separate schemas because Structured Outputs doesn't support `@computed_field`:
+
+- **Output Schemas** (`structured_outputs.py`) - No @computed_field, used for API
+  - Plain Pydantic models matching exact JSON structure from Claude
+  - 4 essay-specific schemas: DBQ, LEQ, SAQ-College Board, SAQ-EG
+  - Factory function: `get_output_schema_for_essay(essay_type, rubric_type)`
+
+- **Core Models** (`core.py`) - With @computed_field (percentage, performance_level)
+  - Used throughout application logic
+  - Converted from output schemas post-parsing
+
+**Flow:**
+```
+Claude API → Output Schema (parsed) → Core Model (computed) → Application
+```
+
+**API Example:**
+```python
+from app.models.structured_outputs import get_output_schema_for_essay
+
+# Get schema for essay type
+output_schema = get_output_schema_for_essay("DBQ", "college_board")
+
+# Call Structured Outputs API
+message = client.beta.messages.parse(
+    model="claude-sonnet-4-5-20250929",
+    max_tokens=1500,
+    temperature=0.3,
+    system=system_prompt,
+    messages=[{"role": "user", "content": user_message}],
+    response_format={"type": output_schema}
+)
+
+# Returns parsed Pydantic model (not JSON string!)
+parsed_response = message.content  # Already a DBQGradeOutput instance
+```
+
+**Benefits:**
+
+- ✅ **Eliminates JSON parsing errors** - No more malformed JSON or extraction failures
+- ✅ **Guarantees schema compliance** - 100% adherence to defined structure
+- ✅ **Simplified code** - Removed ~100 lines of JSON parsing/validation logic
+- ✅ **Type-safe responses** - Pydantic models from the start
+- ✅ **No prompt engineering** - No need for JSON formatting instructions in prompts
+
+**Migration Impact:**
+
+- **Removed:** All JSON formatting instructions from prompts (~50 lines per prompt)
+- **Removed:** JSON extraction and validation logic from `response_processing.py`
+- **Simplified:** `response_processing.py` from ~200 to ~130 lines
+- **Updated:** AI service interfaces to return `BaseModel` instead of `str`
+- **Updated:** Mock service to return Pydantic models for testing
+
+**Performance:**
+
+- First request: ~3-5 seconds (grammar compilation, cached 24h)
+- Subsequent requests: ~1-2 seconds (using cached grammar)
+- Cost: Same as regular API calls (~$0.02-0.03 per essay)
+
 ---
 
 ## Testing Strategy

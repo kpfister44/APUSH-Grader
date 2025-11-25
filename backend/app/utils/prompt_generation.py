@@ -38,27 +38,13 @@ def _get_system_prompt(essay_type: EssayType, saq_type: SAQType = None, rubric_t
     
     base_prompt = """You are an expert AP US History teacher grading student essays. Provide detailed, constructive feedback following the official College Board rubrics.
 
-CRITICAL JSON FORMATTING INSTRUCTIONS:
-- Return ONLY valid, parseable JSON - no markdown code blocks, no extra text
-- Ensure all strings are properly escaped (escape quotes, newlines, etc.)
-- DO NOT use trailing commas after the last item in arrays or objects
-- Ensure proper comma placement between all object properties and array elements
-- Double-check JSON syntax before responding - missing commas are a common error
-
-Return your response as valid JSON with this exact structure:
-{
-    "score": <total_score_number>,
-    "max_score": <maximum_possible_score>,
-    "letter_grade": "<A/B/C/D/F>",
-    "overall_feedback": "<encouraging, student-friendly comprehensive feedback that starts with strengths, uses accessible language, and provides specific actionable suggestions for improvement>",
-    "suggestions": ["<suggestion1>", "<suggestion2>", ...],
-    "breakdown": {
-        "thesis": {"score": <number>, "max_score": <number>, "feedback": "<feedback>"},
-        "contextualization": {"score": <number>, "max_score": <number>, "feedback": "<feedback>"},
-        "evidence": {"score": <number>, "max_score": <number>, "feedback": "<feedback>"},
-        "analysis": {"score": <number>, "max_score": <number>, "feedback": "<feedback>"}
-    }
-}"""
+FEEDBACK TONE GUIDELINES:
+- Begin by acknowledging student efforts and identifying strengths
+- Use encouraging, supportive language appropriate for high school students
+- Avoid overly academic jargon; use clear, accessible terminology
+- Frame criticism constructively with specific examples and suggestions
+- End with actionable next steps for improvement
+- Balance honesty about areas needing work with motivation to continue learning"""
 
     if essay_type == EssayType.DBQ:
         return base_prompt + """
@@ -69,14 +55,6 @@ DBQ RUBRIC (6 points total):
 - Evidence (2 points): Use of documents + outside evidence
 - Analysis (2 points): Document analysis + complex understanding
 
-FEEDBACK TONE GUIDELINES:
-- Begin overall feedback by acknowledging student efforts and identifying strengths
-- Use encouraging, supportive language appropriate for high school students
-- Avoid overly academic jargon; use clear, accessible terminology
-- Frame criticism constructively with specific examples and suggestions
-- End with actionable next steps for improvement
-- Balance honesty about areas needing work with motivation to continue learning
-
 Grade strictly but fairly. Provide specific, actionable feedback."""
 
     elif essay_type == EssayType.LEQ:
@@ -84,17 +62,9 @@ Grade strictly but fairly. Provide specific, actionable feedback."""
 
 LEQ RUBRIC (6 points total):
 - Thesis (1 point): Clear, historically defensible thesis
-- Contextualization (1 point): Broader historical context  
+- Contextualization (1 point): Broader historical context
 - Evidence (2 points): Specific historical evidence
 - Analysis (2 points): Historical reasoning + complex understanding
-
-FEEDBACK TONE GUIDELINES:
-- Begin overall feedback by acknowledging student efforts and identifying strengths
-- Use encouraging, supportive language appropriate for high school students
-- Avoid overly academic jargon; use clear, accessible terminology
-- Frame criticism constructively with specific examples and suggestions
-- End with actionable next steps for improvement
-- Balance honesty about areas needing work with motivation to continue learning
 
 Grade strictly but fairly. Provide specific, actionable feedback."""
 
@@ -112,27 +82,6 @@ def _get_saq_system_prompt(saq_type: SAQType = None, rubric_type: RubricType = R
     # Default to College Board rubric
     
     base_saq_prompt = """You are an expert AP US History teacher grading Short Answer Questions.
-
-CRITICAL JSON FORMATTING INSTRUCTIONS:
-- Return ONLY valid, parseable JSON - no markdown code blocks, no extra text
-- Ensure all strings are properly escaped (escape quotes, newlines, etc.)
-- DO NOT use trailing commas after the last item in arrays or objects
-- Ensure proper comma placement between all object properties and array elements
-- Double-check JSON syntax before responding - missing commas are a common error
-
-Return your response as valid JSON with this exact structure:
-{
-    "score": <total_score_number>,
-    "max_score": 3,
-    "letter_grade": "<A/B/C/D/F>",
-    "overall_feedback": "<encouraging, student-friendly comprehensive feedback that starts with strengths, uses accessible language, and provides specific actionable suggestions for improvement>",
-    "suggestions": ["<suggestion1>", "<suggestion2>", ...],
-    "breakdown": {
-        "part_a": {"score": <number>, "max_score": 1, "feedback": "<feedback>"},
-        "part_b": {"score": <number>, "max_score": 1, "feedback": "<feedback>"},
-        "part_c": {"score": <number>, "max_score": 1, "feedback": "<feedback>"}
-    }
-}
 
 FEEDBACK TONE GUIDELINES:
 - Use encouraging, student-friendly language
@@ -203,29 +152,8 @@ Grade strictly but fairly. Provide specific, actionable feedback."""
 
 def _get_eg_rubric_prompt() -> str:
     """Get EG rubric system prompt (10-point A/C/E criteria)"""
-    
+
     return """You are an expert AP US History teacher grading Short Answer Questions using the EG Rubric.
-
-CRITICAL JSON FORMATTING INSTRUCTIONS:
-- Return ONLY valid, parseable JSON - no markdown code blocks, no extra text
-- Ensure all strings are properly escaped (escape quotes, newlines, etc.)
-- DO NOT use trailing commas after the last item in arrays or objects
-- Ensure proper comma placement between all object properties and array elements
-- Double-check JSON syntax before responding - missing commas are a common error
-
-Return your response as valid JSON with this exact structure:
-{
-    "score": <total_score_number>,
-    "max_score": 10,
-    "letter_grade": "<A/B/C/D/F>",
-    "overall_feedback": "<encouraging, student-friendly comprehensive feedback that starts with strengths, uses accessible language, and provides specific actionable suggestions for improvement>",
-    "suggestions": ["<suggestion1>", "<suggestion2>", ...],
-    "breakdown": {
-        "criterion_a": {"score": <number>, "max_score": 1, "feedback": "<feedback>"},
-        "criterion_c": {"score": <number>, "max_score": 3, "feedback": "<feedback>"},
-        "criterion_e": {"score": <number>, "max_score": 6, "feedback": "<feedback>"}
-    }
-}
 
 FEEDBACK TONE GUIDELINES:
 - Use encouraging, student-friendly language
@@ -289,8 +217,6 @@ Please grade this {essay_type.value} essay according to the rubric. Focus on:
 1. Historical accuracy and evidence
 2. Thesis clarity and argument strength
 3. Use of specific examples
-4. Writing quality and organization
-
-Return ONLY valid JSON as specified in the system prompt."""
+4. Writing quality and organization"""
 
     return message
